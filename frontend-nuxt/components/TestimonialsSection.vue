@@ -90,11 +90,13 @@ const testimonials = ref([
     <p class="mb-[60px] text-center text-[18px] text-gray-600">
       What people are saying about BrandCraft
     </p>
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 place-items-center"
+    >
       <div
         v-for="testimonial in testimonials"
         :key="testimonial.handle"
-        class="flex flex-col gap-4 rounded-lg bg-white p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+        class="flex flex-col gap-4 rounded-lg bg-white p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 max-w-[320px]"
       >
         <div class="flex items-start gap-2">
           <img

@@ -150,9 +150,9 @@ onMounted(async () => {
     <main class="main w-full">
       <!-- Hero Section -->
       <section
-        class="hero-section bg-gradient-to-b from-white to-gray-50 mt-[200px]"
+        class="hero-section bg-gradient-to-b from-white to-gray-50 mt-[50px] sm:mt-[200px]"
       >
-        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6">
           <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <!-- Left Column: Text Content -->
             <div class="flex flex-col justify-center">
@@ -166,17 +166,19 @@ onMounted(async () => {
                 BrandCraft makes it easy to schedule posts, track performance,
                 and grow your audience across all social platforms.
               </p>
-              <div class="flex flex-col gap-4 sm:flex-row">
+              <div
+                class="flex flex-col gap-4 sm:flex-row items-center justify-center sm:justify-start"
+              >
                 <button
                   @click="redirectToSignup"
                   type="submit"
-                  class="inline-flex items-center justify-center cursor-pointer rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
+                  class="inline-flex items-center max-sm:w-[300px] justify-center cursor-pointer rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
                 >
                   Get for free
                 </button>
                 <a
                   href="#how-it-works"
-                  class="inline-flex items-center justify-center cursor-pointer rounded-full border border-gray-300 bg-white px-8 py-3 text-lg font-semibold text-gray-700 transition hover:bg-gray-50"
+                  class="inline-flex items-center max-sm:w-[300px] justify-center cursor-pointer rounded-full border border-gray-300 bg-white px-8 py-3 text-lg font-semibold text-gray-700 transition hover:bg-gray-50"
                 >
                   See how it works
                 </a>
@@ -198,7 +200,7 @@ onMounted(async () => {
             </div>
 
             <!-- Right Column: Platform Preview -->
-            <div class="relative">
+            <div class="relative mt-[80px] sm:mt-[0px]">
               <img
                 :src="state.screenshot1"
                 alt="BrandCraft Platform Preview"
@@ -206,7 +208,7 @@ onMounted(async () => {
               />
               <!-- Platform Icons Floating -->
               <div
-                class="absolute -left-4 -top-4 flex flex-wrap gap-3 rounded-lg bg-white p-4 shadow-lg"
+                class="absolute max-sm:w-[93vw] left-[50%] flex justify-center items-center max-sm:translate-x-[-50%] -top-[100px] sm:-left-4 sm:-top-4 gap-3 rounded-lg bg-white p-4 shadow-lg"
               >
                 <img
                   v-for="icon in [
@@ -232,7 +234,7 @@ onMounted(async () => {
 
       <!-- Stats Section -->
       <section class="bg-gray-50 py-20">
-        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6">
           <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div class="text-center">
               <div class="text-4xl font-bold text-greenBG">100+</div>
@@ -256,8 +258,8 @@ onMounted(async () => {
 
       <!-- How it works section -->
       <section id="how-it-works" class="w-full py-24 bg-gray-50">
-        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div class="text-center mb-16">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6">
+          <div class="text-center mb-6">
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Streamline your social media workflow
             </h2>
@@ -270,10 +272,10 @@ onMounted(async () => {
           <div class="space-y-24">
             <!-- Step 1 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div class="order-2 lg:order-1">
-                <div class="bg-white p-8 rounded-2xl shadow-lg">
+              <div class="order-1">
+                <div class="p-8 rounded-2xl">
                   <span
-                    class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4"
+                    class="inline-block px-4 py-1 border border-greenBG text-greenBG rounded-full text-sm mb-4"
                   >
                     Step 1
                   </span>
@@ -301,7 +303,7 @@ onMounted(async () => {
                   </ul>
                 </div>
               </div>
-              <div class="order-1 lg:order-2">
+              <div class="order-2">
                 <div
                   class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
                 >
@@ -316,7 +318,7 @@ onMounted(async () => {
 
             <!-- Step 2 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div class="order-2">
+              <div class="order-2 lg:order-1">
                 <div
                   class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
                 >
@@ -327,10 +329,10 @@ onMounted(async () => {
                   />
                 </div>
               </div>
-              <div class="order-1">
-                <div class="bg-white p-8 rounded-2xl shadow-lg">
+              <div class="order-1 lg:order-2">
+                <div class="p-8 rounded-2xl">
                   <span
-                    class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4"
+                    class="inline-block px-4 py-1 border border-greenBG text-greenBG rounded-full text-sm mb-4"
                   >
                     Step 2
                   </span>
@@ -362,10 +364,10 @@ onMounted(async () => {
 
             <!-- Step 3 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div class="order-2 lg:order-1">
-                <div class="bg-white p-8 rounded-2xl shadow-lg">
+              <div class="order-2">
+                <div class="p-8 rounded-2xl">
                   <span
-                    class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4"
+                    class="inline-block px-4 py-1 border border-greenBG text-greenBG rounded-full text-sm mb-4"
                   >
                     Step 3
                   </span>
@@ -393,7 +395,7 @@ onMounted(async () => {
                   </ul>
                 </div>
               </div>
-              <div class="order-1 lg:order-2">
+              <div class="order-2">
                 <div
                   class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
                 >
@@ -440,7 +442,7 @@ onMounted(async () => {
     </main>
     <!-- Privacy Policy Link -->
     <footer
-      class="privacy justify-center items-start flex h-[400px] pt-[100px] px-[50px]"
+      class="privacy justify-center items-start flex h-[400px] pt-[100px] px-[50px] w-[300px]"
     >
       <div class="flex h-full w-full justify-start items-start">
         <div class="flex flex-col justify-center items-start">
@@ -503,6 +505,19 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+html,
+body {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.home-view {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
+
 .waitlist-container {
   max-width: 1200px;
 }

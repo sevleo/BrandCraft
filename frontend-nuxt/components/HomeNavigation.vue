@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import birdLogoIcon from "/perfect_logo_full.svg";
+import birdLogoIcon from "@/public/perfect_logo_full.svg";
 import { ref } from "vue";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-vue-next";
 
@@ -42,14 +42,16 @@ onMounted(() => {});
 
 <template>
   <nav class="fixed left-0 top-0 z-50 w-full bg-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
+    <div class="">
+      <div
+        class="flex h-16 items-center max-w-[100vw] justify-between px-[20px]"
+      >
         <!-- Left: BrandCraft -->
         <NuxtLink to="/home" class="flex items-center gap-2">
           <img
             :src="birdLogoIcon"
             alt="BrandCraft Bird"
-            class="h-[50px] transition-transform duration-300"
+            class="h-[40px] sm:h-[50px] transition-transform duration-300"
           />
         </NuxtLink>
 

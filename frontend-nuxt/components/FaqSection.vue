@@ -24,7 +24,7 @@ const toggleQuestion = (index: number) => {
     <p class="text-center text-gray-600 text-lg mb-[60px]">
       Everything you need to know about BrandCraft
     </p>
-    <div class="max-w-[800px] mx-auto space-y-4">
+    <div class="max-w-[800px] mx-auto space-y-4 px-3 lg:px-0">
       <div
         v-for="(question, index) in [4, 0, 1, 2, 3]"
         :key="question"
