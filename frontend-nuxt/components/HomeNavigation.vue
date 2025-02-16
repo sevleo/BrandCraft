@@ -41,10 +41,12 @@ onMounted(() => {});
 </script>
 
 <template>
-  <nav class="fixed left-0 top-0 z-50 w-full bg-white">
+  <nav
+    class="fixed left-0 top-0 z-50 w-full bg-white flex justify-center items-center"
+  >
     <div class="">
       <div
-        class="flex h-16 items-center max-w-[100vw] justify-between px-[20px]"
+        class="flex h-16 items-center justify-between px-[20px] max-w-[1200px] w-[100vw]"
       >
         <!-- Left: BrandCraft -->
         <NuxtLink to="/home" class="flex items-center gap-2">
@@ -231,7 +233,7 @@ onMounted(() => {});
             <!-- Get Started Button -->
             <button
               @click="redirectToSignup"
-              class="bg-greenBG hover:bg-greenLightBG mt-[30px] rounded-full px-6 py-3 text-center text-lg font-medium text-white"
+              class="bg-greenBG hover:bg-greenLightBG rounded-full px-6 py-3 text-center text-lg font-medium text-white"
             >
               Get Started Now
             </button>
