@@ -11,17 +11,30 @@ import click3 from "@/assets/LandingPageIcons/click3.png";
 import FaqSection from "@/components/FaqSection.vue";
 
 definePageMeta({
+<<<<<<< HEAD
   title: "BrandCraft - Social Media Management Tool",
   description: "Manage your social media presence with BrandCraft",
+=======
+  title: "BrandCraft - The Ultimate Social Media Management Platform",
+  description: "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
+>>>>>>> dd96616 (Changed the landing page UI)
   alias: ["/home"],
 });
 
 useHead({
+<<<<<<< HEAD
   title: "BrandCraft - Social Media Management Tool",
   meta: [
     {
       name: "description",
       content: "Manage your social media presence with BrandCraft",
+=======
+  title: "BrandCraft - The Ultimate Social Media Management Platform",
+  meta: [
+    {
+      name: "description",
+      content: "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
+>>>>>>> dd96616 (Changed the landing page UI)
     },
   ],
 });
@@ -45,12 +58,65 @@ import pinterestIcon from "@/assets/icons/pinterest.svg";
 // Runtime config
 const config = useRuntimeConfig();
 
+<<<<<<< HEAD
 // Create a state to track when styles are applied
 const isLoaded = useState("isLoaded", () => ref(false));
 
 const router = useRouter();
 const email = ref("");
 const submitted = ref(false);
+=======
+// Define proper types for the component's state
+interface ComponentState {
+  isLoaded: Ref<boolean>
+  email: Ref<string>
+  submitted: Ref<boolean>
+  instagramIcon: string
+  tiktokIcon: string
+  youtubeIcon: string
+  facebookIcon: string
+  threadsIcon: string
+  blueskyIcon: string
+  xIcon: string
+  mastodonIcon: string
+  screenshot1: string
+  screenshot2: string
+  click1: string
+  click2: string
+  click3: string
+}
+
+// Create a composable for component state
+const useComponentState = (): ComponentState => {
+  const isLoaded = useState("isLoaded", () => ref(false))
+  const email = ref("")
+  const submitted = ref(false)
+
+  return {
+    isLoaded,
+    email,
+    submitted,
+    instagramIcon,
+    tiktokIcon,
+    youtubeIcon,
+    facebookIcon,
+    threadsIcon,
+    blueskyIcon,
+    xIcon,
+    mastodonIcon,
+    screenshot1,
+    screenshot2,
+    click1,
+    click2,
+    click3
+  }
+}
+
+// Use the composable to manage state
+const state = useComponentState()
+
+const router = useRouter();
+>>>>>>> dd96616 (Changed the landing page UI)
 
 const getUTMParameters = () => {
   const params = new URLSearchParams(window.location.search);
@@ -62,6 +128,7 @@ const saveVisitorInfo = (utmSource: string | null, referrer: string | null) => {
   if (referrer) localStorage.setItem("referrer", referrer);
 };
 
+<<<<<<< HEAD
 const trackVisitor = async (
   utmParams: string | null,
   referrer: string | null
@@ -73,6 +140,22 @@ const trackVisitor = async (
     console.error("Tracking error:", err);
   }
 };
+=======
+// Improve the tracking function with proper typing
+interface TrackVisitorParams {
+  utmParams: string | null
+  referrer: string | null
+}
+
+const trackVisitor = async ({ utmParams, referrer }: TrackVisitorParams) => {
+  try {
+    const endpoint = `${config.public.NUXT_PUBLIC_BACKEND_URL}/waitlist/track-visitor`
+    await axios.post(endpoint, { utmParams, referrer })
+  } catch (err) {
+    console.error("Tracking error:", err)
+  }
+}
+>>>>>>> dd96616 (Changed the landing page UI)
 
 function redirectToSignup() {
   const frontendUrl = config.public.NUXT_PUBLIC_FRONTEND_URL;
@@ -80,6 +163,7 @@ function redirectToSignup() {
 }
 
 onMounted(async () => {
+<<<<<<< HEAD
   isLoaded.value = true;
   await verifyAuth(config.public.NUXT_PUBLIC_BACKEND_URL);
   const utmParams = getUTMParameters();
@@ -369,6 +453,294 @@ onMounted(async () => {
         All rights reserved.
       </p>
     </footer>
+=======
+  state.isLoaded.value = true
+  await verifyAuth(config.public.NUXT_PUBLIC_BACKEND_URL)
+  const utmParams = getUTMParameters()
+  const storedUTM = localStorage.getItem("utmSource")
+  const referrer = localStorage.getItem("referrer") || document.referrer || null
+
+  saveVisitorInfo(storedUTM || utmParams, referrer)
+  await trackVisitor({ 
+    utmParams: storedUTM || utmParams, 
+    referrer 
+  })
+})
+</script>
+
+<template>
+  <div v-if="state.isLoaded" class="home-view">
+    <HomeNavigation />
+    <main class="main w-full">
+      <!-- Hero Section -->
+      <section class="hero-section bg-gradient-to-b from-white to-gray-50 pt-[100px]">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
+            <!-- Left Column: Text Content -->
+            <div class="flex flex-col justify-center">
+              <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+                Save time and get <span class="text-greenBG">real results</span> on social media
+              </h1>
+              <p class="mb-8 text-xl text-gray-600">
+                BrandCraft makes it easy to schedule posts, track performance, and grow your audience across all social platforms.
+              </p>
+              <div class="flex flex-col gap-4 sm:flex-row">
+                <button
+                @click="redirectToSignup"
+                type="submit"
+                  class="inline-flex items-center justify-center rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
+                >
+                  Start your free trial
+                </button>
+                <a
+                  href="#how-it-works"
+                  class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-8 py-3 text-lg font-semibold text-gray-700 transition hover:bg-gray-50"
+                >
+                  See how it works
+                </a>
+              </div>
+              
+              <!-- Trust Badges -->
+              <div class="mt-8 flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2">
+                  <Check :size="20" color="#22c55e" />
+                  <span class="text-sm text-gray-600">No credit card required</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <Check :size="20" color="#22c55e" />
+                  <span class="text-sm text-gray-600">Free forever plan</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Platform Preview -->
+            <div class="relative">
+              <img
+                :src="state.screenshot1"
+                alt="BrandCraft Platform Preview"
+                class="rounded-lg shadow-xl transition-all duration-300 hover:shadow-2xl"
+              />
+              <!-- Platform Icons Floating -->
+              <div class="absolute -left-4 -top-4 flex flex-wrap gap-3 rounded-lg bg-white p-4 shadow-lg">
+                <img v-for="icon in [
+                  state.instagramIcon,
+                  state.tiktokIcon,
+                  state.youtubeIcon,
+                  state.facebookIcon,
+                  state.threadsIcon,
+                  state.blueskyIcon,
+                  state.xIcon,
+                  state.mastodonIcon
+                ]" 
+                :key="icon"
+                :src="icon"
+                :alt="icon"
+                class="h-8 w-8 transition-transform hover:scale-110"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="bg-gray-50 py-20">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="text-center">
+              <div class="text-4xl font-bold text-greenBG">100+</div>
+              <div class="mt-2 text-gray-600">Active Users</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-bold text-greenBG">8+</div>
+              <div class="mt-2 text-gray-600">Supported Platforms</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-bold text-greenBG">1000+</div>
+              <div class="mt-2 text-gray-600">Posts Scheduled</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-bold text-greenBG">24/7</div>
+              <div class="mt-2 text-gray-600">Support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works section -->
+      <section id="how-it-works" class="w-full py-24 bg-gray-50">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Streamline your social media workflow
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+              Post smarter, not harder. Our intuitive platform makes social media management effortless.
+            </p>
+          </div>
+
+          <div class="space-y-24">
+            <!-- Step 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div class="order-2 lg:order-1">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                  <span class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4">
+                    Step 1
+                  </span>
+                  <h3 class="text-2xl font-bold text-gray-900 mb-4">Craft your perfect post</h3>
+                  <p class="text-lg text-gray-600 leading-relaxed">
+                    Create compelling content that resonates with your audience. Our AI-powered editor helps you optimize your posts for each platform, ensuring maximum engagement.
+                  </p>
+                  <ul class="mt-6 space-y-3">
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Smart text formatting for each platform</span>
+                    </li>
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Built-in hashtag suggestions</span>
+                    </li>
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Media optimization tools</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="order-1 lg:order-2">
+                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl">
+                  <img 
+                    :src="state.click1" 
+                    alt="Content creation interface" 
+                    class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div class="order-2">
+                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl">
+                  <img 
+                    :src="state.click2" 
+                    alt="Platform selection interface" 
+                    class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  />
+                </div>
+              </div>
+              <div class="order-1">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                  <span class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4">
+                    Step 2
+                  </span>
+                  <h3 class="text-2xl font-bold text-gray-900 mb-4">Connect your platforms</h3>
+                  <p class="text-lg text-gray-600 leading-relaxed">
+                    Manage all your social media accounts from one central dashboard. Connect once, publish everywhere, and save hours of manual work.
+                  </p>
+                  <ul class="mt-6 space-y-3">
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>One-click platform connection</span>
+                    </li>
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Support for 8+ social networks</span>
+                    </li>
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Unified content calendar</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div class="order-2 lg:order-1">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                  <span class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4">
+                    Step 3
+                  </span>
+                  <h3 class="text-2xl font-bold text-gray-900 mb-4">Schedule strategically</h3>
+                  <p class="text-lg text-gray-600 leading-relaxed">
+                    Maximize your reach with intelligent scheduling. Our AI analyzes your audience's behavior to recommend the best posting times.
+                  </p>
+                  <ul class="mt-6 space-y-3">
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>AI-powered optimal timing</span>
+                    </li>
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Bulk scheduling features</span>
+                    </li>
+                    <li class="flex items-center text-gray-600">
+                      <Check class="h-5 w-5 text-greenBG mr-2" />
+                      <span>Time zone management</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="order-1 lg:order-2">
+                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl">
+                  <img 
+                    :src="state.click3" 
+                    alt="Scheduling interface" 
+                    class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <TestimonialsSection />
+      <FaqSection />
+
+      <!-- Privacy Policy Link -->
+      <footer class="privacy self-center max-xsm:mb-[150px] mt-[150px]">
+        <p class="privacy mb-[30px] mt-[10px] text-xs text-gray-500">
+          Join us on
+          <a
+            @click=""
+            href="https://discord.gg/KYZGsH7Mfb"
+            class="underline"
+            target="_blank"
+            >Discord</a
+          >
+          | Submit a bug or request a feature
+          <a
+            @click=""
+            href="https://insigh.to/b/brandcraftart"
+            class="underline"
+            target="_blank"
+            >here</a
+          >
+        </p>
+        <p class="privacy mt-[10px] text-xs text-gray-500">
+          @ 2024 Brandcraft.art by
+          <a href="https://x.com/sev_tinker" class="underline">Seva Leo</a>.
+        </p>
+
+        <p
+          class="privacy mt-[10px] flex justify-center gap-2 text-xs text-gray-500"
+        >
+          <NuxtLink to="/privacy" class="underline hover:text-green"
+            >Privacy Policy</NuxtLink
+          >
+          <NuxtLink to="/terms" class="underline hover:text-green"
+            >Terms & Conditions</NuxtLink
+          >
+        </p>
+        <p class="privacy mb-[10px] mt-[10px] text-xs text-gray-500">
+          All rights reserved.
+        </p>
+      </footer>
+    </main>
+>>>>>>> dd96616 (Changed the landing page UI)
   </div>
 </template>
 
@@ -384,6 +756,101 @@ path {
 .youtube-icon :deep(svg path) {
   fill: #212121;
 }
+<<<<<<< HEAD
+=======
+
+/* Add smooth transitions */
+.screenshot {
+  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.screenshot:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 5px 15px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Add hover effects to social icons */
+.social-icon {
+  transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Improve button animations */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Add fade-in animation for content */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-view {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Add smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhance animations */
+.hero-section {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add hover effects to cards */
+.feature-card {
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Improve responsive design */
+@media (max-width: 640px) {
+  .hero-section {
+    padding-top: 80px;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+}
+>>>>>>> dd96616 (Changed the landing page UI)
 </style>
 
 <style>
@@ -402,8 +869,11 @@ path {
     background-color: rgb(255, 255, 255) !important;
   }
 }
+<<<<<<< HEAD
 
 .screenshot {
   box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
 }
+=======
+>>>>>>> dd96616 (Changed the landing page UI)
 </style>

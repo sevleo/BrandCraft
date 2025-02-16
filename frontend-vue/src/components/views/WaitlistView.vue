@@ -277,7 +277,11 @@
                 <p class="text-[20px] font-bold">Calendar</p>
                 <ul>
                   <li class="text-gray-700">
+<<<<<<< HEAD
                     Bird’s-eye view of all your social media presence.
+=======
+                    Bird's-eye view of all your social media presence.
+>>>>>>> dd96616 (Changed the landing page UI)
                   </li>
                   <li class="text-gray-700">
                     Schedule content for automatic posting across platforms.
@@ -421,28 +425,44 @@
 
         <div class="flex max-w-[400px] flex-col gap-8">
           <div>
+<<<<<<< HEAD
             <p class="text-[20px] font-bold">What is this?</p>
+=======
+            <p class="text-[20px] font-extrabold">What is this?</p>
+>>>>>>> dd96616 (Changed the landing page UI)
             <p class="text-gray-700">
               A unified social media management tool to grow your personal brand
               across platforms with integrated AI support.
             </p>
           </div>
           <div>
+<<<<<<< HEAD
             <p class="text-[20px] font-bold">Why do I need this?</p>
+=======
+            <p class="text-[20px] font-extrabold">Why do I need this?</p>
+>>>>>>> dd96616 (Changed the landing page UI)
             <p class="text-gray-700">
               If you're serious about building a cohesive brand presence, this
               tool saves you time and optimizes your message for each platform.
             </p>
           </div>
           <div>
+<<<<<<< HEAD
             <p class="text-[20px] font-bold">Why should I join waitlist?</p>
+=======
+            <p class="text-[20px] font-extrabold">Why should I join waitlist?</p>
+>>>>>>> dd96616 (Changed the landing page UI)
             <p class="text-gray-700">
               As an early access user, you will enjoy lifetime discount to use
               the product.
             </p>
           </div>
           <div>
+<<<<<<< HEAD
             <p class="text-[20px] font-bold">What about pricing?</p>
+=======
+            <p class="text-[20px] font-extrabold">What about pricing?</p>
+>>>>>>> dd96616 (Changed the landing page UI)
             <p class="text-gray-700">
               We are finalizing pricing and will notify you upon launch, but
               most likely it will be a credit based pricing due to high AI
@@ -450,13 +470,21 @@
             </p>
           </div>
           <div>
+<<<<<<< HEAD
             <p class="text-[20px] font-bold">Will there be a free tier?</p>
+=======
+            <p class="text-[20px] font-extrabold">Will there be a free tier?</p>
+>>>>>>> dd96616 (Changed the landing page UI)
             <p class="text-gray-700">
               Yes, a basic free tier will be available to help you get started!
             </p>
           </div>
           <div>
+<<<<<<< HEAD
             <p class="text-[20px] font-bold">How will my email be used?</p>
+=======
+            <p class="text-[20px] font-extrabold">How will my email be used?</p>
+>>>>>>> dd96616 (Changed the landing page UI)
             <p class="text-gray-700">
               We will use it to notify you about major launches and releases.
             </p>
@@ -469,7 +497,11 @@
       </section>
 
       <p class="mt-[100px] self-center">
+<<<<<<< HEAD
         Don’t miss out – join the waitlist today for exclusive perks!
+=======
+        Don't miss out – join the waitlist today for exclusive perks!
+>>>>>>> dd96616 (Changed the landing page UI)
       </p>
       <button
         @click="handleButtonClick"

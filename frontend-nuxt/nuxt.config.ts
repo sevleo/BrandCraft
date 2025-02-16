@@ -3,8 +3,11 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
+<<<<<<< HEAD
   compatibilityDate: "2025-02-16",
 
+=======
+>>>>>>> dd96616 (Changed the landing page UI)
   ssr: true,
 
   css: ["@/assets/css/main.css"],
@@ -52,10 +55,13 @@ export default defineNuxtConfig({
     },
     plugins: [tailwindcss()],
   },
+<<<<<<< HEAD
   postcss: {
     plugins: {
       "@tailwindcss/postcss": {},
       autoprefixer: {},
     },
   },
+=======
+>>>>>>> dd96616 (Changed the landing page UI)
 });
