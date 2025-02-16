@@ -96,7 +96,7 @@ onMounted(async () => {
   <div v-if="isLoaded" class="home-view">
     <HomeNavigation />
     <main
-      class="main flex h-full w-full items-center justify-center pt-[100px]"
+      class="main flex h-full w-full flex-col items-center justify-center pt-[100px]"
     >
       <div
         class="waitlist-container mx-auto flex h-full w-full max-w-xl flex-col items-start px-4 text-center"
@@ -196,7 +196,7 @@ onMounted(async () => {
             <p class="mb-[60px] text-center text-[16px] text-gray-600">
               Schedule posts with just a few clicks.
             </p>
-            <div class="flex flex-col gap-[20px]">
+            <div class="flex flex-col gap-[20px] px-[20px]">
               <!-- Step 1 -->
               <div
                 class="grid grid-cols-1 sm:grid-cols-[1fr_0.5fr_1fr] items-center h-[460px]"
@@ -280,48 +280,95 @@ onMounted(async () => {
 
         <TestimonialsSection />
         <FaqSection />
-
-        <!-- Privacy Policy Link -->
-        <footer class="privacy self-center max-xsm:mb-[150px] mt-[150px]">
-          <p class="privacy mb-[30px] mt-[10px] text-xs text-gray-500">
-            Join us on
-            <a
-              @click=""
-              href="https://discord.gg/KYZGsH7Mfb"
-              class="underline"
-              target="_blank"
-              >Discord</a
-            >
-            | Submit a bug or request a feature
-            <a
-              @click=""
-              href="https://insigh.to/b/brandcraftart"
-              class="underline"
-              target="_blank"
-              >here</a
-            >
-          </p>
-          <p class="privacy mt-[10px] text-xs text-gray-500">
-            @ 2024 Brandcraft.art by
-            <a href="https://x.com/sev_tinker" class="underline">Seva Leo</a>.
-          </p>
-
-          <p
-            class="privacy mt-[10px] flex justify-center gap-2 text-xs text-gray-500"
-          >
-            <NuxtLink to="/privacy" class="underline hover:text-green"
-              >Privacy Policy</NuxtLink
-            >
-            <NuxtLink to="/terms" class="underline hover:text-green"
-              >Terms & Conditions</NuxtLink
-            >
-          </p>
-          <p class="privacy mb-[10px] mt-[10px] text-xs text-gray-500">
-            All rights reserved.
-          </p>
-        </footer>
       </div>
+      <!-- Bottom CTA Section -->
+      <section
+        class="w-full py-20 bg-gradient-to-br bg-green-100 h-[500px] flex justify-center items-center"
+      >
+        <div
+          class="max-w-[800px] mx-auto text-center flex flex-col justify-center items-center px-[50px]"
+        >
+          <h2
+            class="text-[40px] mb-[20px] font-semibold tracking-tight leading-[1.2] max-w-[400px]"
+          >
+            Ready to streamline your social media?
+          </h2>
+          <p class="text-xl text-gray-600">
+            Schedule all your content in minutes, not hours.
+          </p>
+          <p class="text-xl text-gray-600">
+            Post consistently across all platforms.
+          </p>
+          <button
+            @click="redirectToSignup"
+            class="px-8 mt-[40px] cursor-pointer py-4 text-lg font-medium text-white bg-greenBG hover:bg-greenLightBG rounded-full transition-all duration-200"
+          >
+            Get for free
+          </button>
+        </div>
+      </section>
     </main>
+    <!-- Privacy Policy Link -->
+    <footer
+      class="privacy justify-center items-start flex h-[400px] pt-[100px] px-[50px]"
+    >
+      <div class="flex h-full w-full justify-start items-start">
+        <div class="flex flex-col justify-center items-start">
+          <img
+            src="@/public/perfect_logo_full.svg"
+            alt="BrandCraft Logo"
+            class="w-[200px] mb-[10px]"
+          />
+          <p
+            class="text-gray-600 text-[14px] leading-relaxed text-start w-[300px]"
+          >
+            Effortlessly share your content across multiple social media
+            platforms from one place. Simplify cross-posting with ease!
+          </p>
+          <div class="flex mt-[20px]">
+            <div>github link</div>
+            <div>discord link</div>
+            <div>twitter link</div>
+          </div>
+        </div>
+      </div>
+      <p class="privacy mb-[30px] mt-[10px] text-xs text-gray-500">
+        Join us on
+        <a
+          @click=""
+          href="https://discord.gg/KYZGsH7Mfb"
+          class="underline"
+          target="_blank"
+          >Discord</a
+        >
+        | Submit a bug or request a feature
+        <a
+          @click=""
+          href="https://insigh.to/b/brandcraftart"
+          class="underline"
+          target="_blank"
+          >here</a
+        >
+      </p>
+      <p class="privacy mt-[10px] text-xs text-gray-500">
+        @ 2024 Brandcraft.art by
+        <a href="https://x.com/sev_tinker" class="underline">Seva Leo</a>.
+      </p>
+
+      <p
+        class="privacy mt-[10px] flex justify-center gap-2 text-xs text-gray-500"
+      >
+        <NuxtLink to="/privacy" class="underline hover:text-green"
+          >Privacy Policy</NuxtLink
+        >
+        <NuxtLink to="/terms" class="underline hover:text-green"
+          >Terms & Conditions</NuxtLink
+        >
+      </p>
+      <p class="privacy mb-[10px] mt-[10px] text-xs text-gray-500">
+        All rights reserved.
+      </p>
+    </footer>
   </div>
 </template>
 
