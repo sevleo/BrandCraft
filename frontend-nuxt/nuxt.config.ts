@@ -3,6 +3,8 @@ import tailwindcss from "@tailwindcss/vite";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
+  compatibilityDate: "2025-02-16",
+
   ssr: true,
 
   css: ["@/assets/css/main.css"],
@@ -49,5 +51,11 @@ export default defineNuxtConfig({
       },
     },
     plugins: [tailwindcss()],
+  },
+  postcss: {
+    plugins: {
+      "@tailwindcss/postcss": {},
+      autoprefixer: {},
+    },
   },
 });
