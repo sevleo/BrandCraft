@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import birdLogoFullGreenBlack from "/bird_logo_full_green_black.svg";
+import birdLogoIcon from "@/public/perfect_logo_full.svg";
 import { ref } from "vue";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-vue-next";
 
@@ -23,19 +23,35 @@ const toggleItem = (item: string) => {
   }
 };
 
+function redirectToLogin() {
+  const frontendUrl = config.public.NUXT_PUBLIC_FRONTEND_URL;
+  if (frontendUrl) {
+    window.location.href = `${frontendUrl}/login`;
+  }
+}
+
+function redirectToSignup() {
+  const frontendUrl = config.public.NUXT_PUBLIC_FRONTEND_URL;
+  if (frontendUrl) {
+    window.location.href = `${frontendUrl}/signup`;
+  }
+}
+
 onMounted(() => {});
 </script>
 
 <template>
   <nav class="fixed left-0 top-0 z-50 w-full bg-white">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
+    <div class="">
+      <div
+        class="flex h-16 items-center max-w-[100vw] justify-between px-[20px]"
+      >
         <!-- Left: BrandCraft -->
-        <NuxtLink to="/home">
+        <NuxtLink to="/home" class="flex items-center gap-2">
           <img
-            :src="birdLogoFullGreenBlack"
-            alt="BrandCraft Logo"
-            class="h-[40px]"
+            :src="birdLogoIcon"
+            alt="BrandCraft Bird"
+            class="h-[40px] sm:h-[50px] transition-transform duration-300"
           />
         </NuxtLink>
 
@@ -61,18 +77,18 @@ onMounted(() => {});
 
         <!-- Right: Login/Signup or Dashboard -->
         <div class="flex items-center gap-4 space-x-4 max-xsm:hidden">
-          <NuxtLink
-            :to="`${config.public.NUXT_PUBLIC_FRONTEND_URL}/login`"
-            class="font-medium text-gray-600 hover:text-gray-900"
+          <button
+            @click="redirectToLogin"
+            class="font-medium text-gray-600 hover:text-gray-900 cursor-pointer"
           >
-            Login
-          </NuxtLink>
-          <NuxtLink
-            :to="`${config.public.NUXT_PUBLIC_FRONTEND_URL}/signup`"
-            class="bg-greenBG hover:bg-greenLightBG rounded-full px-6 py-2 font-medium text-white"
+            Log in
+          </button>
+          <button
+            @click="redirectToSignup"
+            class="inline-flex cursor-pointer items-center justify-center rounded-full bg-greenBG px-6 py-2 text-base font-medium text-white hover:bg-greenLightBG"
           >
             Sign Up
-          </NuxtLink>
+          </button>
         </div>
 
         <!-- Mobile Menu Button -->
@@ -205,20 +221,20 @@ onMounted(() => {});
             >
 
             <!-- Login -->
-            <NuxtLink
-              :to="`${config.public.NUXT_PUBLIC_FRONTEND_URL}/login`"
+            <button
+              @click="redirectToLogin"
               class="py-2 text-lg font-medium text-green hover:text-greenLight"
             >
               Log In
-            </NuxtLink>
+            </button>
 
             <!-- Get Started Button -->
-            <NuxtLink
-              :to="`${config.public.NUXT_PUBLIC_FRONTEND_URL}/signup`"
+            <button
+              @click="redirectToSignup"
               class="bg-greenBG hover:bg-greenLightBG mt-[30px] rounded-full px-6 py-3 text-center text-lg font-medium text-white"
             >
               Get Started Now
-            </NuxtLink>
+            </button>
           </div>
         </div>
       </div>
