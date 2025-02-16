@@ -411,6 +411,32 @@ onMounted(async () => {
 
       <TestimonialsSection />
       <FaqSection />
+      <!-- Bottom CTA Section -->
+      <section
+        class="w-full py-20 bg-gradient-to-br bg-green-100 h-[500px] flex justify-center items-center"
+      >
+        <div
+          class="max-w-[800px] mx-auto text-center flex flex-col justify-center items-center px-[50px]"
+        >
+          <h2
+            class="text-[40px] mb-[20px] font-semibold tracking-tight leading-[1.2] max-w-[400px]"
+          >
+            Ready to streamline your social media?
+          </h2>
+          <p class="text-xl text-gray-600">
+            Schedule all your content in minutes, not hours.
+          </p>
+          <p class="text-xl text-gray-600">
+            Post consistently across all platforms.
+          </p>
+          <button
+            @click="redirectToSignup"
+            class="px-8 mt-[40px] cursor-pointer py-4 text-lg font-medium text-white bg-greenBG hover:bg-greenLightBG rounded-full transition-all duration-200"
+          >
+            Get for free
+          </button>
+        </div>
+      </section>
     </main>
     <!-- Privacy Policy Link -->
     <footer
