@@ -28,11 +28,11 @@ const toggleQuestion = (index: number) => {
       <div
         v-for="(question, index) in [4, 0, 1, 2, 3]"
         :key="question"
-        class="group bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-200 hover:border-emerald-500 hover:shadow-md"
+        class="group bg-white cursor-pointer rounded-xl border border-gray-200 overflow-hidden transition-all duration-200 hover:border-emerald-500 hover:shadow-md"
         @click="toggleQuestion(question)"
       >
         <button
-          class="w-full p-6 text-left flex justify-between items-center group-hover:text-emerald-600"
+          class="w-full cursor-pointer p-6 text-left flex justify-between items-center group-hover:text-emerald-600"
         >
           <h3
             class="text-[17px] font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors duration-200"
@@ -54,7 +54,7 @@ const toggleQuestion = (index: number) => {
         </button>
 
         <div
-          class="overflow-hidden transition-all duration-200 ease-in-out"
+          class="overflow-hidden cursor-pointer transition-all duration-200 ease-in-out"
           :class="
             openQuestions.includes(question) ? 'max-h-[300px] pb-6' : 'max-h-0'
           "

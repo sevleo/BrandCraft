@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import birdLogoIcon from "/bird_logo_green.svg";
-import brandTextLogo from "/bird_logo_green.svg";
+import birdLogoIcon from "/perfect_logo_full.svg";
 import { ref } from "vue";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-vue-next";
 
@@ -50,9 +49,8 @@ onMounted(() => {});
           <img
             :src="birdLogoIcon"
             alt="BrandCraft Bird"
-            class="h-[40px] transition-transform duration-300 hover:scale-110 hover:rotate-3"
+            class="h-[50px] transition-transform duration-300"
           />
-          <img :src="brandTextLogo" alt="BrandCraft" class="h-[40px]" />
         </NuxtLink>
 
         <!-- Middle: Tools and Channels -->
@@ -79,15 +77,15 @@ onMounted(() => {});
         <div class="flex items-center gap-4 space-x-4 max-xsm:hidden">
           <button
             @click="redirectToLogin"
-            class="font-medium text-gray-600 hover:text-gray-900"
+            class="font-medium text-gray-600 hover:text-gray-900 cursor-pointer"
           >
             Log in
           </button>
           <button
             @click="redirectToSignup"
-            class="inline-flex items-center justify-center rounded-full bg-greenBG px-6 py-2 text-base font-medium text-white hover:bg-greenLightBG"
+            class="inline-flex cursor-pointer items-center justify-center rounded-full bg-greenBG px-6 py-2 text-base font-medium text-white hover:bg-greenLightBG"
           >
-            Start free trial
+            Sign Up
           </button>
         </div>
 

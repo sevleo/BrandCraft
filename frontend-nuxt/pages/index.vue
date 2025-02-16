@@ -150,7 +150,7 @@ onMounted(async () => {
     <main class="main w-full">
       <!-- Hero Section -->
       <section
-        class="hero-section bg-gradient-to-b from-white to-gray-50 pt-[100px]"
+        class="hero-section bg-gradient-to-b from-white to-gray-50 mt-[200px]"
       >
         <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
@@ -170,13 +170,13 @@ onMounted(async () => {
                 <button
                   @click="redirectToSignup"
                   type="submit"
-                  class="inline-flex items-center justify-center rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
+                  class="inline-flex items-center justify-center cursor-pointer rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
                 >
-                  Start your free trial
+                  Get for free
                 </button>
                 <a
                   href="#how-it-works"
-                  class="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-8 py-3 text-lg font-semibold text-gray-700 transition hover:bg-gray-50"
+                  class="inline-flex items-center justify-center cursor-pointer rounded-full border border-gray-300 bg-white px-8 py-3 text-lg font-semibold text-gray-700 transition hover:bg-gray-50"
                 >
                   See how it works
                 </a>
@@ -540,14 +540,6 @@ button {
   transition: all 0.2s ease;
 }
 
-button:hover {
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
 /* Add fade-in animation for content */
 @keyframes fadeIn {
   from {
@@ -560,18 +552,9 @@ button:active {
   }
 }
 
-.home-view {
-  animation: fadeIn 0.5s ease-out;
-}
-
 /* Add smooth scroll behavior */
 html {
   scroll-behavior: smooth;
-}
-
-/* Enhance animations */
-.hero-section {
-  animation: fadeInUp 0.8s ease-out;
 }
 
 @keyframes fadeInUp {
