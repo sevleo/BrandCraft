@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import birdLogoIcon from "/bird_logo_icon.svg";
-import brandTextLogo from "/brand_text_logo.svg";
+import birdLogoIcon from "/bird_logo_green.svg";
+import brandTextLogo from "/bird_logo_green.svg";
 import { ref } from "vue";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-vue-next";
 
@@ -52,11 +52,7 @@ onMounted(() => {});
             alt="BrandCraft Bird"
             class="h-[40px] transition-transform duration-300 hover:scale-110 hover:rotate-3"
           />
-          <img
-            :src="brandTextLogo"
-            alt="BrandCraft"
-            class="h-[40px]"
-          />
+          <img :src="brandTextLogo" alt="BrandCraft" class="h-[40px]" />
         </NuxtLink>
 
         <!-- Middle: Tools and Channels -->

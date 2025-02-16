@@ -84,26 +84,6 @@ const testimonials = ref([
 
 <template>
   <section class="mx-auto mt-[150px] max-w-7xl px-4 sm:px-6 lg:px-8">
-<<<<<<< HEAD
-    <h2
-      class="text-center text-[40px] font-semibold tracking-tight leading-[1.2]"
-    >
-      See what others say
-    </h2>
-    <p class="mb-[60px] text-center text-[16px] text-gray-600">
-      What people are saying about BrandCraft
-    </p>
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <div
-        v-for="testimonial in testimonials"
-        :key="testimonial.handle"
-        class="flex max-w-[400px] flex-col gap-4 rounded-lg bg-[#f4f4f4] p-6 justify-between"
-      >
-        <div class="">
-          <p
-            class="whitespace-pre-line text-start font-medium text-[15px] text-gray-600"
-          >
-=======
     <h2 class="text-center text-[32px] font-bold tracking-tight text-gray-900">
       See what others say
     </h2>
@@ -122,8 +102,9 @@ const testimonials = ref([
             :alt="testimonial.platform"
             class="h-5 w-5 text-[#2E53DA]"
           />
-          <p class="whitespace-pre-line text-[15px] text-gray-700 leading-relaxed">
->>>>>>> dd96616 (Changed the landing page UI)
+          <p
+            class="whitespace-pre-line text-[15px] text-gray-700 leading-relaxed"
+          >
             <template v-for="(line, index) in testimonial.content" :key="index">
               {{ line }}
               <br v-if="index < testimonial.content.length - 1" />
@@ -131,49 +112,27 @@ const testimonials = ref([
           </p>
         </div>
 
-<<<<<<< HEAD
-        <div class="flex justify-between items-center">
-          <div class="flex gap-4">
-            <img
-              :src="testimonial.avatar"
-              :alt="testimonial.name"
-              class="h-12 w-12 rounded-full object-cover"
-            />
-            <div>
-              <h3 class="font-medium text-gray-900">{{ testimonial.name }}</h3>
-              <p class="text-start text-sm text-gray-500">
-                {{ testimonial.handle }}
-              </p>
-            </div>
-=======
-        <div class="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
+        <div
+          class="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100"
+        >
           <img
             :src="testimonial.avatar"
             :alt="testimonial.name"
             class="h-10 w-10 rounded-full object-cover"
           />
           <div class="flex-1">
-            <h3 class="font-semibold text-gray-900 text-sm">{{ testimonial.name }}</h3>
+            <h3 class="font-semibold text-gray-900 text-sm">
+              {{ testimonial.name }}
+            </h3>
             <p class="text-sm text-gray-500">{{ testimonial.handle }}</p>
->>>>>>> dd96616 (Changed the landing page UI)
           </div>
           <a
             :href="testimonial.tweetUrl"
             target="_blank"
             rel="noopener noreferrer"
-<<<<<<< HEAD
-            class="text-gray-400 hover:text-gray-500"
-          >
-            <img
-              :src="getIconForPlatform(testimonial.platform)"
-              :alt="testimonial.platform"
-              class="h-6 w-6"
-            />
-=======
             class="text-[#2E53DA] hover:text-[#1E3BB8] transition-colors duration-200"
           >
             View
->>>>>>> dd96616 (Changed the landing page UI)
           </a>
         </div>
       </div>

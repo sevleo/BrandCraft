@@ -11,30 +11,19 @@ import click3 from "@/assets/LandingPageIcons/click3.png";
 import FaqSection from "@/components/FaqSection.vue";
 
 definePageMeta({
-<<<<<<< HEAD
-  title: "BrandCraft - Social Media Management Tool",
-  description: "Manage your social media presence with BrandCraft",
-=======
   title: "BrandCraft - The Ultimate Social Media Management Platform",
-  description: "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
->>>>>>> dd96616 (Changed the landing page UI)
+  description:
+    "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
   alias: ["/home"],
 });
 
 useHead({
-<<<<<<< HEAD
-  title: "BrandCraft - Social Media Management Tool",
-  meta: [
-    {
-      name: "description",
-      content: "Manage your social media presence with BrandCraft",
-=======
   title: "BrandCraft - The Ultimate Social Media Management Platform",
   meta: [
     {
       name: "description",
-      content: "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
->>>>>>> dd96616 (Changed the landing page UI)
+      content:
+        "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
     },
   ],
 });
@@ -58,39 +47,31 @@ import pinterestIcon from "@/assets/icons/pinterest.svg";
 // Runtime config
 const config = useRuntimeConfig();
 
-<<<<<<< HEAD
-// Create a state to track when styles are applied
-const isLoaded = useState("isLoaded", () => ref(false));
-
-const router = useRouter();
-const email = ref("");
-const submitted = ref(false);
-=======
 // Define proper types for the component's state
 interface ComponentState {
-  isLoaded: Ref<boolean>
-  email: Ref<string>
-  submitted: Ref<boolean>
-  instagramIcon: string
-  tiktokIcon: string
-  youtubeIcon: string
-  facebookIcon: string
-  threadsIcon: string
-  blueskyIcon: string
-  xIcon: string
-  mastodonIcon: string
-  screenshot1: string
-  screenshot2: string
-  click1: string
-  click2: string
-  click3: string
+  isLoaded: Ref<boolean>;
+  email: Ref<string>;
+  submitted: Ref<boolean>;
+  instagramIcon: string;
+  tiktokIcon: string;
+  youtubeIcon: string;
+  facebookIcon: string;
+  threadsIcon: string;
+  blueskyIcon: string;
+  xIcon: string;
+  mastodonIcon: string;
+  screenshot1: string;
+  screenshot2: string;
+  click1: string;
+  click2: string;
+  click3: string;
 }
 
 // Create a composable for component state
 const useComponentState = (): ComponentState => {
-  const isLoaded = useState("isLoaded", () => ref(false))
-  const email = ref("")
-  const submitted = ref(false)
+  const isLoaded = useState("isLoaded", () => ref(false));
+  const email = ref("");
+  const submitted = ref(false);
 
   return {
     isLoaded,
@@ -108,15 +89,14 @@ const useComponentState = (): ComponentState => {
     screenshot2,
     click1,
     click2,
-    click3
-  }
-}
+    click3,
+  };
+};
 
 // Use the composable to manage state
-const state = useComponentState()
+const state = useComponentState();
 
 const router = useRouter();
->>>>>>> dd96616 (Changed the landing page UI)
 
 const getUTMParameters = () => {
   const params = new URLSearchParams(window.location.search);
@@ -128,11 +108,13 @@ const saveVisitorInfo = (utmSource: string | null, referrer: string | null) => {
   if (referrer) localStorage.setItem("referrer", referrer);
 };
 
-<<<<<<< HEAD
-const trackVisitor = async (
-  utmParams: string | null,
-  referrer: string | null
-) => {
+// Improve the tracking function with proper typing
+interface TrackVisitorParams {
+  utmParams: string | null;
+  referrer: string | null;
+}
+
+const trackVisitor = async ({ utmParams, referrer }: TrackVisitorParams) => {
   try {
     const endpoint = `${config.public.NUXT_PUBLIC_BACKEND_URL}/waitlist/track-visitor`;
     await axios.post(endpoint, { utmParams, referrer });
@@ -140,22 +122,6 @@ const trackVisitor = async (
     console.error("Tracking error:", err);
   }
 };
-=======
-// Improve the tracking function with proper typing
-interface TrackVisitorParams {
-  utmParams: string | null
-  referrer: string | null
-}
-
-const trackVisitor = async ({ utmParams, referrer }: TrackVisitorParams) => {
-  try {
-    const endpoint = `${config.public.NUXT_PUBLIC_BACKEND_URL}/waitlist/track-visitor`
-    await axios.post(endpoint, { utmParams, referrer })
-  } catch (err) {
-    console.error("Tracking error:", err)
-  }
-}
->>>>>>> dd96616 (Changed the landing page UI)
 
 function redirectToSignup() {
   const frontendUrl = config.public.NUXT_PUBLIC_FRONTEND_URL;
@@ -163,8 +129,7 @@ function redirectToSignup() {
 }
 
 onMounted(async () => {
-<<<<<<< HEAD
-  isLoaded.value = true;
+  state.isLoaded.value = true;
   await verifyAuth(config.public.NUXT_PUBLIC_BACKEND_URL);
   const utmParams = getUTMParameters();
   const storedUTM = localStorage.getItem("utmSource");
@@ -172,300 +137,11 @@ onMounted(async () => {
     localStorage.getItem("referrer") || document.referrer || null;
 
   saveVisitorInfo(storedUTM || utmParams, referrer);
-  trackVisitor(storedUTM || utmParams, referrer);
+  await trackVisitor({
+    utmParams: storedUTM || utmParams,
+    referrer,
+  });
 });
-</script>
-
-<template>
-  <div v-if="isLoaded" class="home-view">
-    <HomeNavigation />
-    <main
-      class="main flex h-full w-full flex-col items-center justify-center pt-[100px]"
-    >
-      <div
-        class="waitlist-container mx-auto flex h-full w-full max-w-xl flex-col items-start px-4 text-center"
-      >
-        <!-- Heading and Subheading -->
-        <section
-          class="mt-[20px] flex h-auto w-full flex-col justify-between sm:mt-[50px]"
-        >
-          <div class="flex flex-col items-center">
-            <header class="w-full max-w-[500px] self-center">
-              <h1
-                class="mb-[20px] mt-[20px] text-[32px] font-semibold leading-[1.2] tracking-tight max-xsm:px-[20px] sm:text-[50px] sm:leading-[50px]"
-              >
-                Schedule your content everywhere
-              </h1>
-              <h2
-                class="mb-[30px] mt-[20px] text-center text-[16px] sm:mb-[40px] sm:mt-[40px] sm:text-[20px]"
-              >
-                Save countless hours while growing your audience
-              </h2>
-              <!-- Platform Icons -->
-              <div
-                class="mb-[20px] mt-[20px] flex flex-wrap justify-center gap-[10px] px-4 sm:px-0"
-              >
-                <img :src="instagramIcon" alt="Instagram" class="h-8 w-8" />
-                <img :src="tiktokIcon" alt="TikTok" class="h-8 w-8" />
-                <img :src="youtubeIcon" alt="YouTube" class="h-8 w-8" />
-                <img :src="facebookIcon" alt="Facebook" class="h-8 w-8" />
-                <img :src="threadsIcon" alt="Threads" class="h-8 w-8" />
-                <img :src="blueskyIcon" alt="Bluesky" class="h-8 w-8" />
-                <img :src="xIcon" alt="X (Twitter)" class="h-8 w-8" />
-                <img :src="mastodonIcon" alt="Mastodon" class="h-8 w-8" />
-              </div>
-            </header>
-
-            <!-- Signup Form -->
-            <div aria-labelledby="sign-up" class="w-full max-w-[450px]">
-              <button
-                @click="redirectToSignup"
-                type="submit"
-                class="mt-[0px] mb-[20px] w-full cursor-pointer rounded-full bg-greenBG px-6 py-2 font-medium text-white hover:bg-greenLightBG sm:w-[150px]"
-              >
-                Get for FREE
-              </button>
-
-              <div
-                class="flex flex-col gap-3 text-[12px] sm:flex-row sm:justify-center sm:gap-5"
-              >
-                <div class="flex items-center justify-center gap-2">
-                  <Check :size="14" color="#22c55e" />
-                  <p>Try for free</p>
-                </div>
-                <div class="flex items-center justify-center gap-2">
-                  <Check :size="14" color="#22c55e" />
-                  <p>No credit card required</p>
-                </div>
-                <!-- <div class="flex items-center justify-center gap-2">
-                  <Check :size="14" color="#22c55e" />
-                  <p>Unlimited number of accounts</p>
-                </div> -->
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-labelledby="previews"
-          class="mt-[150px] h-[400px] w-full self-center overflow-hidden sm:h-[600px] sm:w-full"
-        >
-          <h2
-            class="text-center text-[40px] font-semibold tracking-tight leading-[1.2]"
-          >
-            Built by Creator, for Creators
-          </h2>
-          <div class="relative h-full w-full">
-            <img
-              :src="screenshot1"
-              alt="Screenshot 1"
-              class="screenshot absolute left-1/2 top-[50px] w-[600px] -translate-x-[calc(50%+100px)] rounded-lg object-contain shadow-lg"
-            />
-            <img
-              :src="screenshot2"
-              alt="Screenshot 2"
-              class="screenshot absolute left-1/2 top-[200px] w-[600px] -translate-x-[calc(50%-100px)] rounded-lg object-contain shadow-lg"
-            />
-          </div>
-        </section>
-
-        <!-- How it works section -->
-        <section aria-labelledby="how-it-works" class="w-full mt-[150px]">
-          <div class="w-full">
-            <h2
-              class="text-center text-[40px] font-semibold tracking-tight leading-[1.2]"
-            >
-              How it works?
-            </h2>
-            <p class="mb-[60px] text-center text-[16px] text-gray-600">
-              Schedule posts with just a few clicks.
-            </p>
-            <div class="flex flex-col gap-[20px] px-[20px]">
-              <!-- Step 1 -->
-              <div
-                class="grid grid-cols-1 sm:grid-cols-[1fr_0.5fr_1fr] items-center h-[460px]"
-              >
-                <div
-                  class="bg-[#22c55e]/10 rounded-[20px] aspect-video flex items-center justify-start px-6 pt-10"
-                >
-                  <img :src="click1" alt="Click 1" />
-                </div>
-                <div class="flex flex-col items-start col-start-3">
-                  <div
-                    class="mb-2 flex py-[3px] px-[12px] items-center justify-center text-greenBG text-[16px] font-medium border border-greenBG rounded-full"
-                  >
-                    Click 1
-                  </div>
-                  <h3 class="mb-2 text-[24px] font-medium">Write your post</h3>
-                  <p
-                    class="text-gray-600 text-[16px] leading-relaxed text-start"
-                  >
-                    Create engaging content for your audience in one place. Our
-                    intuitive editor makes it easy to craft the perfect post
-                    that resonates with your followers.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Step 2 -->
-              <div
-                class="grid grid-cols-1 sm:grid-cols-[1fr_0.5fr_1fr] items-center h-[460px]"
-              >
-                <div class="flex flex-col items-start sm:order-1">
-                  <div
-                    class="mb-2 flex py-[3px] px-[12px] items-center justify-center text-greenBG text-[16px] font-medium border border-greenBG rounded-full"
-                  >
-                    Click 2
-                  </div>
-                  <h3 class="mb-2 text-[24px] font-medium">Select platforms</h3>
-                  <p
-                    class="text-gray-600 text-[16px] leading-relaxed text-start"
-                  >
-                    Choose where you want your content to be published. Connect
-                    multiple social media accounts and manage them all from one
-                    dashboard.
-                  </p>
-                </div>
-                <div
-                  class="bg-[#22c55e]/10 rounded-[20px] col-start-3 aspect-video flex items-center justify-end px-6 pt-10 sm:order-2"
-                >
-                  <img :src="click2" alt="Click 2" />
-                </div>
-              </div>
-
-              <!-- Step 3 -->
-              <div
-                class="grid grid-cols-1 sm:grid-cols-[1fr_0.5fr_1fr] items-center h-[460px]"
-              >
-                <div
-                  class="bg-[#22c55e]/10 rounded-[20px] aspect-video flex items-center justify-start px-6 pt-10"
-                >
-                  <img :src="click3" alt="Click 3" />
-                </div>
-                <div class="flex flex-col items-start col-start-3">
-                  <div
-                    class="mb-2 flex py-[3px] px-[12px] items-center justify-center text-greenBG text-[16px] font-medium border border-greenBG rounded-full"
-                  >
-                    Click 3
-                  </div>
-                  <h3 class="mb-2 text-[24px] font-medium">Select time</h3>
-                  <p
-                    class="text-gray-600 text-[16px] leading-relaxed text-start"
-                  >
-                    Schedule your post for the perfect time to reach your
-                    audience. Our platform helps you maintain a consistent
-                    posting schedule across all platforms.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <TestimonialsSection />
-        <FaqSection />
-      </div>
-      <!-- Bottom CTA Section -->
-      <section
-        class="w-full py-20 bg-gradient-to-br bg-green-100 h-[500px] flex justify-center items-center"
-      >
-        <div
-          class="max-w-[800px] mx-auto text-center flex flex-col justify-center items-center px-[50px]"
-        >
-          <h2
-            class="text-[40px] mb-[20px] font-semibold tracking-tight leading-[1.2] max-w-[400px]"
-          >
-            Ready to streamline your social media?
-          </h2>
-          <p class="text-xl text-gray-600">
-            Schedule all your content in minutes, not hours.
-          </p>
-          <p class="text-xl text-gray-600">
-            Post consistently across all platforms.
-          </p>
-          <button
-            @click="redirectToSignup"
-            class="px-8 mt-[40px] cursor-pointer py-4 text-lg font-medium text-white bg-greenBG hover:bg-greenLightBG rounded-full transition-all duration-200"
-          >
-            Get for free
-          </button>
-        </div>
-      </section>
-    </main>
-    <!-- Privacy Policy Link -->
-    <footer
-      class="privacy justify-center items-start flex h-[400px] pt-[100px] px-[50px]"
-    >
-      <div class="flex h-full w-full justify-start items-start">
-        <div class="flex flex-col justify-center items-start">
-          <img
-            src="@/public/perfect_logo_full.svg"
-            alt="BrandCraft Logo"
-            class="w-[200px] mb-[10px]"
-          />
-          <p
-            class="text-gray-600 text-[14px] leading-relaxed text-start w-[300px]"
-          >
-            Effortlessly share your content across multiple social media
-            platforms from one place. Simplify cross-posting with ease!
-          </p>
-          <div class="flex mt-[20px]">
-            <div>github link</div>
-            <div>discord link</div>
-            <div>twitter link</div>
-          </div>
-        </div>
-      </div>
-      <p class="privacy mb-[30px] mt-[10px] text-xs text-gray-500">
-        Join us on
-        <a
-          @click=""
-          href="https://discord.gg/KYZGsH7Mfb"
-          class="underline"
-          target="_blank"
-          >Discord</a
-        >
-        | Submit a bug or request a feature
-        <a
-          @click=""
-          href="https://insigh.to/b/brandcraftart"
-          class="underline"
-          target="_blank"
-          >here</a
-        >
-      </p>
-      <p class="privacy mt-[10px] text-xs text-gray-500">
-        @ 2024 Brandcraft.art by
-        <a href="https://x.com/sev_tinker" class="underline">Seva Leo</a>.
-      </p>
-
-      <p
-        class="privacy mt-[10px] flex justify-center gap-2 text-xs text-gray-500"
-      >
-        <NuxtLink to="/privacy" class="underline hover:text-green"
-          >Privacy Policy</NuxtLink
-        >
-        <NuxtLink to="/terms" class="underline hover:text-green"
-          >Terms & Conditions</NuxtLink
-        >
-      </p>
-      <p class="privacy mb-[10px] mt-[10px] text-xs text-gray-500">
-        All rights reserved.
-      </p>
-    </footer>
-=======
-  state.isLoaded.value = true
-  await verifyAuth(config.public.NUXT_PUBLIC_BACKEND_URL)
-  const utmParams = getUTMParameters()
-  const storedUTM = localStorage.getItem("utmSource")
-  const referrer = localStorage.getItem("referrer") || document.referrer || null
-
-  saveVisitorInfo(storedUTM || utmParams, referrer)
-  await trackVisitor({ 
-    utmParams: storedUTM || utmParams, 
-    referrer 
-  })
-})
 </script>
 
 <template>
@@ -473,21 +149,27 @@ onMounted(async () => {
     <HomeNavigation />
     <main class="main w-full">
       <!-- Hero Section -->
-      <section class="hero-section bg-gradient-to-b from-white to-gray-50 pt-[100px]">
+      <section
+        class="hero-section bg-gradient-to-b from-white to-gray-50 pt-[100px]"
+      >
         <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <!-- Left Column: Text Content -->
             <div class="flex flex-col justify-center">
-              <h1 class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-                Save time and get <span class="text-greenBG">real results</span> on social media
+              <h1
+                class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
+              >
+                Save time and get
+                <span class="text-greenBG">real results</span> on social media
               </h1>
               <p class="mb-8 text-xl text-gray-600">
-                BrandCraft makes it easy to schedule posts, track performance, and grow your audience across all social platforms.
+                BrandCraft makes it easy to schedule posts, track performance,
+                and grow your audience across all social platforms.
               </p>
               <div class="flex flex-col gap-4 sm:flex-row">
                 <button
-                @click="redirectToSignup"
-                type="submit"
+                  @click="redirectToSignup"
+                  type="submit"
                   class="inline-flex items-center justify-center rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
                 >
                   Start your free trial
@@ -499,12 +181,14 @@ onMounted(async () => {
                   See how it works
                 </a>
               </div>
-              
+
               <!-- Trust Badges -->
               <div class="mt-8 flex flex-wrap items-center gap-4">
                 <div class="flex items-center gap-2">
                   <Check :size="20" color="#22c55e" />
-                  <span class="text-sm text-gray-600">No credit card required</span>
+                  <span class="text-sm text-gray-600"
+                    >No credit card required</span
+                  >
                 </div>
                 <div class="flex items-center gap-2">
                   <Check :size="20" color="#22c55e" />
@@ -521,21 +205,24 @@ onMounted(async () => {
                 class="rounded-lg shadow-xl transition-all duration-300 hover:shadow-2xl"
               />
               <!-- Platform Icons Floating -->
-              <div class="absolute -left-4 -top-4 flex flex-wrap gap-3 rounded-lg bg-white p-4 shadow-lg">
-                <img v-for="icon in [
-                  state.instagramIcon,
-                  state.tiktokIcon,
-                  state.youtubeIcon,
-                  state.facebookIcon,
-                  state.threadsIcon,
-                  state.blueskyIcon,
-                  state.xIcon,
-                  state.mastodonIcon
-                ]" 
-                :key="icon"
-                :src="icon"
-                :alt="icon"
-                class="h-8 w-8 transition-transform hover:scale-110"
+              <div
+                class="absolute -left-4 -top-4 flex flex-wrap gap-3 rounded-lg bg-white p-4 shadow-lg"
+              >
+                <img
+                  v-for="icon in [
+                    state.instagramIcon,
+                    state.tiktokIcon,
+                    state.youtubeIcon,
+                    state.facebookIcon,
+                    state.threadsIcon,
+                    state.blueskyIcon,
+                    state.xIcon,
+                    state.mastodonIcon,
+                  ]"
+                  :key="icon"
+                  :src="icon"
+                  :alt="icon"
+                  class="h-8 w-8 transition-transform hover:scale-110"
                 />
               </div>
             </div>
@@ -575,7 +262,8 @@ onMounted(async () => {
               Streamline your social media workflow
             </h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-              Post smarter, not harder. Our intuitive platform makes social media management effortless.
+              Post smarter, not harder. Our intuitive platform makes social
+              media management effortless.
             </p>
           </div>
 
@@ -584,12 +272,18 @@ onMounted(async () => {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div class="order-2 lg:order-1">
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
-                  <span class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4">
+                  <span
+                    class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4"
+                  >
                     Step 1
                   </span>
-                  <h3 class="text-2xl font-bold text-gray-900 mb-4">Craft your perfect post</h3>
+                  <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                    Craft your perfect post
+                  </h3>
                   <p class="text-lg text-gray-600 leading-relaxed">
-                    Create compelling content that resonates with your audience. Our AI-powered editor helps you optimize your posts for each platform, ensuring maximum engagement.
+                    Create compelling content that resonates with your audience.
+                    Our AI-powered editor helps you optimize your posts for each
+                    platform, ensuring maximum engagement.
                   </p>
                   <ul class="mt-6 space-y-3">
                     <li class="flex items-center text-gray-600">
@@ -608,10 +302,12 @@ onMounted(async () => {
                 </div>
               </div>
               <div class="order-1 lg:order-2">
-                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl">
-                  <img 
-                    :src="state.click1" 
-                    alt="Content creation interface" 
+                <div
+                  class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
+                >
+                  <img
+                    :src="state.click1"
+                    alt="Content creation interface"
                     class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
                   />
                 </div>
@@ -621,22 +317,30 @@ onMounted(async () => {
             <!-- Step 2 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div class="order-2">
-                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl">
-                  <img 
-                    :src="state.click2" 
-                    alt="Platform selection interface" 
+                <div
+                  class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
+                >
+                  <img
+                    :src="state.click2"
+                    alt="Platform selection interface"
                     class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
                   />
                 </div>
               </div>
               <div class="order-1">
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
-                  <span class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4">
+                  <span
+                    class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4"
+                  >
                     Step 2
                   </span>
-                  <h3 class="text-2xl font-bold text-gray-900 mb-4">Connect your platforms</h3>
+                  <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                    Connect your platforms
+                  </h3>
                   <p class="text-lg text-gray-600 leading-relaxed">
-                    Manage all your social media accounts from one central dashboard. Connect once, publish everywhere, and save hours of manual work.
+                    Manage all your social media accounts from one central
+                    dashboard. Connect once, publish everywhere, and save hours
+                    of manual work.
                   </p>
                   <ul class="mt-6 space-y-3">
                     <li class="flex items-center text-gray-600">
@@ -660,12 +364,18 @@ onMounted(async () => {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div class="order-2 lg:order-1">
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
-                  <span class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4">
+                  <span
+                    class="inline-block px-4 py-1 bg-green-50 text-greenBG rounded-full text-sm font-semibold mb-4"
+                  >
                     Step 3
                   </span>
-                  <h3 class="text-2xl font-bold text-gray-900 mb-4">Schedule strategically</h3>
+                  <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                    Schedule strategically
+                  </h3>
                   <p class="text-lg text-gray-600 leading-relaxed">
-                    Maximize your reach with intelligent scheduling. Our AI analyzes your audience's behavior to recommend the best posting times.
+                    Maximize your reach with intelligent scheduling. Our AI
+                    analyzes your audience's behavior to recommend the best
+                    posting times.
                   </p>
                   <ul class="mt-6 space-y-3">
                     <li class="flex items-center text-gray-600">
@@ -684,10 +394,12 @@ onMounted(async () => {
                 </div>
               </div>
               <div class="order-1 lg:order-2">
-                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl">
-                  <img 
-                    :src="state.click3" 
-                    alt="Scheduling interface" 
+                <div
+                  class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
+                >
+                  <img
+                    :src="state.click3"
+                    alt="Scheduling interface"
                     class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
                   />
                 </div>
@@ -740,7 +452,6 @@ onMounted(async () => {
         </p>
       </footer>
     </main>
->>>>>>> dd96616 (Changed the landing page UI)
   </div>
 </template>
 
@@ -756,8 +467,6 @@ path {
 .youtube-icon :deep(svg path) {
   fill: #212121;
 }
-<<<<<<< HEAD
-=======
 
 /* Add smooth transitions */
 .screenshot {
@@ -844,13 +553,12 @@ html {
   .hero-section {
     padding-top: 80px;
   }
-  
+
   h1 {
     font-size: 2.5rem;
     line-height: 1.2;
   }
 }
->>>>>>> dd96616 (Changed the landing page UI)
 </style>
 
 <style>
@@ -869,11 +577,4 @@ html {
     background-color: rgb(255, 255, 255) !important;
   }
 }
-<<<<<<< HEAD
-
-.screenshot {
-  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
-}
-=======
->>>>>>> dd96616 (Changed the landing page UI)
 </style>
