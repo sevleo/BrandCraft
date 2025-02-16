@@ -1,0 +1,22 @@
+# fly.toml app configuration file generated for brandcraft-scheduler-service on 2024-12-10T11:28:36+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'brandcraft-scheduler-service'
+primary_region = 'sin'
+
+[build]
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

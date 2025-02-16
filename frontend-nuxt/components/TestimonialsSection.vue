@@ -1,0 +1,142 @@
+<script setup>
+import { ref } from "vue";
+import xIcon from "@/assets/icons/x.svg";
+import threadsIcon from "@/assets/icons/threads.svg";
+import facebookIcon from "@/assets/icons/facebook.svg";
+
+const getIconForPlatform = (platform) => {
+  switch (platform) {
+    case "X":
+      return xIcon;
+    case "Threads":
+      return threadsIcon;
+    case "Facebook":
+      return facebookIcon;
+    default:
+      return xIcon;
+  }
+};
+
+const testimonials = ref([
+  {
+    name: "Elitza Vasileva",
+    handle: "@ElitzaVasileva",
+    avatar: "/testimonials/elitza.jpg",
+    tweetUrl: "https://x.com/ElitzaVasileva/status/1886736890423882099",
+    content: [
+      "I really like the tool that @sev_tinker created. It is Brandcraft.art",
+    ],
+    platform: "X",
+  },
+  {
+    name: "Fejiro Gospel",
+    handle: "@FejiroGospel",
+    avatar: "/testimonials/fejiro.jpg",
+    tweetUrl: "https://x.com/FejiroGospel/status/1884557362411041241",
+    content: ["Good for anyone using ghostwriters and social media assistants"],
+    platform: "X",
+  },
+  {
+    name: "Pavel Noskov",
+    handle: "@npv256",
+    avatar: "/testimonials/pavel.jpg",
+    tweetUrl: "https://x.com/npv256/status/1889183252176339139",
+    content: [
+      "I can plan and post all my content from one place with @brandcraftArt from @sev_tinker.",
+      "It took just 5 minutes to connect all my profiles!",
+    ],
+    platform: "X",
+  },
+  {
+    name: "ཏོ་ཧ་ T0ha 📷💻🔬📊⛷️",
+    handle: "@T0ha666",
+    avatar: "/testimonials/toha.png",
+    tweetUrl: "https://x.com/T0ha666/status/1889202559073784274",
+    content: [
+      "It's a great solution for scheduling posts across several social media platforms like X, BSky, Mastodon, Threads and a lot more.",
+      "Thank you @sev_tinker 🙏",
+    ],
+    platform: "X",
+  },
+  {
+    name: "alexasoft",
+    handle: "alexasoft",
+    avatar: "/testimonials/alexasoft.jpg",
+    tweetUrl:
+      "https://www.threads.net/@alexasoft/post/DGAnf-_IsAr?xmt=AQGz_DkcWIq8-a3inqfvymeK1kmTJH4VyfqR10uqQWD8Xg",
+    content: [
+      "I've been using Brandcraft.art for several weeks already and it saves me a lot of time. Recommending it to anyone managing social media 🫶🏽",
+    ],
+    platform: "Threads",
+  },
+  {
+    name: "Velvette Nhung Nguyen",
+    handle: "velvette",
+    avatar: "/testimonials/velvette.jpg",
+    tweetUrl: "https://www.facebook.com/share/1ZKUNmKMqS/?mibextid=wwXIfr",
+    content: [
+      "That's so genuinely absolutely incredible. And it is currently being offered for free without limits.",
+    ],
+    platform: "Facebook",
+  },
+]);
+</script>
+
+<template>
+  <section class="mx-auto mt-[150px] max-w-7xl px-4 sm:px-6 lg:px-8">
+    <h2
+      class="text-center text-[40px] font-semibold tracking-tight leading-[1.2]"
+    >
+      See what others say
+    </h2>
+    <p class="mb-[60px] text-center text-[16px] text-gray-600">
+      What people are saying about BrandCraft
+    </p>
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div
+        v-for="testimonial in testimonials"
+        :key="testimonial.handle"
+        class="flex max-w-[400px] flex-col gap-4 rounded-lg bg-[#f4f4f4] p-6 justify-between"
+      >
+        <div class="">
+          <p
+            class="whitespace-pre-line text-start font-medium text-[15px] text-gray-600"
+          >
+            <template v-for="(line, index) in testimonial.content" :key="index">
+              {{ line }}
+              <br v-if="index < testimonial.content.length - 1" />
+            </template>
+          </p>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div class="flex gap-4">
+            <img
+              :src="testimonial.avatar"
+              :alt="testimonial.name"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+            <div>
+              <h3 class="font-medium text-gray-900">{{ testimonial.name }}</h3>
+              <p class="text-start text-sm text-gray-500">
+                {{ testimonial.handle }}
+              </p>
+            </div>
+          </div>
+          <a
+            :href="testimonial.tweetUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-gray-400 hover:text-gray-500"
+          >
+            <img
+              :src="getIconForPlatform(testimonial.platform)"
+              :alt="testimonial.platform"
+              class="h-6 w-6"
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>

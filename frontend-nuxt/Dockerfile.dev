@@ -1,0 +1,20 @@
+# Use a Node.js image suitable for development
+FROM node:18-slim
+
+# Set working directory inside container
+WORKDIR /usr/src/app
+
+# Copy package.json and lockfile
+COPY package*.json ./
+
+# Install dependencies (including devDependencies)
+RUN npm install --legacy-peer-deps
+
+# Copy all application files
+COPY . .
+
+# Expose Nuxt's development server port
+EXPOSE 3001
+
+# Run Nuxt in development mode
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+* {
+  color: black;
+}
+
+.dark * {
+  color: white;
+}
+
+/* Emoji picker styles */
+emoji-picker {
+  --num-columns: 8;
+  --emoji-size: 1.5rem;
+  --background: white;
+  --border-color: #d8d8d8;
+  --indicator-color: #385898;
+  --input-border-color: #d8d8d8;
+  --input-font-color: #385898;
+  --input-placeholder-color: #385898;
+  --outline-color: #385898;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 0.5rem;
+  padding: 10px;
+  background-color: white;
+}
+
+.dark emoji-picker {
+  --background: #1a1a1a;
+  --border-color: #313131;
+  --indicator-color: white;
+  --input-border-color: #313131;
+  --input-font-color: white;
+  --input-placeholder-color: white;
+  --outline-color: white;
+  background-color: #1a1a1a;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  min-height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  overflow-x: hidden;
+  /* width: 100vw;
+  min-width: 350px; */
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+
+  margin: 0;
+  background: white;
+
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  line-height: 1.6;
+
+  font-family:
+    Montserrat,
+    Poppins,
+    Lato,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px;
+}
+
+.dark body {
+  background: #121212;
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* img {
+  max-width: 100%;
+  height: auto;
+} */

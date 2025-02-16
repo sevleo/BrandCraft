@@ -1,0 +1,192 @@
+Backlog:
+
+
+- Tweet-to-Reel feature (hypefury.com)
+
+
+- Change UI
+
+- Update MASTODON icon
+- DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
+- DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
+- DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
+
+
+
+- Add ability to change text for different platforms
+
+- For youtube connection, inform that a channel is necessary to connect account
+
+- Add proper validations
+
+- Add proper token refresh mechanism where possible (at least IG and Threads).
+
+
+- Check default location in YouTube video posting
+
+
+- Fix setting custom password / username to make more robust
+  For example, when we login with Facebook, username can be "Sev Leo" which is not good.
+
+- Allow re-try after failure
+- Create separate post when failed
+- On Calendar, use good icons for each platform
+
+
+- when log out with black theme, login screen looks bad. change to white on login screen always.
+
+
+
+- Implement Brands design
+  - user can connect up to 5 accounts per social network
+  - user can create up to 5 brands
+  - user can link an account with a brand
+  - user can apply a global filter to show data for a given brand only
+
+
+- update Bluesky password to follow specific format
+
+
+- update frame rate for MP4 videos too
+
+
+- Always refresh "This week", now I have to click on it to see the changes
+
+
+- LAUNCH!
+- Reach out to all emails from waitlist and userbase and invite them to participate in FREE BETA.
+
+
+
+- I have some ref that I use in one case but don't use in other. Need to remember wtf is this and fix it :C
+- add validations for image & video specificions for IG & TikTok  (https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media#reel-specifications)
+- add support for mastodon
+- Make validations show up in a nicer way & refactor them
+- Feature: add ability to select server (region) from where the post will be made (use Lambda?)
+- Mobile Supportc   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- keep it simple for now, no need to support bulk creation of posts
+  just have these elements on the menu:
+    - brand manager
+    - publisher
+    - create post
+    - create many (future)
+  focus on one core feature - post creation and scheduling + calendar/list view
+  support all crucial platfornms
+  add validations
+  add proper status and error handling
+  add re-trigger posts
+  add load of posts from the past
+  add AI assistance for content generation
+  add splitting post text by platform
+
+- add message for small screen to encourage use desktop
+- add password & username proper validation on backend & frontend
+- make My Brand view look nicer
+- on My Brand, add github-inspired view of posts
+- on list view, if there is one long word, it does not get truncated to next line
+- Add "When you want to start campaign" question
+- when user uses a social login, show their username right away (now need to refresh page to see it)
+- Add a mini layout for assisted post creation
+- Add char count and validations for all platforms
+
+- Add ability to trigger post NOW
+- Add ability to edit a failed post from a single platform
+- Add ability to create different variations of a post for different platforms
+- Add support of video
+- Add support of emojis
+
+- when I add picture to post, it looks weird on preview
+- also when i add picture t post, there becomes little space left for text
+- Add post detail view from calendar (pop-up)
+- Show actual posts in Published and on Calendar
+- When we click "Create post", slide to the right
+- Think of a better way to show platform on calendar div
+
+- Add *REAL* Facebook support
+
+
+Bugs/enhancements:
+- add video size & length validation (60s max for bluesky)
+- change all file routes to media.brandcraft.art
+- Links and hashtags on mastodon/bluesky are not clickable.
+- Implement YT thumbnail
+- no need to make the user wait until video converts. just add a checkbox in post indicating that conversion is still in process and do not schedule it while it is in process.
+- when user has 2 accounts (e.g. google and github) tied with same email, and if they set password for one or both of them, it will be a problem.
+- wrap Threads calls inside a token refresher in scheduler
+- wrap Tiktok calls inside a token refresher in scheduler
+- implement refresh based on refreshToken expiryTimestamp. If current time is less than 10 minutes away from expiryTimestamp, refresh tokens
+- make it possible to schedule only 3 months upfront
+- make sure to automatically delete media from S3 after 3 months + 1 day
+- After relogin it shows that posts are made from this account instead of the previous.
+- do not allow to edit a post from the calendar which is already published
+- Add previews to other platforms
+- on list view, list the platforms of a message in a predefiened order (now twitter can be 1 or 2 or 3 depending on i dont know what)
+- when all posts are failed in a bundle, it still shows as "partially published"
+- when refreshing threads in scheduler-service, update user profile picture too
+
+
+
+
+Techn debt:
+- Refactor groupStatus, make it so it works independently and sets the group status based on the status of all individual posts.
+    make sure it doesn't break how posts work. they shouldnt depend on status of parent group anyway.
+- Refactor error management flow in threadsController (standardize error handling for all platforms)
+- check if there is any further refactoring needed for video adjustments for posting to TikTok/IG/YT etc
+- update PlatformButton to use FontAwesomeIcon for all other platforms (right now only IG)
+- implement message queue for scheduler
+- strip dockerfiles of unnecessary steps
+- when user does something in the app (tbd what exactly), request updates information about accounts (e.g. new avatar)
+- update account session management to work with multiple servers
+- move scheduler to a worker process
+- refactor Creation view so that all posts are created in backend with "temp" status, which will then be replaced with "scheduled" or "draft" status, and if user does not proceed with them, they will be deleted automatically after a while. temp will not show in Publish view, it will only show in the Create view
+- remove "Any" types  everywhere
+- when user logins, refresh access tokens based on refresh token for all accounts
+- we need to change how group status works and when files are deleted from S3. We need to keep track of individual post retries, and when all posts
+    in a group have finished retrying, then we "lock" the group and deletes files from S3
+- refactor all circle buttons and icons (userProfile + platform) to reusable components
+
+
+
+
+
+
+
+- Show post upload status
+    - maybe use websockets to stream it live from the server
+    - show status per platform
+    - show errors per platform
+    - allow retry post for platform if error
+    - if all errors, allow retry post for all platforms
+
+
+
+ ---------------------
+|      18th Feb       |
+ ---------------------
+
+- Support Facebook
+- Support LinkedIn
+- Add ability to split posts
+- Add AI assistance 
+
+
+
+
+

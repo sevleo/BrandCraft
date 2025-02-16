@@ -1,0 +1,26 @@
+# fly.toml app configuration file generated for brandcraft-backend on 2024-12-10T15:05:46+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'brandcraft-backend'
+primary_region = 'sin'
+
+[build]
+
+[env]
+  BACKEND_URL = 'https://brandcraft-backend.fly.dev'
+  FRONTEND_URL = 'https://brandcraft-frontend.fly.dev'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

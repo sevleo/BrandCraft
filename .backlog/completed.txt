@@ -1,0 +1,305 @@
+Sun Nov 24 DAY 6
+- Test another post to both networks in the morning
+    - Add Twitter tokenRefresher
+- Add simple post scheduling
+
+Mon Nov 25 DAY 7
+- add calendar view
+- refactor post scheduling for threads to work like normal post
+
+Tue Nov 26 DAY 8
+- Added site layout
+- Refactored publish page
+
+Wed Nov 27 DAY 9
+- Create a neat pop-up for post creation
+- Update Primevue styles
+- Add a button in Publish to create a new post
+- Deploy to Fly.io
+
+
+Thu Nov 28 DAY 10
+- Open new post modal with predefined date/time on clicking on a date in calendar
+- Posted a picture through Twitter API (gosh...)
+
+Fri Nov 29 DAY 11
+- Working on post scheduler with images for Twitter...
+
+Sat Nov 30 DAY 12
+- Hanging out with my wife :)
+
+Sun Dec 1 DAY 13
+- Added ability to upload a picture for Twitter (+ scheduler)
+- Add preview of picture on List view
+- Update preview to look nicer
+
+Mon Dec 2 DAY 14
+- Add Edit button on List view
+- Add Edit Screen
+- Support adding/removing pictures during edit
+
+Tue Dec 3 DAY 15
+- Add support for uploading pictures to Threads and X simultaneously
+
+Wed Dec 4 DAY 16
+- Add support for scheduler with pictures on Threads, X, and BlueSky
+
+Thur Dec 5 DAY 17
+- huge refactor: split scheduled posts into ScheduledPostBundle and ScheduledPost
+    - ScheduledPostBundle
+- After making/editing a post, redirect to Publish -> Scheduled
+
+Fri Dec 6 DAY 18
+- Refactor & optimize how getAccount is called
+- Store connections data in local storage
+- Optimize frontend to make fewer requests
+- When deleting a scheduled post, delete the images from S3
+- Remove filter by Platform
+- In calendar, add icon of platform on preview of posts
+
+
+Sat Dec 7 DAY 19
+- Planning backlog
+
+Sun Dec 8 DAY 20
+- Add filter by Date to List view
+
+Mon Dec 9 DAY 21
+- Change scheduler to a microservice
+
+Tue Dec 10 DAY 22
+- Deploy scheduler service
+- Deploy everything else
+- Setup threads & twitter accounts
+- Remove backend scheduler service from backend
+
+Wed Dec 11 DAY 23
+- Deployed to custom domain
+- strip app.js of unnecessary features
+
+Thu Dec 12 DAY 24
+- Hosted and fixed bugs with deployment
+- save selected date range for different tabs
+
+
+Fri Dec 13 DAY 25
+- Refactored filter on Schedule List
+...
+- add ability to create & schedule multiple posts at once
+
+Sat Dec 14 DAY 26
+- Break
+
+Sun Dec 15 DAY 27
+- in create mode, disable "save as draft" button unless either: 
+  platform is selected, content is entered, or media is uploaded
+- in create mode, disable "schedule" button unless: platform is 
+  selected, scheduled date/time is entered, and either: content is 
+  entered or media is uploaded
+- fix image update bugs
+
+Mon Dec 16 DAY 28
+- Fix bugs with post creation and update
+
+Tue Dec 17 DAY 29
+- create landing page (home)
+- create login page
+- create nice sign up / login pages (no pop-up)
+
+Wed Dec 18 DAY 30
+- add pop-up (especially important for bluesky)
+- add social login (github, google at least)
+- add character counter
+- add post length validation
+- add welcoming message
+- MVP LAUNCH!
+
+
+Thu Dec 19 DAY 31
+- Define goals for 2nd month
+
+Fri Dec 20 DAY 32
+- Refactor createPost & editPost to one file
+- Make a demo video
+
+Sat Dec 21 DAY 33
+- Upload video to S3
+- refactor postformbase to remove duplicate code
+
+Sun Dec 22 DAY 34
+- Add support for uploading videos to Threads, X, and BlueSky
+- fixed: cannot edit post containing video
+
+Mon Dec 23 DAY 35
+- code refactor & optimizations
+
+Tue Dec 24 DAY 36
+- Update privacy policy on Brandcraft
+- Add terms & conditions on Brandcraft
+- Make a 1024x1024 logo for Brandcraft
+
+Wed Dec 25 DAY 37
+- Add TikTok login and setup CloudFront
+
+Thur Dec 26 DAY 38
+- fix issue with frontend not loading and file not uploading for tiktok
+- implement posting to tiktok
+
+Fri Dec 27 DAY 39
+- Point LLC website to sleo.dev
+- setup email on sleo.dev and submit for meta again
+- verify media.brandcraft.art on prod
+
+Sat Dec 28 DAY 40
+- Updating Overview page
+
+Sun Dec 29 DAY 41
+- Updating Overview page
+
+Mon Dec 30 DAY 42
+- update env vars for threads api in production
+
+Tue Dec 31 DAY 43
+
+Wed Jan 1 DAY 44
+
+Thu Jan 2 DAY 45
+
+Fri Jan 3 DAY 46
+
+Sat Jan 4 DAY 47
+
+Sun Jan 5 DAY 48
+- finish threads approval
+
+Mon Jan 6 DAY 49
+
+Tue Jan 7 DAY 50
+
+Wed Jan 8 DAY 51
+
+Thu Jan 9 DAY 52
+- Approved TikTok
+- Add Instagram support
+- Fixed IG issue with attemps
+
+Fri Jan 10 DAY 53
+- Nothing really...
+
+Sat Jan 11 DAY 54
+PLAN:
+- Update frontend to pass variables to backend for TikTok posting
+- Update frontend to allow selecting reels vs stories for INST
+- SUBMIT INSTAGRM APP FOR REVIEW
+
+Sun Jan 12 DAY 55
+- Update frontend to pass variables to backend for TikTok posting
+- Update frontend to allow selecting reels vs stories for INST
+- Add Instagram support
+- Submitted INSTAGRAM for review
+
+Mon Jan 13 DAY 56
+- Trying to fix connection to platforms bugs
+
+Tue Jan 14 DAY 57
+
+Wed Jan 15 DAY 58
+
+Thur Jan 16 DAY 59
+- Refactor Threads to get userId from Redis
+- Refactor all other platforms to get userId from Redis
+
+Fri Jan 17 DAY 60
+
+Sat Jan 18 DAY 61
+
+Sun Jan 19 DAY 62
+
+Mon Jan 20 DAY 63
+
+Tue Jan 21 DAY 64
+- Add Feedback page
+- Add Settings page (add backend for password management)
+
+
+Wed Jan 22 DAY 65
+
+Thu Jan 23 DAY 66
+- Debug instagram video from Nhung
+- When format is MOV, upload to backend, convert to MP4 and from backend save to S3
+
+Fri Jan 24 DAY 67
+- Fix checking status for TikTok
+
+Sat Jan 25 DAY 68
+- Finish Mastodon
+- Add admin panel
+
+Sun Jan 26 DAY 69
+
+Mon Jan 27 DAY 70
+- fixed issue with clean up after processing
+- Refactor publishing:
+  Instagram (done)
+  TikTok (done)
+  Threads (done)
+  Mastodon (done)
+  Bluesky (not needed)
+  Twitter (not needed)
+
+Tue Jan 28 DAY 71
+
+Wed Jan 29 DAY 72
+- Add YT support
+
+Thu Jan 30 DAY 73
+- Submit Google for review
+
+Fri Jan 31 DAY 74
+- Pass title (first 100 chars of description) to make a post for YT
+
+Sat Feb 01 DAY 75
+
+Sun Feb 02 DAY 76
+- Add facebook login
+- Address 2 youtube responds
+
+Mon Feb 03 DAY 77
+
+Tue Feb 04 DAY 78
+
+Wed Feb 05 DAY 79
+
+Thur Feb 06 DAY 80
+
+Fri Feb 07 DAY 81
+- Let users connect many accounts per platform
+- Refactor scheduler service
+
+Sat Feb 08 DAY 82
+- refactor connectionsDataStore - no need to have seaprate calls to fetch accounts
+- also refactor disconnect of platformId
+
+
+Sun Feb 09 DAY 83
+- add some basic mobile support at least for landing page
+
+
+Mon Feb 10 DAY 84
+- fix preview
+- update preview for all platforms
+
+Tue Feb 11 DAY 85
+- refactor media upload
+- do not delete files after publishing
+
+Wed Feb 12 DAY 86
+- add emojis
+- fix hashtags issue
+
+Thur Feb 13 DAY 87
+
+Fri Feb 14 DAY 88
+
+Sat Feb 15 DAY 89
+- SSR for landing page

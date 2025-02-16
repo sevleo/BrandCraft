@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-xsm: 500px;
+
+  /* background colors */
+  --color-greenBG: #30a567;
+  --color-greenLightBG: #34b26f;
+  --color-globalBackgroundBG: #141414;
+
+  /* text colors */
+  --color-white: #ffffff;
+  --color-whiteDimmed: #cccccc;
+  --color-green: #22c55e;
+  --color-greenLight: #a8f0c2;
+
+  /* border colors */
+  --color-imgBorderHover: #415471;
+  --color-imgBorder: #2f3c51;
+
+  --color-grayBorder: #c6c6c6;
+  --color-grayBorderHover: #7f7f7f;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  touch-action: manipulation;
+  /* border-color: #e5e7eb; */
+}
+
+* {
+  /* color: red; */
+}
+
+.dark * {
+  /* color: white; */
+}
+
+body {
+  color: rgb(60, 60, 60);
+
+  overflow-x: hidden;
+  /* width: 100vw;
+  min-width: 350px; */
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+
+  margin: 0;
+  background: white;
+
+  transition:
+    color 0.2s,
+    background-color 0.2s;
+
+  line-height: 1.6;
+
+  font-family:
+    Montserrat,
+    Poppins,
+    Lato,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+}

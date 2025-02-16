@@ -1,0 +1,56 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  frontend-nuxt:
+    build:
+      context: ./frontend-nuxt
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001" # Nuxt SSR
+    volumes:
+      - ./frontend-nuxt:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NUXT_PUBLIC_BACKEND_URL=https://brandcraft-local.art:3000
+    command: npm run dev
+    depends_on:
+      - backend
+
+  frontend-vue:
+    build:
+      context: ./frontend-vue
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173" # Vite SPA
+    volumes:
+      - ./frontend-vue:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_BACKEND_URL=https://brandcraft-local.art:3000
+    command: npm run dev
+    depends_on:
+      - backend
+
+  scheduler:
+    build: ./scheduler-service
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./scheduler-service:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=production
+    command: npm run dev
+    depends_on:
+      - backend

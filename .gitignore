@@ -1,0 +1,139 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Frontend build output
+/frontend-vue/dist/
+/frontend-vue/node_modules/
+/frontend-vue/.env
+
+# Backend build output
+/backend/node_modules/
+/backend/.env
+
+# Docker
+docker-compose.override.yml
+.docker
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+
+.env
+
+secretNotes.txt
+
+
+# Frontend Nuxt
+# Logs
+/frontend-vue/logs
+/frontend-vue/*.log
+/frontend-vue/npm-debug.log*
+/frontend-vue/yarn-debug.log*
+/frontend-vue/yarn-error.log*
+/frontend-vue/pnpm-debug.log*
+/frontend-vue/lerna-debug.log*
+
+/frontend-vue/node_modules
+/frontend-vue/.DS_Store
+/frontend-vue/dist
+/frontend-vue/dist-ssr
+/frontend-vue/coverage
+/frontend-vue/*.local
+
+/frontend-vue/cypress/videos/
+/frontend-vue/cypress/screenshots/
+
+# Editor directories and files
+/frontend-vue/.vscode/*
+/frontend-vue/!.vscode/extensions.json
+/frontend-vue/.idea
+/frontend-vue/*.suo
+/frontend-vue/*.ntvs*
+/frontend-vue/*.njsproj
+/frontend-vue/*.sln
+/frontend-vue/*.sw?
+
+/frontend-vue/*.tsbuildinfo
+/frontend-vue/notes.txt
+
+# Frontend Nuxt
+# Logs
+/frontend-nuxt/logs
+/frontend-nuxt/*.log
+/frontend-nuxt/npm-debug.log*
+/frontend-nuxt/yarn-debug.log*
+/frontend-nuxt/yarn-error.log*
+/frontend-nuxt/pnpm-debug.log*
+/frontend-nuxt/lerna-debug.log*
+
+/frontend-nuxt/node_modules
+/frontend-nuxt/.DS_Store
+/frontend-nuxt/dist
+/frontend-nuxt/dist-ssr
+/frontend-nuxt/coverage
+/frontend-nuxt/*.local
+
+/frontend-nuxt/cypress/videos/
+/frontend-nuxt/cypress/screenshots/
+
+# Editor directories and files
+/frontend-nuxt/.vscode/*
+/frontend-nuxt/!.vscode/extensions.json
+/frontend-nuxt/.idea
+/frontend-nuxt/*.suo
+/frontend-nuxt/*.ntvs*
+/frontend-nuxt/*.njsproj
+/frontend-nuxt/*.sln
+/frontend-nuxt/*.sw?
+
+/frontend-nuxt/*.tsbuildinfo
+/frontend-nuxt/notes.txt
+
+
+# Backend
+# Logs
+/backend/logs
+/backend/*.log
+/backend/npm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+/backend/pnpm-debug.log*
+/backend/lerna-debug.log*
+
+/backend/node_modules
+/backend/.DS_Store
+/backend/dist
+/backend/dist-ssr
+/backend/coverage
+/backend/*.local
+
+/backend/cypress/videos/
+/backend/cypress/screenshots/
+/backend/certs
+/backend/certs/localhost.pem
+/backend/certs/localhost-key.pem
+
+# Editor directories and files
+/backend/.vscode/*
+/backend/!.vscode/extensions.json
+/backend/.idea
+/backend/*.suo
+/backend/*.ntvs*
+/backend/*.njsproj
+/backend/*.sln
+/backend/*.sw?
+
+/backend/*.tsbuildinfo
+
+
+
+# Scheduler Service
+/scheduler-service/certs
+/scheduler-service/certs/localhost.pem
+/scheduler-service/certs/localhost-key.pem

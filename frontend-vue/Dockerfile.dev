@@ -1,0 +1,19 @@
+# Use a Node.js image suitable for development
+FROM node:18-slim
+
+WORKDIR /usr/src/app
+
+# Copy package.json and lockfile
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies)
+RUN npm install --legacy-peer-deps
+
+# Copy the rest of the application files
+COPY . .
+
+# Expose the Vite development server's port
+EXPOSE 5173
+
+# Run the Vite development server
+CMD ["npm", "run", "dev"]

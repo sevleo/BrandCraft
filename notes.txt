@@ -1,0 +1,59 @@
+npx tailwindcss -i ./src/assets/main.css -o ./src/assets/output.css --watch
+
+
+deploy VITE_FRONTEND_NUXT_URL = 'http://localhost:3001' from Vue
+    ( maybe use args like with backend url? )
+deploy NUXT_PUBLIC_FRONTEND_URL = 'http://localhost:5173/dashboard' from Nuxt
+deploy 
+
+
+openssl req -x509 -nodes -newkey rsa:2048 -keyout certs/localhost-key.pem -out certs/localhost.pem -days 365
+sudo nano /etc/hosts
+
+
+
+
+
+
+SEO:
+https://www.semrush.com/
+https://ranktank.net/
+https://creati.ai/
+
+
+
+
+(I took all the best directories from their backlink analysis)
+
+
+
+(marketing open source https://gitroom.com/)
+
+
+
+COMPETITORS 
+(scheduler)
+https://postiz.com/
+https://post-bridge.com/
+https://qayle.ai/
+https://buffer.com/
+https://later.com/
+https://metricool.com/
+https://robopost.app/en
+https://heysocial.io/
+https://hypefury.com/
+https://typefully.com/
+
+(reel generator)
+https://reel.farm/
+
+
+
+
+Marketing:
+https://mikestrives.notion.site/100-SaaS-Growth-Hacks-14252caf2e828076a1afefd80505b19e
+https://usesubtle.com/
+https://backlinkbot.ai/
+
+
+
