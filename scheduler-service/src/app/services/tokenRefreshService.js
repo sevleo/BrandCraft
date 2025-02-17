@@ -109,6 +109,26 @@ class TokenRefreshService {
 
     return newToken;
   }
+
+  async withValidThreadsToken(callback, connection) {
+    try {
+      // Check if token needs refresh before making the call
+      const token = await this.refreshTokenIfNeeded(connection);
+      if (!token) {
+        throw new Error('No valid Threads token found');
+      }
+      
+      // Execute the wrapped API call with the valid token
+      return await callback(token);
+    } catch (error) {
+      if (error.message?.includes('token')) {
+        // If error is token related, force a refresh and try once more
+        const newToken = await this.refreshTokenIfNeeded(connection);
+        return await callback(newToken);
+      }
+      throw error;
+    }
+  }
 }
 
 module.exports = new TokenRefreshService(); 
