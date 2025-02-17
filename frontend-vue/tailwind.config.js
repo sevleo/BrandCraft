@@ -29,10 +29,12 @@ export default {
         globalBackground: '#141414',
         green: '#30A567',
         greenLight: '#34b26f',
+        lightWhite: '#fbfbfb',
       },
       borderColor: {
         imgBorderHover: '#415471',
         imgBorder: '#2f3c51',
+        layoutSoft: '#ececec',
       },
     },
   },

@@ -58,10 +58,10 @@
 </script>
 
 <template>
-  <DashboardNavigation />
   <main
-    class="mx-auto flex h-[calc(100vh-65px)] max-w-[1200px] flex-col items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
+    class="ml-[270px] flex h-auto max-w-[1200px] items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
   >
+    <DashboardNavigation />
     <!-- Schedule View -->
     <div v-if="!creationModalOpen && !editModalOpen" class="w-full">
       <div class="flex justify-start gap-2">

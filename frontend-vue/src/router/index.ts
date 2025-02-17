@@ -19,6 +19,7 @@ import CreateView from '../components/views/DashboardViews/CreateView.vue';
 import EngageView from '../components/views/DashboardViews/EngageView.vue';
 import PublishView from '../components/views/DashboardViews/PublishView.vue';
 import SettingsView from '../components/views/DashboardViews/SettingsView.vue';
+import CalendarView from '../components/views/DashboardViews/CalendarView.vue';
 
 // Define Nuxt frontend URL
 const NUXT_APP_URL = import.meta.env.VITE_FRONTEND_NUXT_URL;
@@ -75,6 +76,12 @@ const routes: RouteRecordRaw[] = [
     path: '/dashboard/publish',
     component: PublishView,
     name: 'Publish',
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard/calendar',
+    component: CalendarView,
+    name: 'Calendar',
     meta: { requiresAuth: true },
   },
   {
