@@ -1,6 +1,8 @@
 const cron = require("node-cron");
 const path = require("path");
 const fs = require("fs/promises");
+const tokenRefreshService = require("./tokenRefreshService");
+const mediaRefreshService = require("./mediaRefreshService");
 
 const twitterController = require("../controllers/twitterController");
 const threadsController = require("../controllers/threadsController");
@@ -19,6 +21,7 @@ const {
 } = require("../services/s3Service");
 
 const MediaFile = require("../models/mediaFile");
+const PlatformConnection = require("../models/platformConnection");
 
 class SchedulerService {
   constructor() {
@@ -144,7 +147,7 @@ class SchedulerService {
 
       console.log("Publishing post...");
 
-      await this.publishToPlatform(post.platform, post, user, mediaFiles);
+      await this.processPost(post, user);
 
       console.log("setting status to published on post", post._id);
       post.status = "published";
@@ -164,60 +167,101 @@ class SchedulerService {
     }
   }
 
-  async publishToPlatform(platform, post, user, mediaFiles) {
-    console.log("publish to platform");
+  async processPost(post, user) {
+    try {
+      // Get platform connection
+      const connection = await PlatformConnection.findOne({
+        userId: user._id,
+        platform: post.platform,
+        platformId: post.platformId,
+      });
 
-    if (post.platform === "twitter") {
-      await twitterController.postTweetInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else if (post.platform === "threads") {
-      await threadsController.postToThreadsInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else if (post.platform === "bluesky") {
-      await blueskyController.postToBlueskyInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else if (post.platform === "tiktok") {
-      await tiktokController.postTikTokVideoInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else if (post.platform === "instagram") {
-      await instagramController.postToInstagramInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else if (post.platform === "mastodon") {
-      await mastodonController.postToMastodonInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else if (post.platform === "youtube") {
-      await youtubeController.postToYoutubeInternal({
-        content: post.content,
-        user,
-        media: mediaFiles,
-        post,
-      });
-    } else {
-      throw new Error(`Unsupported platform or missing account: ${platform}`);
+      // Refresh token if needed
+      const freshToken = await tokenRefreshService.refreshTokenIfNeeded(connection);
+      if (freshToken && freshToken !== connection.accessToken) {
+        connection.accessToken = freshToken;
+      }
+
+      // Get and refresh media if needed
+      const postGroup = await ScheduledPostGroup.findById(post.postGroupId)
+        .populate('mediaFiles');
+
+      const refreshedMedia = await mediaRefreshService.refreshMediaUrls(postGroup.mediaFiles);
+      if (refreshedMedia.length !== postGroup.mediaFiles.length) {
+        throw new Error('Some media files could not be refreshed');
+      }
+
+      // Continue with the existing post processing logic
+      switch (post.platform) {
+        case "twitter":
+          await twitterController.postTweetInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        case "threads":
+          await threadsController.postToThreadsInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        case "bluesky":
+          await blueskyController.postToBlueskyInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        case "tiktok":
+          await tiktokController.postTikTokVideoInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        case "instagram":
+          await instagramController.postToInstagramInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        case "mastodon":
+          await mastodonController.postToMastodonInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        case "youtube":
+          await youtubeController.postToYoutubeInternal({
+            content: post.content,
+            user,
+            media: refreshedMedia,
+            post,
+          });
+          break;
+        default:
+          throw new Error(`Unsupported platform or missing account: ${post.platform}`);
+      }
+    } catch (error) {
+      console.error(`Error processing post ${post._id}:`, error);
+      console.log(error);
+
+      // Don't mark as failed if it's just media processing
+      if (error.message !== "MEDIA_PROCESSING") {
+        post.status = "failed";
+        post.errorMessage = error;
+        await post.save();
+      }
     }
   }
 
