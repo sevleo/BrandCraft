@@ -2,7 +2,6 @@
 import birdLogoIcon from "@/public/perfect_logo_full.svg";
 import { ref } from "vue";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-vue-next";
-import { redirectToLogin, redirectToSignup } from "@/utils/redirects";
 
 const config = useRuntimeConfig();
 
@@ -23,6 +22,20 @@ const toggleItem = (item: string) => {
     expandedItems.value.push(item);
   }
 };
+
+function redirectToLogin() {
+  const frontendUrl = config.public.NUXT_PUBLIC_FRONTEND_URL;
+  if (frontendUrl) {
+    window.location.href = `${frontendUrl}/login`;
+  }
+}
+
+function redirectToSignup() {
+  const frontendUrl = config.public.NUXT_PUBLIC_FRONTEND_URL;
+  if (frontendUrl) {
+    window.location.href = `${frontendUrl}/signup`;
+  }
+}
 
 onMounted(() => {});
 </script>
@@ -67,13 +80,13 @@ onMounted(() => {});
         <!-- Right: Login/Signup or Dashboard -->
         <div class="flex items-center gap-4 space-x-4 max-xsm:hidden">
           <button
-            @click="redirectToLogin()"
+            @click="redirectToLogin"
             class="font-medium text-gray-600 hover:text-gray-900 cursor-pointer"
           >
             Log in
           </button>
           <button
-            @click="redirectToSignup()"
+            @click="redirectToSignup"
             class="inline-flex cursor-pointer items-center justify-center rounded-full bg-greenBG px-6 py-2 text-base font-medium text-white hover:bg-greenLightBG"
           >
             Sign Up
@@ -211,7 +224,7 @@ onMounted(() => {});
 
             <!-- Login -->
             <button
-              @click="redirectToLogin()"
+              @click="redirectToLogin"
               class="py-2 text-lg font-medium text-green hover:text-greenLight"
             >
               Log In
@@ -219,7 +232,7 @@ onMounted(() => {});
 
             <!-- Get Started Button -->
             <button
-              @click="redirectToSignup()"
+              @click="redirectToSignup"
               class="bg-greenBG hover:bg-greenLightBG rounded-full px-6 py-3 text-center text-lg font-medium text-white"
             >
               Get Started Now

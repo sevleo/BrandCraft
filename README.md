@@ -1,5 +1,7 @@
+# BrandCraft
+
 <p align="center">
-  <img src="perfect_logo_full.svg" alt="BrandCraft Logo" width="400"/>
+  <img src="perfect_logo_full.png" alt="BrandCraft Logo" width="400"/>
 </p>
 
 <p align="center">
@@ -47,15 +49,9 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 ## License
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+TBD
 
-### Important Notes:
-
-- Any modifications or derivative works **must also be open-source** under the same license.
-- If you use this project or modify it, **you must provide attribution** by linking to the original source: [BrandCraft](https://github.com/sevleo/BrandCraft).
-- If you deploy this project as a web service, **you must provide access to the modified source code**.
-
-For more details, see the **[`LICENSE`](./LICENSE)** file in this repository.
+<!-- This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. -->
 
 ## Support
 
