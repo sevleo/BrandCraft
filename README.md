@@ -49,7 +49,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-### Important Notes:
+#### Important Notes:
 
 - Any modifications or derivative works **must also be open-source** under the same license.
 - If you use this project or modify it, **you must provide attribution** by linking to the original source: [BrandCraft](https://github.com/sevleo/BrandCraft).
