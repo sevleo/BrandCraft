@@ -149,6 +149,23 @@ class TokenRefreshService {
       throw error;
     }
   }
+
+  async validateScheduleDate(scheduleDate) {
+    const now = new Date();
+    const threeMonthsFromNow = new Date(now.setMonth(now.getMonth() + 3));
+    
+    const scheduleDateObj = new Date(scheduleDate);
+    
+    if (scheduleDateObj > threeMonthsFromNow) {
+      throw new Error('Cannot schedule posts more than 3 months in advance');
+    }
+    
+    if (scheduleDateObj < now) {
+      throw new Error('Cannot schedule posts in the past');
+    }
+    
+    return true;
+  }
 }
 
 module.exports = new TokenRefreshService(); 
