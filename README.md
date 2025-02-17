@@ -1,7 +1,7 @@
 # BrandCraft
 
 <p align="center">
-  <img src="perfect_logo_full.png" alt="BrandCraft Logo" width="400"/>
+  <img src="perfect_logo_full.svg" alt="BrandCraft Logo" width="400"/>
 </p>
 
 <p align="center">
