@@ -1,4 +1,5 @@
 Backlog:
+Built by Creator, for Creators
 
 
 - Tweet-to-Reel feature (hypefury.com)
@@ -6,11 +7,12 @@ Backlog:
 
 - Change UI
 
-- Update MASTODON icon
 - DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
 - DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
 - DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
 
+
+- in scheduler-service, add token/image url refresh mechanism
 
 
 - Add ability to change text for different platforms

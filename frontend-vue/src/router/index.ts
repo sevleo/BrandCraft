@@ -7,7 +7,6 @@ import authData from '../utils/authDataStore';
 import { verifyAuth } from '../api/authApi';
 
 import BaseView from '../components/views/BaseView.vue';
-import WaitlistView from '../components/views/WaitlistView.vue';
 import LoginView from '../components/views/LoginView.vue';
 import SignupView from '../components/views/SignupView.vue';
 import AdminView from '../components/views/AdminView.vue';
@@ -33,12 +32,7 @@ const routes: RouteRecordRaw[] = [
     name: 'Base',
     meta: { requiresAuth: false },
   },
-  {
-    path: '/waitlist',
-    component: WaitlistView,
-    name: 'Waitlist',
-    meta: { requiresAuth: false },
-  },
+
   {
     path: '/login',
     component: LoginView,
