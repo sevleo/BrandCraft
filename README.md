@@ -47,7 +47,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 ## License
 
-This project is licensed under the AGPL-3.0 license - see the [LICENSE](LICENSE) file for details.
+This project is licensed under The Parity Public License 7.0.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
