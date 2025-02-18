@@ -731,6 +731,18 @@ video {
   top: 100%;
 }
 
+.top-\[55px\] {
+  top: 55px;
+}
+
+.top-\[45px\] {
+  top: 45px;
+}
+
+.top-\[40px\] {
+  top: 40px;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -879,6 +891,18 @@ video {
 
 .mt-\[100px\] {
   margin-top: 100px;
+}
+
+.mb-\[100px\] {
+  margin-bottom: 100px;
+}
+
+.mb-\[20px\] {
+  margin-bottom: 20px;
+}
+
+.mb-\[10px\] {
+  margin-bottom: 10px;
 }
 
 .box-border {

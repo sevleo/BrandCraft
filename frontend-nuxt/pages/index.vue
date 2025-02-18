@@ -158,10 +158,10 @@ onMounted(async () => {
             <!-- Left Column: Text Content -->
             <div class="flex flex-col justify-center">
               <h1
-                class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
+                class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-4xl lg:text-5xl"
               >
-                Save time and get
-                <span class="text-greenBG">real results</span> on social media
+                Stop Managing Platforms. Start
+                <span class="text-greenBG">Growing</span> Your Brand.
               </h1>
               <p class="mb-8 text-xl text-gray-600">
                 BrandCraft makes it easy to schedule posts, track performance,

@@ -38,11 +38,6 @@
     selectedPost.value = null;
   }
 
-  function handleSchedulePost() {}
-  // content: string,
-  // scheduledTime: Date,
-  // selectedPlatforms: string[]
-
   onMounted(async () => {
     themeStore.initializeTheme();
 
@@ -129,7 +124,6 @@
 
       <ScheduleGrid
         v-if="publishViewDataStore.currentView.value === 'calendar'"
-        @schedulePost="handleSchedulePost"
         @timeSlotClick="openPostCreationModal"
         @editPost="openPostEditModal"
       />
@@ -156,15 +150,8 @@
       <PostFormBase
         v-if="selectedPost"
         :mode="'edit'"
-        :postId="selectedPost._id"
-        :initialContent="selectedPost.content"
+        :selectedPost="selectedPost"
         :initialDateTime="new Date(selectedPost.scheduledTime)"
-        :initialPlatforms="selectedPost.platforms"
-        :initialMedia="selectedPost.mediaFiles"
-        :initialStatus="selectedPost.status"
-        :initialMediaType="selectedPost.mediaFiles[0]?.type"
-        :initialPosts="selectedPost.posts"
-        :initialVideoTimestamp="selectedPost.videoTimestamp"
         @cancel="closePostEditModal"
       />
     </div>

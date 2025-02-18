@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, nextTick } from 'vue';
+  import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
   import { useToast } from 'primevue';
   import { updatePostBundle, createPostBundle } from '@api/scheduledPostApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
@@ -16,45 +16,39 @@
   import InstagramPresets from '@/components/common/forms/PostFormBase/InstagramPresets.vue';
   import PreviewComponent from '@/components/common/forms/PostFormBase/PreviewComponent.vue';
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
+  import editorDataStore from '@/utils/editorDataStore';
 
   const props = defineProps<{
-    mode: 'create' | 'edit';
-    postId?: string;
-    initialContent?: string;
+    selectedPost?: any;
     initialDateTime?: Date | null;
-    initialPlatforms?: string[];
-    initialMedia?: { url: string }[];
-    initialStatus?: string;
-    initialMediaType?: 'image' | 'video';
-    initialPosts?: any[];
-    initialVideoTimestamp?: number;
   }>();
 
-  const emit = defineEmits<{
-    (e: 'cancel'): void;
-  }>();
+  onUnmounted(() => {
+    editorDataStore.selectedPost.value = null;
+    editorDataStore.selectedDateTime.value = null;
+  });
 
-  const content = ref<string>(props.initialContent || '');
+  const content = ref<string>(props.selectedPost?.content || '');
   const scheduledTime = ref<Date>(
     props.initialDateTime instanceof Date ? props.initialDateTime : new Date()
   );
-  const selectedPlatforms = ref<string[]>(props.initialPlatforms || []);
+  const selectedPlatforms = ref<string[]>(props.selectedPost?.platforms || []);
   const selectedMedia = ref<File[]>([]);
   const mediaPreviewUrls = ref<string[]>(
-    props.initialMedia?.map((m) => m.url) || []
+    props.selectedPost?.mediaFiles?.map((m: any) => m.url) || []
   );
   const initialMediaUrls = ref<string[]>(
-    props.initialMedia?.map((m) => m.url) || []
+    props.selectedPost?.mediaFiles?.map((m: any) => m.url) || []
   );
   const toast = useToast();
   const currentMediaType = ref<'image' | 'video' | null>(
-    props.initialMediaType || null
+    props.selectedPost?.mediaFiles[0]?.type || null
   );
   const uploadProgress = ref<number>(0);
   const isUploading = ref<boolean>(false);
   const videoS3Key = ref<string | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
-  const videoTimestamp = ref<number>(props.initialVideoTimestamp || 0);
+  const videoTimestamp = ref<number>(props.selectedPost?.videoTimestamp || 0);
   const handleVideoRefUpdate = (ref: HTMLVideoElement | null) => {
     videoRef.value = ref;
   };
@@ -89,10 +83,10 @@
   });
 
   // Populate settings from InitialPosts
-  if (props.initialPosts) {
+  if (props.selectedPost?.posts) {
     // Populate TikTok settings from initialPosts if available
-    const tiktokPost = props.initialPosts.find(
-      (post) => post.platform === 'tiktok'
+    const tiktokPost = props.selectedPost.posts.find(
+      (post: any) => post.platform === 'tiktok'
     );
     if (tiktokPost?.platformSettings?.tiktok) {
       tiktokSettings.value = {
@@ -110,8 +104,8 @@
     }
 
     // Populate Instagram settings from initialPosts if available
-    const instagramPost = props.initialPosts.find(
-      (post) => post.platform === 'instagram'
+    const instagramPost = props.selectedPost.posts.find(
+      (post: any) => post.platform === 'instagram'
     );
     if (instagramPost?.platformSettings?.instagram) {
       instagramSettings.value = {
@@ -119,8 +113,8 @@
       };
     }
 
-    const youtubePost = props.initialPosts.find(
-      (post) => post.platform === 'youtube'
+    const youtubePost = props.selectedPost.posts.find(
+      (post: any) => post.platform === 'youtube'
     );
     if (youtubePost?.platformSettings?.youtube) {
       youtubeSettings.value = {
@@ -234,7 +228,7 @@
     threads: 500,
     bluesky: 300,
   };
-  const status = ref<string>(props.initialStatus || 'draft');
+  const status = ref<string>(props.selectedPost?.status || 'draft');
   const statusOptions = [
     { label: 'Scheduled', value: 'scheduled' },
     { label: 'Draft', value: 'draft' },
@@ -259,10 +253,9 @@
     if (currentMediaType.value === 'video') {
       // In edit mode with existing video (no new upload), allow saving
       if (
-        props.mode === 'edit' &&
-        props.initialMediaType === 'video' &&
+        props.selectedPost?.mediaFiles?.[0]?.type === 'video' &&
         mediaPreviewUrls.value.length > 0 &&
-        mediaPreviewUrls.value[0] === props.initialMedia?.[0]?.url
+        mediaPreviewUrls.value[0] === props.selectedPost?.mediaFiles?.[0]?.url
       ) {
         return validationErrors.value.length === 0;
       }
@@ -578,14 +571,13 @@
 
       // Send request based on action
       if (action === 'update') {
-        await updatePostBundle(props.postId!, formData);
+        await updatePostBundle(props.selectedPost?._id!, formData);
       } else {
         await createPostBundle(formData);
       }
 
       // Update store and close modal
       await scheduledPostsStore.updateScheduledPostDataStore();
-      emit('cancel');
 
       // Show success message
       const successMessages = {
@@ -686,9 +678,11 @@
   onMounted(async () => {
     document.addEventListener('click', handleClickOutside);
 
-    if (props.initialPlatforms?.some((p) => p.startsWith('tiktok'))) {
+    if (
+      props.selectedPost?.platforms?.some((p: any) => p.startsWith('tiktok'))
+    ) {
       await getCreatorInfo(
-        props.initialPlatforms?.[0].split('-').slice(1).join('-')
+        props.selectedPost?.platforms?.[0].split('-').slice(1).join('-')
       );
     }
   });
@@ -701,10 +695,7 @@
       class="scheduling-form flex h-fit min-h-[600px] w-[600px] rounded-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#121212]"
     >
       <div class="flex h-auto w-full flex-col gap-2 p-4">
-        <h2 class="flex w-[200px] items-center text-xl">
-          {{ mode === 'edit' ? 'Edit Post' : 'Create Post' }}
-        </h2>
-        <div v-if="props.mode === 'edit'" class="mb-4 flex items-center gap-2">
+        <div class="mb-4 flex items-center gap-2">
           <Select
             v-model="status"
             :options="statusOptions"
@@ -854,7 +845,7 @@
             </div>
 
             <div class="mb-4 mt-4 flex w-full gap-5">
-              <BaseButton @click="$emit('cancel')"> Back </BaseButton>
+              <BaseButton @click=""> Back </BaseButton>
               <DatePicker
                 v-model="scheduledTime"
                 showTime
@@ -865,7 +856,6 @@
               />
 
               <button
-                v-if="props.mode === 'edit'"
                 @click="() => handlePost('update')"
                 :disabled="!canSavePost || !canPublishToTikTok"
                 :class="[
@@ -879,7 +869,6 @@
               </button>
 
               <button
-                v-if="props.mode === 'create'"
                 @click="() => handlePost('schedule')"
                 :disabled="validationErrors.length > 0"
                 class="group relative"

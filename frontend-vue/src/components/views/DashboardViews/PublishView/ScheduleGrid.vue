@@ -1,31 +1,18 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue';
-  import Dialog from 'primevue/dialog';
-  import Button from 'primevue/button';
-  import Textarea from 'primevue/textarea';
-  import MultiSelect from 'primevue/multiselect';
   import { format } from 'date-fns';
-  import { useToast } from 'primevue/usetoast';
-
   import connectionsDataStore from '@/utils/connectionsDataStore';
-  // import threadsIcon from '@/assets/dashboardSocialIcons/black/threadsBlack.svg';
-  // import xIcon from '@/assets/dashboardSocialIcons/black/xBlack.svg';
-  // import blueskyIcon from '@/assets/dashboardSocialIcons/black/blueskyBlack.svg';
-  // import tiktokIcon from '@/assets/dashboardSocialIcons/black/tiktokBlack.svg';
-  // import youtubeIcon from '@/assets/dashboardSocialIcons/black/youtubeBlack.svg';
-  // import instagramIcon from '@/assets/dashboardSocialIcons/black/instagramBlack.svg';
-
-  import appSettings from '@/utils/appSettings';
   import scheduledPostsStore from '@/utils/scheduledPostsStore';
   import publishViewDataStore from '@/utils/publishViewDataStore';
   import { SquarePlus } from 'lucide-vue-next';
-
   import { useThemeStore } from '@/utils/themeStore';
+  import editorDataStore from '@/utils/editorDataStore';
+  import { useRouter } from 'vue-router';
+
   const themeStore = useThemeStore();
+  const router = useRouter();
 
   const scrollContainer = ref<HTMLDivElement | null>(null); // Ref for the scroll container
-
-  const toast = useToast();
 
   interface TimeSlot {
     time: string;
@@ -43,23 +30,8 @@
     | 'Friday'
     | 'Saturday';
 
-  const emit = defineEmits<{
-    (
-      e: 'schedulePost',
-      content: string,
-      scheduledTime: Date,
-      selectedPlatforms: string[]
-    ): void;
-    (e: 'timeSlotClick', dateTime: Date): void;
-    (e: 'editPost', post: any): void;
-  }>();
-
   const currentMonth = ref('');
   const timeSlots = ref<TimeSlot[]>(generateTimeSlots());
-  const selectedSlot = ref<{ time: string; day: string } | null>(null);
-  const showScheduleDialog = ref(false);
-  const content = ref('');
-  const selectedPlatforms = ref<string[]>([]);
 
   const weekDays = [
     'Sunday',
@@ -282,92 +254,6 @@
     monthDates.value = getMonthDates();
   }
 
-  function handleTimeSlotClick(time: string, day: WeekDay) {
-    const today = new Date();
-    const selectedDay = weekDays.indexOf(day);
-    const [hours, minutes] = time.split(':').map(Number);
-    let targetDate = new Date(today);
-    const currentDay = today.getDay();
-
-    if (publishViewDataStore.weekOffset.value < 0) {
-      toast.add({
-        severity: 'error',
-        summary: 'Invalid Time Selection',
-        detail:
-          'Cannot schedule posts for past dates. Please select a future time slot.',
-        life: 3000,
-      });
-      return;
-    }
-
-    if (publishViewDataStore.weekOffset.value > 0) {
-      const daysToAdd =
-        7 * publishViewDataStore.weekOffset.value + selectedDay - currentDay;
-      targetDate.setDate(today.getDate() + daysToAdd);
-      targetDate.setHours(hours, minutes, 0, 0);
-      emit('timeSlotClick', targetDate);
-      return;
-    }
-
-    if (selectedDay < currentDay) {
-      toast.add({
-        severity: 'error',
-        summary: 'Invalid Time Selection',
-        detail:
-          'Cannot schedule posts for past dates. Please select a future time slot.',
-        life: 3000,
-      });
-      return;
-    }
-
-    if (selectedDay === currentDay) {
-      if (hours < today.getHours()) {
-        toast.add({
-          severity: 'error',
-          summary: 'Invalid Time Selection',
-          detail:
-            'Cannot schedule posts for past dates. Please select a future time slot.',
-          life: 3000,
-        });
-        return;
-      }
-    }
-
-    const daysToAdd = selectedDay - currentDay;
-    targetDate.setDate(today.getDate() + daysToAdd);
-    targetDate.setHours(hours, minutes, 0, 0);
-    emit('timeSlotClick', targetDate);
-  }
-
-  function handleMonthDayClick(date: Date | null) {
-    if (!date) return;
-
-    selectedSlot.value = {
-      day: weekDays[date.getDay()],
-      time: '09:00',
-    };
-    content.value = '';
-    selectedPlatforms.value = [];
-    showScheduleDialog.value = true;
-  }
-
-  function handleSchedulePost() {
-    emit('schedulePost', content.value, new Date(), selectedPlatforms.value);
-    showScheduleDialog.value = false;
-    content.value = '';
-    selectedPlatforms.value = [];
-  }
-
-  function isToday(date: Date | null): boolean {
-    if (!date) return false;
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  }
-
   function isTodayColumn(dayWithDate: string): boolean {
     const today = new Date();
     const [day, date] = dayWithDate.split(' ');
@@ -436,6 +322,35 @@
       if (hours < today.getHours()) return true;
     }
     return false;
+  }
+
+  function handlePostClick(post: any) {
+    console.log('ggg');
+    editorDataStore.selectedPost.value = post;
+    console.log(editorDataStore.selectedPost.value);
+    router.push('/dashboard/editor');
+  }
+
+  function handleTimeSlotClick(time: string, day: WeekDay) {
+    const today = new Date();
+    const selectedDay = weekDays.indexOf(day);
+    const [hours, minutes] = time.split(':').map(Number);
+    let targetDate = new Date(today);
+    const currentDay = today.getDay();
+
+    if (publishViewDataStore.weekOffset.value > 0) {
+      const daysToAdd =
+        7 * publishViewDataStore.weekOffset.value + selectedDay - currentDay;
+      targetDate.setDate(today.getDate() + daysToAdd);
+      targetDate.setHours(hours, minutes, 0, 0);
+    } else {
+      const daysToAdd = selectedDay - currentDay;
+      targetDate.setDate(today.getDate() + daysToAdd);
+      targetDate.setHours(hours, minutes, 0, 0);
+    }
+    editorDataStore.selectedDateTime.value = targetDate;
+    console.log('Selected Date:', editorDataStore.selectedDateTime.value);
+    router.push('/dashboard/editor');
   }
 </script>
 
@@ -542,7 +457,7 @@
                           !isTimeSlotInPast(slot.time, day) &&
                             (post.status === 'draft' ||
                               post.status === 'scheduled') &&
-                            $emit('editPost', post)
+                            handlePostClick(post)
                         "
                       >
                         <div
@@ -657,103 +572,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Monthly View -->
-    <div v-else class="relative h-auto overflow-hidden">
-      <div class="relative rounded-[10px] border border-[#c1c1c1]">
-        <table class="box-border w-full min-w-full table-fixed border-collapse">
-          <thead>
-            <tr>
-              <th
-                v-for="day in weekDays"
-                :key="day"
-                class="border-b border-r border-[#c1c1c1] p-2 text-center text-[14px] font-medium last:border-r-0"
-              >
-                {{ day.slice(0, 3) }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(week, weekIndex) in monthDates"
-              :key="weekIndex"
-              class="border-b border-[#c1c1c1] last:border-b-0"
-            >
-              <td
-                v-for="(day, dayIndex) in week"
-                :key="dayIndex"
-                class="relative h-24 border-l border-r border-[#c1c1c1] p-2 first:border-l-0 last:border-r-0"
-                :class="{
-                  'bg-gray-50': !day.isCurrentMonth,
-                  'bg-[#0000000b]': day.isCurrentMonth && isToday(day.date),
-                  'cursor-pointer hover:bg-gray-50': day.isCurrentMonth,
-                }"
-                @click="day.isCurrentMonth && handleMonthDayClick(day.date)"
-              >
-                <span
-                  :class="{
-                    'text-gray-400': !day.isCurrentMonth,
-                    'font-medium': day.isCurrentMonth,
-                    'text-blue-600': day.isCurrentMonth && isToday(day.date),
-                  }"
-                >
-                  {{ day.date?.getDate() }}
-                </span>
-                <div
-                  v-if="day.hasEvents"
-                  class="mt-2 h-2 w-2 rounded-full bg-blue-500"
-                ></div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Schedule Dialog -->
-    <Dialog
-      v-model:visible="showScheduleDialog"
-      modal
-      header="Schedule Post"
-      :style="{ width: '90%', maxWidth: '500px' }"
-    >
-      <div class="p-4">
-        <p class="mb-4">
-          Scheduling for {{ selectedSlot?.day }} at {{ selectedSlot?.time }}
-        </p>
-        <div class="mb-4">
-          <label class="mb-1 block text-sm font-medium text-gray-700"
-            >Content</label
-          >
-          <Textarea
-            v-model="content"
-            rows="4"
-            class="w-full rounded border p-2"
-            placeholder="What's on your mind?"
-          ></Textarea>
-        </div>
-        <div class="mb-4">
-          <label class="mb-1 block text-sm font-medium text-gray-700"
-            >Platforms</label
-          >
-          <MultiSelect
-            v-model="selectedPlatforms"
-            :options="appSettings.platformOptions"
-            optionLabel="label"
-            placeholder="Select platforms"
-            class="w-full"
-          />
-        </div>
-        <div class="flex justify-end gap-2">
-          <Button
-            label="Cancel"
-            @click="showScheduleDialog = false"
-            class="p-button-text"
-          ></Button>
-          <Button label="Schedule" @click="handleSchedulePost"></Button>
-        </div>
-      </div>
-    </Dialog>
   </div>
 </template>
 

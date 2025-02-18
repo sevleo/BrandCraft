@@ -20,6 +20,7 @@ import EngageView from '../components/views/DashboardViews/EngageView.vue';
 import PublishView from '../components/views/DashboardViews/PublishView.vue';
 import SettingsView from '../components/views/DashboardViews/SettingsView.vue';
 import CalendarView from '../components/views/DashboardViews/CalendarView.vue';
+import EditorView from '@/components/views/DashboardViews/EditorView.vue';
 
 // Define Nuxt frontend URL
 const NUXT_APP_URL = import.meta.env.VITE_FRONTEND_NUXT_URL;
@@ -55,10 +56,16 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, enforceSubdomain: 'app.brandcraft.art' },
   },
   {
-    path: '/dashboard/brands',
+    path: '/dashboard/accounts',
     component: BrandsView,
-    name: 'Brands',
+    name: 'Accounts',
     meta: { requiresAuth: true, enforceSubdomain: 'app.brandcraft.art' },
+  },
+  {
+    path: '/dashboard/editor',
+    component: EditorView,
+    name: 'editor',
+    meta: { requiresAuth: true },
   },
   {
     path: '/dashboard/create',

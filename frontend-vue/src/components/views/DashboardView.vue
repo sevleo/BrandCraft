@@ -13,7 +13,7 @@
   onMounted(async () => {
     // Navigate to the desired page
     themeStore.initializeTheme();
-    router.push('/dashboard/brands');
+    router.push('/dashboard/accounts');
     // Extract query parameters
 
     const oauth_token = route.query.oauth_token as string | undefined;

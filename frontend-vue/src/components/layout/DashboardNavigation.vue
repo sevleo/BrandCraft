@@ -88,32 +88,8 @@
     class="border-layoutSoft fixed left-0 top-0 h-screen w-[270px] border-r bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
   >
     <div class="bg-lightWhite flex h-full flex-col">
-      <!-- Navigation Links -->
-      <div class="mt-6 flex flex-col space-y-4 px-4">
-        <router-link
-          to="/dashboard/brands"
-          class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
-          :class="{
-            'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
-              $route.path === '/dashboard/brands',
-          }"
-        >
-          Overview
-        </router-link>
-        <router-link
-          to="/dashboard/publish"
-          class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
-          :class="{
-            'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
-              $route.path === '/dashboard/publish',
-          }"
-        >
-          Publish
-        </router-link>
-      </div>
-
       <!-- User Profile Section -->
-      <div class="mt-[100px] p-4">
+      <div class="mb-[10px] p-4">
         <div class="relative" ref="dropdownRef">
           <div
             @click="showDropdown = !showDropdown"
@@ -131,7 +107,7 @@
           <transition name="dropdown">
             <div
               v-if="showDropdown"
-              class="absolute bottom-[55px] left-0 z-10 w-full rounded-md border border-gray-300 bg-white py-1 shadow-lg ring-opacity-5 dark:border-[#313131] dark:bg-[#121212]"
+              class="absolute left-0 top-[40px] z-10 w-full rounded-md border border-gray-300 bg-white py-1 shadow-lg ring-opacity-5 dark:border-[#313131] dark:bg-[#121212]"
             >
               <div
                 v-if="authData.isAdmin.value === true"
@@ -184,6 +160,29 @@
             </div>
           </transition>
         </div>
+      </div>
+      <!-- Navigation Links -->
+      <div class="border-layoutSoft mt-6 flex flex-col space-y-4 border-b px-4">
+        <router-link
+          to="/dashboard/editor"
+          class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          :class="{
+            'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
+              $route.path === '/dashboard/editor',
+          }"
+        >
+          <span class="font-medium">+ New draft</span>
+        </router-link>
+        <router-link
+          to="/dashboard/publish"
+          class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          :class="{
+            'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
+              $route.path === '/dashboard/publish',
+          }"
+        >
+          Publish
+        </router-link>
       </div>
     </div>
     <div
