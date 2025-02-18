@@ -27,6 +27,7 @@ Thumbs.db
 .env
 
 secretNotes.txt
+hidden_notes.txt
 
 
 # Frontend Nuxt
