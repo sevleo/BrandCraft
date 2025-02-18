@@ -671,10 +671,6 @@ video {
   bottom: 1rem;
 }
 
-.bottom-\[55px\] {
-  bottom: 55px;
-}
-
 .bottom-full {
   bottom: 100%;
 }
@@ -727,20 +723,12 @@ video {
   top: 2rem;
 }
 
-.top-full {
-  top: 100%;
-}
-
-.top-\[55px\] {
-  top: 55px;
-}
-
-.top-\[45px\] {
-  top: 45px;
-}
-
 .top-\[40px\] {
   top: 40px;
+}
+
+.top-full {
+  top: 100%;
 }
 
 .z-10 {
@@ -799,6 +787,10 @@ video {
 
 .mb-8 {
   margin-bottom: 2rem;
+}
+
+.mb-\[10px\] {
+  margin-bottom: 10px;
 }
 
 .mb-auto {
@@ -885,26 +877,6 @@ video {
   margin-top: 50px;
 }
 
-.mt-auto {
-  margin-top: auto;
-}
-
-.mt-\[100px\] {
-  margin-top: 100px;
-}
-
-.mb-\[100px\] {
-  margin-bottom: 100px;
-}
-
-.mb-\[20px\] {
-  margin-bottom: 20px;
-}
-
-.mb-\[10px\] {
-  margin-bottom: 10px;
-}
-
 .box-border {
   box-sizing: border-box;
 }
@@ -914,6 +886,13 @@ video {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .block {
@@ -976,10 +955,6 @@ video {
   height: 5rem;
 }
 
-.h-24 {
-  height: 6rem;
-}
-
 .h-3 {
   height: 0.75rem;
 }
@@ -1012,8 +987,8 @@ video {
   height: 10px;
 }
 
-.h-\[200px\] {
-  height: 200px;
+.h-\[250px\] {
+  height: 250px;
 }
 
 .h-\[27px\] {
@@ -1090,10 +1065,6 @@ video {
   height: 100vh;
 }
 
-.h-\[250px\] {
-  height: 250px;
-}
-
 .max-h-0 {
   max-height: 0px;
 }
@@ -1149,10 +1120,6 @@ video {
 
 .w-16 {
   width: 4rem;
-}
-
-.w-2 {
-  width: 0.5rem;
 }
 
 .w-20 {
@@ -1496,16 +1463,14 @@ video {
   gap: 2px;
 }
 
-.gap-\[3px\] {
-  gap: 3px;
-}
-
-.gap-\[30px\] {
-  gap: 30px;
-}
-
 .gap-\[5px\] {
   gap: 5px;
+}
+
+.space-x-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .space-x-4 > :not([hidden]) ~ :not([hidden]) {
@@ -1678,8 +1643,8 @@ video {
   border-bottom-width: 2px;
 }
 
-.border-l {
-  border-left-width: 1px;
+.border-l-\[5px\] {
+  border-left-width: 5px;
 }
 
 .border-r {
@@ -1688,6 +1653,10 @@ video {
 
 .border-t {
   border-top-width: 1px;
+}
+
+.border-l-\[3px\] {
+  border-left-width: 3px;
 }
 
 .border-none {
@@ -1795,6 +1764,10 @@ video {
   border-color: rgb(234 179 8 / var(--tw-border-opacity, 1));
 }
 
+.border-l-transparent {
+  border-left-color: transparent;
+}
+
 .border-t-gray-900 {
   --tw-border-opacity: 1;
   border-top-color: rgb(17 24 39 / var(--tw-border-opacity, 1));
@@ -1802,6 +1775,11 @@ video {
 
 .border-t-transparent {
   border-top-color: transparent;
+}
+
+.border-l-\[\#00e676\] {
+  --tw-border-opacity: 1;
+  border-left-color: rgb(0 230 118 / var(--tw-border-opacity, 1));
 }
 
 .bg-\[\#00000007\] {
@@ -1820,6 +1798,11 @@ video {
 .bg-\[\#212121\] {
   --tw-bg-opacity: 1;
   background-color: rgb(33 33 33 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#f5f5f5\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(245 245 245 / var(--tw-bg-opacity, 1));
 }
 
 .bg-\[red\] {
@@ -2173,6 +2156,10 @@ video {
   padding-bottom: 100px;
 }
 
+.pl-2 {
+  padding-left: 0.5rem;
+}
+
 .pl-5 {
   padding-left: 1.25rem;
 }
@@ -2207,10 +2194,6 @@ video {
 
 .pt-6 {
   padding-top: 1.5rem;
-}
-
-.pl-2 {
-  padding-left: 0.5rem;
 }
 
 .text-left {
@@ -2256,6 +2239,10 @@ video {
   font-size: 14px;
 }
 
+.text-\[16px\] {
+  font-size: 16px;
+}
+
 .text-\[20px\] {
   font-size: 20px;
 }
@@ -2291,14 +2278,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-\[15px\] {
-  font-size: 15px;
-}
-
-.text-\[16px\] {
-  font-size: 16px;
 }
 
 .font-bold {
@@ -2590,6 +2569,10 @@ video {
   transition-duration: 500ms;
 }
 
+.duration-100 {
+  transition-duration: 100ms;
+}
+
 .ease-in {
   transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 }
@@ -2706,14 +2689,6 @@ body {
   max-width: 100%;
   height: auto;
 } */
-
-.first\:border-l-0:first-child {
-  border-left-width: 0px;
-}
-
-.last\:border-b-0:last-child {
-  border-bottom-width: 0px;
-}
 
 .last\:border-r-0:last-child {
   border-right-width: 0px;

@@ -4,16 +4,21 @@
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import scheduledPostsStore from '@/utils/scheduledPostsStore';
 
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
+
+  const isLoading = ref(true);
 
   onMounted(async () => {
+    isLoading.value = false;
+
     try {
       await Promise.all([
         connectionsDataStore.getAllAccounts(),
-        scheduledPostsStore.updateScheduledPostDataStore(),
+        scheduledPostsStore.getAllPostGroups(),
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);
+    } finally {
     }
   });
 </script>
@@ -21,9 +26,12 @@
 <template>
   <DashboardNavigation />
 
-  <main
-    class="ml-[270px] flex h-auto max-w-[1200px] items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
-  >
-    <ScheduleGrid />
-  </main>
+  <transition name="fade" mode="out-in">
+    <main
+      v-if="!isLoading"
+      class="ml-[270px] flex h-auto max-w-[1200px] items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
+    >
+      <ScheduleGrid />
+    </main>
+  </transition>
 </template>

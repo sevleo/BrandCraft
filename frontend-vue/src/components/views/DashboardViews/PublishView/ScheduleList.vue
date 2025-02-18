@@ -297,7 +297,7 @@
       formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
 
       await updatePostBundle(post._id, formData);
-      await scheduledPostsStore.updateScheduledPostDataStore();
+      await scheduledPostsStore.getAllPostGroups();
 
       toast.add({
         severity: 'success',

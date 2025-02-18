@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import { onMounted, computed, ref } from 'vue';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import scheduledPostsStore from '@/utils/scheduledPostsStore';
   import connectionsDataStore from '@/utils/connectionsDataStore';
@@ -9,13 +9,23 @@
 
   const themeStore = useThemeStore();
 
+  const isLoading = ref(true);
+
+  const selectedPost = computed(() => editorDataStore.selectedPost.value);
+  const initialDateTime = computed(() =>
+    editorDataStore.selectedPost.value
+      ? new Date(editorDataStore.selectedPost.value.scheduledTime)
+      : editorDataStore.selectedDateTime.value
+  );
+
   onMounted(async () => {
+    isLoading.value = false;
     themeStore.initializeTheme();
 
     try {
       await Promise.all([
         connectionsDataStore.getAllAccounts(),
-        scheduledPostsStore.updateScheduledPostDataStore(),
+        scheduledPostsStore.getAllPostGroups(),
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);
@@ -29,16 +39,14 @@
   >
     <DashboardNavigation />
 
-    <!-- Post edit view -->
-    <div class="h-full max-h-[800px] w-full">
-      <PostFormBase
-        :selectedPost="editorDataStore.selectedPost.value"
-        :initialDateTime="
-          editorDataStore.selectedPost.value
-            ? new Date(editorDataStore.selectedPost.value.scheduledTime)
-            : editorDataStore.selectedDateTime.value
-        "
-      />
-    </div>
+    <transition name="fade" mode="out-in">
+      <!-- Post edit view -->
+      <div v-if="!isLoading" class="h-full max-h-[800px] w-full">
+        <PostFormBase
+          :selectedPost="selectedPost"
+          :initialDateTime="initialDateTime"
+        />
+      </div>
+    </transition>
   </main>
 </template>

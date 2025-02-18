@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, computed } from 'vue';
   import authData from '@/utils/authDataStore';
   import { logout, verifyAuth } from '@/api/authApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
@@ -19,10 +19,14 @@
     Users,
     MessageCircle,
     User,
+    FilePlus2,
+    LayoutDashboard,
+    Instagram,
+    Youtube,
+    Clock,
   } from 'lucide-vue-next';
-
-  import birdLogoFullGreenBlack from '/bird_logo_full_green_black.svg';
-  import birdLogoFullGreenWhite from '/bird_logo_full_green_white.svg';
+  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import editorDataStore from '@/utils/editorDataStore';
 
   const themeStore = useThemeStore();
 
@@ -46,8 +50,6 @@
     }
   }
 
-  // const currentTheme = computed(() => themeStore.currentTheme);
-
   function toggleTheme() {
     themeStore.toggleTheme();
     // showDropdown.value = false;
@@ -62,6 +64,29 @@
     showDropdown.value = false;
     router.push('/admin');
   }
+  ('2025-02-18T08:29:59.069Z');
+  ('2025-02-18T08:29:59.069Z');
+
+  async function navigateToEditor(post: any) {
+    console.log('Selected post:', post._id);
+    if (router.currentRoute.value.path === '/dashboard/editor') {
+      // If already on editor, update the post first
+      editorDataStore.selectedPost.value = post;
+    } else {
+      // If not on editor, navigate first then update the post
+      await router.push('/dashboard/editor');
+      editorDataStore.selectedPost.value = post;
+    }
+  }
+
+  function formatDate(date: string) {
+    return new Date(date).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
 
   // Close dropdown when clicking outside
   function handleClickOutside(event: MouseEvent) {
@@ -72,6 +97,16 @@
       showDropdown.value = false;
     }
   }
+
+  const selectedPostId = computed(
+    () => editorDataStore.selectedPost.value?._id
+  );
+
+  const sortedDraftPosts = computed(() => {
+    return [...scheduledPostsStore.draftPosts.value].sort((a, b) => {
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+  });
 
   onMounted(async () => {
     await verifyAuth();
@@ -183,6 +218,57 @@
         >
           Publish
         </router-link>
+      </div>
+      <!-- Posts -->
+      <div class="mt-6">
+        <h3 class="mb-2 text-sm font-medium text-gray-500">Draft Posts</h3>
+        <div class="border-layoutSoft border-t">
+          <div
+            v-for="post in sortedDraftPosts"
+            :key="post.id"
+            @click="navigateToEditor(post)"
+            class="border-layoutSoft group flex cursor-pointer flex-col gap-2 border-b bg-[#f5f5f5]"
+            :class="{
+              'bg-white dark:bg-[#d9d9d9]/10': post._id === selectedPostId,
+            }"
+          >
+            <div
+              class="border-l-[3px] px-4 py-2"
+              :class="{
+                'border-l-[#00e676]': post._id === selectedPostId,
+                'border-l-transparent': post._id !== selectedPostId,
+              }"
+            >
+              <!-- Post Content -->
+              <div
+                class="mb-2 line-clamp-2 text-sm text-gray-700 dark:text-gray-300"
+              >
+                {{ post.content }}
+              </div>
+
+              <!-- Post Details -->
+              <div class="flex items-center justify-between text-xs">
+                <!-- Scheduled Time -->
+                <div class="flex items-center text-gray-500 dark:text-gray-400">
+                  <Clock class="mr-1 h-3 w-3" />
+                  {{ formatDate(post.scheduledTime) }}
+                </div>
+
+                <!-- Platforms -->
+                <div class="flex items-center space-x-1">
+                  <Instagram
+                    v-if="post.platforms?.includes('instagram')"
+                    class="h-3 w-3 text-gray-500 dark:text-gray-400"
+                  />
+                  <Youtube
+                    v-if="post.platforms?.includes('youtube')"
+                    class="h-3 w-3 text-gray-500 dark:text-gray-400"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div

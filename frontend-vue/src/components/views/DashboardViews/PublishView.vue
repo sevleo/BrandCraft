@@ -44,7 +44,7 @@
     try {
       await Promise.all([
         connectionsDataStore.getAllAccounts(),
-        scheduledPostsStore.updateScheduledPostDataStore(),
+        scheduledPostsStore.getAllPostGroups(),
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);

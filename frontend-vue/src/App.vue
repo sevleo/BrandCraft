@@ -13,9 +13,9 @@
 
 <template>
   <Toast />
-  <transition name="fade" mode="out-in">
-    <RouterView />
-  </transition>
+  <!-- <transition name="fade" mode="out-in"> -->
+  <RouterView />
+  <!-- </transition> -->
 </template>
 
 <style scoped>
@@ -29,7 +29,9 @@
     display: inline;
     margin-right: 1em;
   }
+</style>
 
+<style>
   /* Transition styles */
   .fade-enter-from {
     opacity: 0;

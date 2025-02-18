@@ -1,66 +1,61 @@
 const mongoose = require("mongoose");
 const appDataConnection = require("../config/MongoDbAppData");
 
-const ScheduledPostGroupSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  scheduledTime: {
-    type: Date,
-  },
-  platforms: [
-    {
+const ScheduledPostGroupSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    scheduledTime: {
+      type: Date,
+    },
+    platforms: [
+      {
+        type: String,
+      },
+    ],
+    sameContent: {
+      type: Boolean,
+      default: true,
+    },
+    content: {
       type: String,
     },
-  ],
-  sameContent: {
-    type: Boolean,
-    default: true,
-  },
-  content: {
-    type: String,
-  },
-  videoTimestamp: {
-    type: Number,
-    default: 0,
-  },
-  mediaFiles: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "MediaFile",
+    videoTimestamp: {
+      type: Number,
+      default: 0,
     },
-  ],
-  status: {
-    type: String,
-    enum: [
-      "pending",
-      "draft",
-      "scheduled",
-      "published",
-      "failed",
-      "partially_published",
+    mediaFiles: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MediaFile",
+      },
     ],
-  },
-  posts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "ScheduledPost",
+    status: {
+      type: String,
+      enum: [
+        "pending",
+        "draft",
+        "scheduled",
+        "published",
+        "failed",
+        "partially_published",
+      ],
     },
-  ],
-  errorMessage: {
-    type: String,
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ScheduledPost",
+      },
+    ],
+    errorMessage: {
+      type: String,
+    },
+    cleanupRequired: { type: Boolean, default: true },
   },
-  cleanupRequired: { type: Boolean, default: true },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { timestamps: true }
+);
 
 // Update the updatedAt timestamp before saving
 ScheduledPostGroupSchema.pre("save", function (next) {

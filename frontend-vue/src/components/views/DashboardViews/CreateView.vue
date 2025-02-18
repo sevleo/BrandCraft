@@ -12,6 +12,8 @@
 
   import { createPostBundle, updatePostBundle } from '@/api/scheduledPostApi';
 
+  const isLoading = ref(true);
+
   const toast = useToast();
 
   const mode = ref<'select' | 'manual' | 'assisted'>('select');
@@ -405,7 +407,7 @@
       });
 
       // Refresh the posts store
-      await scheduledPostsStore.updateScheduledPostDataStore();
+      await scheduledPostsStore.getAllPostGroups();
     } catch (error: any) {
       toast.add({
         severity: 'error',
@@ -421,6 +423,7 @@
   }
 
   onMounted(async () => {
+    isLoading.value = false;
     await connectionsDataStore.getAllAccounts();
   });
 
@@ -476,15 +479,16 @@
 
 <template>
   <DashboardNavigation />
-  <main class="min-h-screen bg-[white] p-6">
-    <div class="mx-auto max-w-2xl">
-      <!-- Mode Selection -->
-      <div v-if="mode === 'select'" class="space-y-6">
-        <h1 class="text-center text-2xl font-bold text-gray-900">
-          How would you like to create your posts?
-        </h1>
-        <div class="grid grid-cols-2 gap-4">
-          <!-- <button
+  <transition name="fade" mode="out-in">
+    <main v-if="!isLoading" class="min-h-screen bg-[white] p-6">
+      <div class="mx-auto max-w-2xl">
+        <!-- Mode Selection -->
+        <div v-if="mode === 'select'" class="space-y-6">
+          <h1 class="text-center text-2xl font-bold text-gray-900">
+            How would you like to create your posts?
+          </h1>
+          <div class="grid grid-cols-2 gap-4">
+            <!-- <button
             @click="startManualMode"
             class="flex flex-col items-center gap-4 rounded-lg border border-gray-200 p-6 text-center shadow-sm transition hover:border-blue-500 hover:shadow-md"
           >
@@ -497,134 +501,134 @@
             </div>
           </button> -->
 
-          <button
-            @click="startAssistedMode"
-            class="flex flex-col items-center gap-4 rounded-lg border border-gray-200 p-6 text-center shadow-sm transition hover:border-blue-500 hover:shadow-md"
-          >
-            <Brain class="h-12 w-12 text-blue-500" />
-            <div>
-              <h3 class="text-lg font-semibold">Assisted Creation</h3>
-              <p class="text-sm text-gray-600">
-                Let us help you plan and create multiple posts
-              </p>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Manual Mode -->
-      <div v-else-if="mode === 'manual'" class="space-y-6">
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-gray-900">
-            Create Posts Manually
-          </h1>
-          <button
-            @click="resetToSelection"
-            class="text-sm text-blue-500 hover:text-blue-600"
-          >
-            Change Mode
-          </button>
-        </div>
-      </div>
-
-      <!-- Assisted Mode -->
-      <div v-else-if="mode === 'assisted'" class="space-y-6">
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-gray-900">
-            Assisted Post Creation
-          </h1>
-          <button
-            @click="resetToSelection"
-            class="text-sm text-blue-500 hover:text-blue-600"
-          >
-            Change Mode
-          </button>
-        </div>
-
-        <!-- Progress Bar -->
-        <div class="mb-8">
-          <div class="mb-2 flex justify-between text-sm text-gray-600">
-            <span>Step {{ step }} of {{ totalSteps }}</span>
-            <span>{{ Math.round((step / totalSteps) * 100) }}%</span>
-          </div>
-          <div class="h-2 w-full rounded-full bg-gray-200">
-            <div
-              class="h-full rounded-full bg-blue-500 transition-all duration-300"
-              :style="{ width: `${(step / totalSteps) * 100}%` }"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Step 1: Campaign Length -->
-        <div v-if="step === 1" class="space-y-4">
-          <h2 class="text-xl font-semibold">
-            How long should the campaign run?
-          </h2>
-          <div class="flex items-center gap-4">
-            <input
-              v-model="campaignLength"
-              type="number"
-              min="1"
-              max="30"
-              class="w-20 rounded-lg border border-gray-300 bg-[white] p-2 text-center"
-              @input="
-                (e) => {
-                  const target = e.target as HTMLInputElement;
-                  const val = parseInt(target.value);
-                  if (val < 1) campaignLength = 1;
-                  if (val > 30) campaignLength = 30;
-                }
-              "
-            />
-            <span class="text-gray-600">days</span>
-          </div>
-          <p class="text-sm text-gray-500">Choose between 1 and 30 days</p>
-        </div>
-
-        <!-- Step 2: Post Frequency -->
-        <div v-if="step === 2" class="space-y-6">
-          <h2 class="text-xl font-semibold">Select posting days</h2>
-
-          <!-- Day tiles -->
-          <div
-            class="grid gap-1.5"
-            :style="{ gridTemplateColumns: `repeat(7, minmax(0, 1fr))` }"
-          >
             <button
-              v-for="i in campaignLength"
-              :key="i - 1"
-              @click="toggleDay(i - 1)"
-              class="flex aspect-square items-center justify-center rounded-md border text-[10px] transition-colors"
-              :class="[
-                selectedDays.includes(i - 1)
-                  ? 'border-blue-500 bg-blue-500'
-                  : 'border-gray-200 hover:border-blue-200',
-              ]"
-              :title="`Day ${i}`"
+              @click="startAssistedMode"
+              class="flex flex-col items-center gap-4 rounded-lg border border-gray-200 p-6 text-center shadow-sm transition hover:border-blue-500 hover:shadow-md"
             >
-              {{ i }}
+              <Brain class="h-12 w-12 text-blue-500" />
+              <div>
+                <h3 class="text-lg font-semibold">Assisted Creation</h3>
+                <p class="text-sm text-gray-600">
+                  Let us help you plan and create multiple posts
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Manual Mode -->
+        <div v-else-if="mode === 'manual'" class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900">
+              Create Posts Manually
+            </h1>
+            <button
+              @click="resetToSelection"
+              class="text-sm text-blue-500 hover:text-blue-600"
+            >
+              Change Mode
+            </button>
+          </div>
+        </div>
+
+        <!-- Assisted Mode -->
+        <div v-else-if="mode === 'assisted'" class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900">
+              Assisted Post Creation
+            </h1>
+            <button
+              @click="resetToSelection"
+              class="text-sm text-blue-500 hover:text-blue-600"
+            >
+              Change Mode
             </button>
           </div>
 
-          <!-- Frequency options -->
-          <div class="space-y-4">
-            <h3 class="font-medium">Quick selection:</h3>
-            <div class="flex flex-wrap gap-2">
+          <!-- Progress Bar -->
+          <div class="mb-8">
+            <div class="mb-2 flex justify-between text-sm text-gray-600">
+              <span>Step {{ step }} of {{ totalSteps }}</span>
+              <span>{{ Math.round((step / totalSteps) * 100) }}%</span>
+            </div>
+            <div class="h-2 w-full rounded-full bg-gray-200">
+              <div
+                class="h-full rounded-full bg-blue-500 transition-all duration-300"
+                :style="{ width: `${(step / totalSteps) * 100}%` }"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Step 1: Campaign Length -->
+          <div v-if="step === 1" class="space-y-4">
+            <h2 class="text-xl font-semibold">
+              How long should the campaign run?
+            </h2>
+            <div class="flex items-center gap-4">
+              <input
+                v-model="campaignLength"
+                type="number"
+                min="1"
+                max="30"
+                class="w-20 rounded-lg border border-gray-300 bg-[white] p-2 text-center"
+                @input="
+                  (e) => {
+                    const target = e.target as HTMLInputElement;
+                    const val = parseInt(target.value);
+                    if (val < 1) campaignLength = 1;
+                    if (val > 30) campaignLength = 30;
+                  }
+                "
+              />
+              <span class="text-gray-600">days</span>
+            </div>
+            <p class="text-sm text-gray-500">Choose between 1 and 30 days</p>
+          </div>
+
+          <!-- Step 2: Post Frequency -->
+          <div v-if="step === 2" class="space-y-6">
+            <h2 class="text-xl font-semibold">Select posting days</h2>
+
+            <!-- Day tiles -->
+            <div
+              class="grid gap-1.5"
+              :style="{ gridTemplateColumns: `repeat(7, minmax(0, 1fr))` }"
+            >
               <button
-                @click="selectAllDays"
-                class="rounded-lg border border-gray-200 px-4 py-2 hover:border-blue-500 hover:bg-blue-50"
+                v-for="i in campaignLength"
+                :key="i - 1"
+                @click="toggleDay(i - 1)"
+                class="flex aspect-square items-center justify-center rounded-md border text-[10px] transition-colors"
+                :class="[
+                  selectedDays.includes(i - 1)
+                    ? 'border-blue-500 bg-blue-500'
+                    : 'border-gray-200 hover:border-blue-200',
+                ]"
+                :title="`Day ${i}`"
               >
-                Every day
+                {{ i }}
               </button>
-              <button
-                v-for="n in [2, 3]"
-                :key="n"
-                @click="selectEveryNthDay(n)"
-                class="rounded-lg border border-gray-200 px-4 py-2 hover:border-blue-500 hover:bg-blue-50"
-              >
-                Every {{ n }} days
-              </button>
-              <!-- <div class="flex items-center gap-2">
+            </div>
+
+            <!-- Frequency options -->
+            <div class="space-y-4">
+              <h3 class="font-medium">Quick selection:</h3>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  @click="selectAllDays"
+                  class="rounded-lg border border-gray-200 px-4 py-2 hover:border-blue-500 hover:bg-blue-50"
+                >
+                  Every day
+                </button>
+                <button
+                  v-for="n in [2, 3]"
+                  :key="n"
+                  @click="selectEveryNthDay(n)"
+                  class="rounded-lg border border-gray-200 px-4 py-2 hover:border-blue-500 hover:bg-blue-50"
+                >
+                  Every {{ n }} days
+                </button>
+                <!-- <div class="flex items-center gap-2">
                 <span>Every</span>
                 <input
                   v-model="customFrequency"
@@ -636,345 +640,349 @@
                 />
                 <span>days</span>
               </div> -->
+              </div>
             </div>
+
+            <p class="text-sm text-gray-600">
+              Selected {{ selectedDays.length }} days out of
+              {{ campaignLength }}
+            </p>
           </div>
 
-          <p class="text-sm text-gray-600">
-            Selected {{ selectedDays.length }} days out of {{ campaignLength }}
-          </p>
-        </div>
+          <!-- Step 3: Posts per Day -->
+          <div v-if="step === 3" class="space-y-4">
+            <h2 class="text-xl font-semibold">How many posts per day?</h2>
+            <div class="space-y-6">
+              <div class="flex items-center gap-4">
+                <input
+                  v-model="postsPerDay"
+                  type="number"
+                  min="1"
+                  max="10"
+                  class="w-20 rounded-lg border border-gray-300 bg-[white] p-2 text-center"
+                />
+                <span class="text-gray-600">posts per day</span>
+              </div>
 
-        <!-- Step 3: Posts per Day -->
-        <div v-if="step === 3" class="space-y-4">
-          <h2 class="text-xl font-semibold">How many posts per day?</h2>
-          <div class="space-y-6">
-            <div class="flex items-center gap-4">
-              <input
-                v-model="postsPerDay"
-                type="number"
-                min="1"
-                max="10"
-                class="w-20 rounded-lg border border-gray-300 bg-[white] p-2 text-center"
-              />
-              <span class="text-gray-600">posts per day</span>
-            </div>
-
-            <div class="space-y-4">
-              <h3 class="text-lg font-medium">Select posting times:</h3>
-              <div class="grid grid-cols-2 gap-6">
-                <div
-                  v-for="(_, index) in postTimes"
-                  :key="index"
-                  class="flex items-center gap-3 rounded-lg border border-gray-100 bg-white p-3"
-                >
-                  <span class="min-w-[80px] text-sm text-gray-600"
-                    >Post {{ index + 1 }}:</span
+              <div class="space-y-4">
+                <h3 class="text-lg font-medium">Select posting times:</h3>
+                <div class="grid grid-cols-2 gap-6">
+                  <div
+                    v-for="(_, index) in postTimes"
+                    :key="index"
+                    class="flex items-center gap-3 rounded-lg border border-gray-100 bg-white p-3"
                   >
-                  <TimePickerInput v-model="postTimes[index]" />
+                    <span class="min-w-[80px] text-sm text-gray-600"
+                      >Post {{ index + 1 }}:</span
+                    >
+                    <TimePickerInput v-model="postTimes[index]" />
+                  </div>
                 </div>
               </div>
             </div>
+
+            <p class="mt-4 text-sm text-gray-600">
+              Total posts to be created: {{ totalPosts }}
+            </p>
           </div>
 
-          <p class="mt-4 text-sm text-gray-600">
-            Total posts to be created: {{ totalPosts }}
-          </p>
-        </div>
-
-        <!-- Step 4: Platforms -->
-        <div v-if="step === 4" class="space-y-4">
-          <h2 class="text-xl font-semibold">Select platforms to post to:</h2>
-          <div class="flex flex-wrap gap-2">
-            <button
-              v-for="account in connectionsDataStore.connectedAccounts.value"
-              :key="account.id"
-              type="button"
-              class="relative flex h-[50px] w-[50px] items-center gap-2 rounded-full text-sm"
-              :class="[
-                selectedPlatforms.includes(account.platform)
-                  ? 'bg-[white] text-white outline outline-[1px] outline-[black]'
-                  : 'bg-white text-black grayscale',
-              ]"
-              @click="togglePlatform(account.platform)"
-            >
-              <img
-                :src="account.profileImageUrl"
-                class="rounded-full p-[3px]"
-                :alt="account.username"
-              />
-              <!-- <img
+          <!-- Step 4: Platforms -->
+          <div v-if="step === 4" class="space-y-4">
+            <h2 class="text-xl font-semibold">Select platforms to post to:</h2>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="account in connectionsDataStore.connectedAccounts.value"
+                :key="account.id"
+                type="button"
+                class="relative flex h-[50px] w-[50px] items-center gap-2 rounded-full text-sm"
+                :class="[
+                  selectedPlatforms.includes(account.platform)
+                    ? 'bg-[white] text-white outline outline-[1px] outline-[black]'
+                    : 'bg-white text-black grayscale',
+                ]"
+                @click="togglePlatform(account.platform)"
+              >
+                <img
+                  :src="account.profileImageUrl"
+                  class="rounded-full p-[3px]"
+                  :alt="account.username"
+                />
+                <!-- <img
                 :src="account.platformIcon"
                 class="absolute bottom-0 right-0 h-5 w-5 rounded-full border border-black bg-black p-[4px]"
                 :alt="account.platform"
               /> -->
-            </button>
-          </div>
-        </div>
-
-        <!-- Step 5: Post Grid -->
-        <div v-if="step === 5" class="space-y-4">
-          <h2 class="mb-4 text-xl font-semibold">Create Your Posts</h2>
-          <div class="grid grid-cols-1 gap-6">
-            <div
-              v-for="(post, index) in posts"
-              :key="index"
-              class="scheduling-form rounded-lg border p-4 shadow-sm"
-              :class="{
-                locked: !post.isEditing,
-                'border-gray-200 bg-white': post.isEditing,
-                'border-yellow-200 bg-yellow-50':
-                  !post.isEditing && post.status === 'scheduled',
-                'border-gray-200 bg-gray-50':
-                  !post.isEditing && post.status === 'draft',
-              }"
-            >
-              <div class="mb-4">
-                <h3 class="mb-2 text-lg font-medium">Post {{ index + 1 }}</h3>
-
-                <!-- Platform Selection -->
-                <div class="mb-4">
-                  <div class="flex flex-wrap gap-2">
-                    <PlatformButton
-                      v-for="account in connectionsDataStore.connectedAccounts
-                        .value"
-                      :key="account.id"
-                      :account="account"
-                      :is-selected="
-                        postPlatforms[index].includes(account.platform)
-                      "
-                      :onClick="
-                        () =>
-                          post.isEditing &&
-                          togglePostPlatform(index, account.platform)
-                      "
-                      :disabled="!post.isEditing"
-                    />
-                  </div>
-                </div>
-
-                <!-- Content and Media -->
-                <div class="mb-4">
-                  <div class="relative">
-                    <textarea
-                      v-model="post.content"
-                      rows="4"
-                      :maxlength="getMaxCharacterLimit(post.selectedPlatforms)"
-                      :class="{
-                        'border-red-500': isOverCharacterLimit(
-                          post.content,
-                          post.selectedPlatforms
-                        ),
-                        'opacity-50': !post.isEditing,
-                      }"
-                      :disabled="!post.isEditing"
-                      class="w-full resize-none rounded-lg border border-gray-200 bg-white p-2 text-black"
-                      placeholder="Write your post content..."
-                    ></textarea>
-                    <div class="mt-2 flex items-center justify-between gap-2">
-                      <div class="flex items-center gap-2">
-                        <button
-                          @click="() => handlePhotoUpload(index)"
-                          :disabled="!post.isEditing"
-                          class="flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700 transition"
-                          :class="
-                            post.isEditing ? 'hover:bg-gray-50' : 'opacity-50'
-                          "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          Photo
-                        </button>
-                        <button
-                          @click="() => handleVideoUpload()"
-                          :disabled="!post.isEditing"
-                          class="flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700 transition"
-                          :class="
-                            post.isEditing ? 'hover:bg-gray-50' : 'opacity-50'
-                          "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                            />
-                          </svg>
-                          Video
-                        </button>
-                        <button
-                          @click="() => handleEmojiSelect()"
-                          :disabled="!post.isEditing"
-                          class="flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700 transition"
-                          :class="
-                            post.isEditing ? 'hover:bg-gray-50' : 'opacity-50'
-                          "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          Emoji
-                        </button>
-                      </div>
-                      <div
-                        class="text-sm"
-                        :class="{
-                          'text-red-500': isOverCharacterLimit(
-                            post.content,
-                            post.selectedPlatforms
-                          ),
-                        }"
-                      >
-                        {{ post.content.length }}/{{
-                          getMaxCharacterLimit(post.selectedPlatforms) ===
-                          Infinity
-                            ? '∞'
-                            : getMaxCharacterLimit(post.selectedPlatforms)
-                        }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Date and Time Picker -->
-                <div class="mb-4">
-                  <DatePicker
-                    v-model="post.scheduledTime"
-                    :showTime="true"
-                    :showIcon="true"
-                    :disabled="!post.isEditing"
-                    dateFormat="dd/mm/yy"
-                    class="w-full"
-                  />
-                </div>
-
-                <!-- Media Preview -->
-                <div v-if="post.mediaPreviewUrls.length > 0" class="mb-4">
-                  <div class="flex flex-wrap gap-2">
-                    <div
-                      v-for="(url, mediaIndex) in post.mediaPreviewUrls"
-                      :key="mediaIndex"
-                      class="relative"
-                    >
-                      <img
-                        :src="url"
-                        class="h-20 w-20 rounded-lg object-cover"
-                        alt="Media preview"
-                      />
-                      <button
-                        v-if="post.isEditing"
-                        @click="() => removeMedia(index, mediaIndex)"
-                        class="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Status and Action Buttons -->
-                <div class="mt-4 flex items-center gap-4">
-                  <Dropdown
-                    v-model="post.status"
-                    :options="postStatusOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select Status"
-                    :disabled="!post.isEditing"
-                    class="w-40"
-                  />
-                  <button
-                    v-if="post.isEditing"
-                    @click="handleSavePost(index)"
-                    class="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  >
-                    {{ post.id ? 'Update' : 'Save' }}
-                  </button>
-                  <button
-                    v-else
-                    @click="toggleEditMode(index)"
-                    class="flex items-center gap-2 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                  >
-                    <Pencil class="h-4 w-4" />
-                    Edit
-                  </button>
-                </div>
-              </div>
+              </button>
             </div>
           </div>
 
-          <div class="mt-8 flex justify-between">
+          <!-- Step 5: Post Grid -->
+          <div v-if="step === 5" class="space-y-4">
+            <h2 class="mb-4 text-xl font-semibold">Create Your Posts</h2>
+            <div class="grid grid-cols-1 gap-6">
+              <div
+                v-for="(post, index) in posts"
+                :key="index"
+                class="scheduling-form rounded-lg border p-4 shadow-sm"
+                :class="{
+                  locked: !post.isEditing,
+                  'border-gray-200 bg-white': post.isEditing,
+                  'border-yellow-200 bg-yellow-50':
+                    !post.isEditing && post.status === 'scheduled',
+                  'border-gray-200 bg-gray-50':
+                    !post.isEditing && post.status === 'draft',
+                }"
+              >
+                <div class="mb-4">
+                  <h3 class="mb-2 text-lg font-medium">Post {{ index + 1 }}</h3>
+
+                  <!-- Platform Selection -->
+                  <div class="mb-4">
+                    <div class="flex flex-wrap gap-2">
+                      <PlatformButton
+                        v-for="account in connectionsDataStore.connectedAccounts
+                          .value"
+                        :key="account.id"
+                        :account="account"
+                        :is-selected="
+                          postPlatforms[index].includes(account.platform)
+                        "
+                        :onClick="
+                          () =>
+                            post.isEditing &&
+                            togglePostPlatform(index, account.platform)
+                        "
+                        :disabled="!post.isEditing"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Content and Media -->
+                  <div class="mb-4">
+                    <div class="relative">
+                      <textarea
+                        v-model="post.content"
+                        rows="4"
+                        :maxlength="
+                          getMaxCharacterLimit(post.selectedPlatforms)
+                        "
+                        :class="{
+                          'border-red-500': isOverCharacterLimit(
+                            post.content,
+                            post.selectedPlatforms
+                          ),
+                          'opacity-50': !post.isEditing,
+                        }"
+                        :disabled="!post.isEditing"
+                        class="w-full resize-none rounded-lg border border-gray-200 bg-white p-2 text-black"
+                        placeholder="Write your post content..."
+                      ></textarea>
+                      <div class="mt-2 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                          <button
+                            @click="() => handlePhotoUpload(index)"
+                            :disabled="!post.isEditing"
+                            class="flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700 transition"
+                            :class="
+                              post.isEditing ? 'hover:bg-gray-50' : 'opacity-50'
+                            "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            Photo
+                          </button>
+                          <button
+                            @click="() => handleVideoUpload()"
+                            :disabled="!post.isEditing"
+                            class="flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700 transition"
+                            :class="
+                              post.isEditing ? 'hover:bg-gray-50' : 'opacity-50'
+                            "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                              />
+                            </svg>
+                            Video
+                          </button>
+                          <button
+                            @click="() => handleEmojiSelect()"
+                            :disabled="!post.isEditing"
+                            class="flex items-center gap-1 rounded-md border px-2 py-1 text-sm text-gray-700 transition"
+                            :class="
+                              post.isEditing ? 'hover:bg-gray-50' : 'opacity-50'
+                            "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            Emoji
+                          </button>
+                        </div>
+                        <div
+                          class="text-sm"
+                          :class="{
+                            'text-red-500': isOverCharacterLimit(
+                              post.content,
+                              post.selectedPlatforms
+                            ),
+                          }"
+                        >
+                          {{ post.content.length }}/{{
+                            getMaxCharacterLimit(post.selectedPlatforms) ===
+                            Infinity
+                              ? '∞'
+                              : getMaxCharacterLimit(post.selectedPlatforms)
+                          }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Date and Time Picker -->
+                  <div class="mb-4">
+                    <DatePicker
+                      v-model="post.scheduledTime"
+                      :showTime="true"
+                      :showIcon="true"
+                      :disabled="!post.isEditing"
+                      dateFormat="dd/mm/yy"
+                      class="w-full"
+                    />
+                  </div>
+
+                  <!-- Media Preview -->
+                  <div v-if="post.mediaPreviewUrls.length > 0" class="mb-4">
+                    <div class="flex flex-wrap gap-2">
+                      <div
+                        v-for="(url, mediaIndex) in post.mediaPreviewUrls"
+                        :key="mediaIndex"
+                        class="relative"
+                      >
+                        <img
+                          :src="url"
+                          class="h-20 w-20 rounded-lg object-cover"
+                          alt="Media preview"
+                        />
+                        <button
+                          v-if="post.isEditing"
+                          @click="() => removeMedia(index, mediaIndex)"
+                          class="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Status and Action Buttons -->
+                  <div class="mt-4 flex items-center gap-4">
+                    <Dropdown
+                      v-model="post.status"
+                      :options="postStatusOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Select Status"
+                      :disabled="!post.isEditing"
+                      class="w-40"
+                    />
+                    <button
+                      v-if="post.isEditing"
+                      @click="handleSavePost(index)"
+                      class="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                      {{ post.id ? 'Update' : 'Save' }}
+                    </button>
+                    <button
+                      v-else
+                      @click="toggleEditMode(index)"
+                      class="flex items-center gap-2 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    >
+                      <Pencil class="h-4 w-4" />
+                      Edit
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button
+                @click="previousStep"
+                class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 transition hover:bg-gray-300"
+              >
+                Previous
+              </button>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div v-if="step < 5" class="flex justify-between pt-6">
             <button
+              v-if="step > 1"
               @click="previousStep"
-              class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 transition hover:bg-gray-300"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
             >
               Previous
             </button>
+            <button
+              v-if="step < totalSteps"
+              @click="nextStep"
+              class="ml-auto rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            >
+              Next
+            </button>
           </div>
         </div>
-
-        <!-- Navigation Buttons -->
-        <div v-if="step < 5" class="flex justify-between pt-6">
-          <button
-            v-if="step > 1"
-            @click="previousStep"
-            class="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          <button
-            v-if="step < totalSteps"
-            @click="nextStep"
-            class="ml-auto rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-          >
-            Next
-          </button>
-        </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </transition>
 </template>
 
 <style scoped></style>

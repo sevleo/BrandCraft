@@ -1,0 +1,325 @@
+[
+  {
+    "_id": "67b44506e993b84ace1fa31a",
+    "scheduledTime": "2025-02-22T15:06:00.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "ttt",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b44507e993b84ace1fa31d",
+        "content": "ttt",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b432764e592273ff753db7",
+    "scheduledTime": "2025-02-21T15:00:00.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "qeqe",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b432764e592273ff753dba",
+        "content": "qeqe",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b446e6e993b84ace1fa6d4",
+    "scheduledTime": "2025-02-20T16:12:00.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "11pm",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "scheduled",
+    "posts": [
+      {
+        "_id": "67b446e6e993b84ace1fa6d7",
+        "content": "11pm",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "scheduled"
+      }
+    ]
+  },
+  {
+    "_id": "67b3586fef3cf56ed9af3a90",
+    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "platforms": [
+      "twitter-1878505319028207600",
+      "twitter-1856553601583460400",
+      "threads-9032919996762280"
+    ],
+    "sameContent": true,
+    "content": "2eqe",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b3586fef3cf56ed9af3a99",
+        "content": "2eqe",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      },
+      {
+        "_id": "67b419514e592273ff753c6b",
+        "content": "2eqe",
+        "platform": "twitter",
+        "platformId": "1856553601583460400",
+        "status": "draft"
+      },
+      {
+        "_id": "67b419514e592273ff753c6c",
+        "content": "2eqe",
+        "platform": "threads",
+        "platformId": "9032919996762280",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b3586fef3cf56ed9af3a96",
+    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "platforms": [
+      "twitter-1878505319028207600",
+      "bluesky-did:plc:z4dora24q37ypuivxdbk7cms",
+      "threads-9032919996762280"
+    ],
+    "sameContent": true,
+    "content": "test",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b3586fef3cf56ed9af3a9f",
+        "content": "test",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      },
+      {
+        "_id": "67b43fe3e993b84ace1f9e45",
+        "content": "test",
+        "platform": "bluesky",
+        "platformId": "did:plc:z4dora24q37ypuivxdbk7cms",
+        "status": "draft"
+      },
+      {
+        "_id": "67b43fe3e993b84ace1f9e46",
+        "content": "test",
+        "platform": "threads",
+        "platformId": "9032919996762280",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b3586fef3cf56ed9af3aa1",
+    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "2eqe",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b3586fef3cf56ed9af3aa7",
+        "content": "2eqe",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b3586fef3cf56ed9af3ab7",
+    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "platforms": [
+      "twitter-1878505319028207600",
+      "threads-9032919996762280",
+      "bluesky-did:plc:z4dora24q37ypuivxdbk7cms"
+    ],
+    "sameContent": true,
+    "content": "2eqe",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b3586fef3cf56ed9af3abf",
+        "content": "2eqe",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      },
+      {
+        "_id": "67b43fd7e993b84ace1f9def",
+        "content": "2eqe",
+        "platform": "threads",
+        "platformId": "9032919996762280",
+        "status": "draft"
+      },
+      {
+        "_id": "67b43fd7e993b84ace1f9df0",
+        "content": "2eqe",
+        "platform": "bluesky",
+        "platformId": "did:plc:z4dora24q37ypuivxdbk7cms",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b3586fef3cf56ed9af3aba",
+    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "2eqe",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b3586fef3cf56ed9af3ac3",
+        "content": "2eqe",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b35870ef3cf56ed9af3ad3",
+    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "2eqe",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b35870ef3cf56ed9af3adb",
+        "content": "2eqe",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b446fde993b84ace1fa743",
+    "scheduledTime": "2025-02-20T12:38:14.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "qq",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b446fde993b84ace1fa746",
+        "content": "qq",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ]
+  },
+  {
+    "_id": "67b441cfe993b84ace1fa0a8",
+    "scheduledTime": "2025-02-18T08:16:23.993Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "test 5",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "published",
+    "posts": [
+      {
+        "_id": "67b441cfe993b84ace1fa0ab",
+        "content": "test 5",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "published",
+        "errorMessage": null
+      }
+    ]
+  },
+  {
+    "_id": "67b05e35fe41a7ebde18da31",
+    "scheduledTime": "2025-02-15T09:28:21.197Z",
+    "platforms": ["threads-9032919996762280"],
+    "sameContent": true,
+    "content": "test",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "published",
+    "posts": [
+      {
+        "_id": "67b05e35fe41a7ebde18da34",
+        "content": "test",
+        "platform": "threads",
+        "platformId": "9032919996762280",
+        "status": "published",
+        "errorMessage": null
+      }
+    ]
+  },
+  {
+    "_id": "67ac5f7d7facccecb65b19e2",
+    "scheduledTime": "2025-02-12T08:44:45.556Z",
+    "platforms": [
+      "bluesky-did:plc:z4dora24q37ypuivxdbk7cms",
+      "threads-9032919996762280"
+    ],
+    "sameContent": true,
+    "content": "Added emoji support to Brandcraft 🫡",
+    "videoTimestamp": 0,
+    "mediaFiles": [
+      {
+        "_id": "67ac5f7e7facccecb65b19e4",
+        "url": "https://media.brandcraft.art/1739349885657-0-67a8d6fa778990fac7c8aaf9",
+        "fileName": "1739349885657-0-67a8d6fa778990fac7c8aaf9",
+        "size": 131957,
+        "type": "image"
+      }
+    ],
+    "status": "published",
+    "posts": [
+      {
+        "_id": "67ac5f7f7facccecb65b19e7",
+        "content": "Added emoji support to Brandcraft 🫡",
+        "platform": "bluesky",
+        "platformId": "did:plc:z4dora24q37ypuivxdbk7cms",
+        "status": "published",
+        "errorMessage": null
+      },
+      {
+        "_id": "67ac5f7f7facccecb65b19e8",
+        "content": "Added emoji support to Brandcraft 🫡",
+        "platform": "threads",
+        "platformId": "9032919996762280",
+        "status": "published",
+        "errorMessage": null
+      }
+    ]
+  }
+]

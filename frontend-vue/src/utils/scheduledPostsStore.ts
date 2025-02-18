@@ -102,7 +102,11 @@ const filteredPosts = computed(() => {
   return filteredPosts;
 });
 
-async function updateScheduledPostDataStore() {
+const draftPosts = computed(() =>
+  scheduledPosts.value.filter((post) => post.status === 'draft')
+);
+
+async function getAllPostGroups() {
   try {
     const response = await getScheduledPosts();
     scheduledPosts.value = response.postGroups;
@@ -190,6 +194,7 @@ function setPredefinedRange(rangeName: keyof typeof predefinedRanges) {
 
 export default {
   scheduledPosts,
+  draftPosts,
   postStats,
   animatedTotalGroups,
   animatedTotalPosts,
@@ -198,7 +203,7 @@ export default {
   animatedDraftPosts,
   animatedFailedPosts,
   filteredPosts,
-  updateScheduledPostDataStore,
+  getAllPostGroups,
   updatePostStats,
   setDateRange,
   setPredefinedRange,

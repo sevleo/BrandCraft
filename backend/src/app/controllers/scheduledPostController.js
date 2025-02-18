@@ -182,7 +182,10 @@ exports.updateScheduledPost = async (req, res) => {
         _id: id,
         userId,
       },
-      { status: "pending" },
+      { 
+        status: "pending",
+        $currentDate: { updatedAt: true }
+      },
       { new: true }
     );
 
@@ -432,7 +435,7 @@ exports.getScheduledPosts = async (req, res) => {
         select: "url key fileName mimeType size type",
       })
       .select(
-        "scheduledTime platforms mediaFiles status content sameContent videoTimestamp"
+        "scheduledTime platforms mediaFiles status content sameContent videoTimestamp updatedAt"
       );
 
     res.json({
