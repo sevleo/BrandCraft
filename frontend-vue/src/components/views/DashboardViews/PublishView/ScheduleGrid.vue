@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, nextTick } from 'vue';
   import { format } from 'date-fns';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import scheduledPostsStore from '@/utils/scheduledPostsStore';
@@ -331,7 +331,7 @@
     router.push('/dashboard/editor');
   }
 
-  function handleTimeSlotClick(time: string, day: WeekDay) {
+  async function handleTimeSlotClick(time: string, day: WeekDay) {
     const today = new Date();
     const selectedDay = weekDays.indexOf(day);
     const [hours, minutes] = time.split(':').map(Number);
@@ -350,6 +350,7 @@
     }
     editorDataStore.selectedDateTime.value = targetDate;
     console.log('Selected Date:', editorDataStore.selectedDateTime.value);
+    await nextTick();
     router.push('/dashboard/editor');
   }
 </script>

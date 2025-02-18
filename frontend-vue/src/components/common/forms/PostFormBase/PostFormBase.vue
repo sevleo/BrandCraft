@@ -18,36 +18,29 @@
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
   import editorDataStore from '@/utils/editorDataStore';
 
+  const toast = useToast();
+
   const isLoading = ref(true);
 
-  onUnmounted(() => {
-    editorDataStore.reset();
-  });
-
-  const scheduledTime = ref<Date | null>(
-    editorDataStore.selectedPost.value?.initialDateTime
-      ? new Date(editorDataStore.selectedPost.value.initialDateTime)
-      : null
-  );
+  // onUnmounted(() => {
+  //   console.log('unmounted');
+  //   editorDataStore.reset();
+  // });
 
   const selectedMedia = ref<File[]>([]);
-  const mediaPreviewUrls = ref<string[]>(
-    editorDataStore.selectedPost.value?.mediaFiles?.map((m: any) => m.url) || []
-  );
-  const initialMediaUrls = ref<string[]>(
-    editorDataStore.selectedPost.value?.mediaFiles?.map((m: any) => m.url) || []
-  );
-  const toast = useToast();
   const currentMediaType = ref<'image' | 'video' | null>(
     editorDataStore.selectedPost.value?.mediaFiles[0]?.type || null
   );
+
+  const videoTimestamp = ref<number>(
+    editorDataStore.selectedPost.value?.videoTimestamp || 0
+  );
+
   const uploadProgress = ref<number>(0);
   const isUploading = ref<boolean>(false);
   const videoS3Key = ref<string | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
-  const videoTimestamp = ref<number>(
-    editorDataStore.selectedPost.value?.videoTimestamp || 0
-  );
+
   const handleVideoRefUpdate = (ref: HTMLVideoElement | null) => {
     videoRef.value = ref;
   };
@@ -150,7 +143,7 @@
       )
     ) {
       // 1. Check if media is uploaded
-      if (mediaPreviewUrls.value.length === 0) {
+      if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
         errors.push('Please upload a video for your TikTok post');
       } else if (
         currentMediaType.value === 'video' &&
@@ -190,7 +183,7 @@
       )
     ) {
       // 1. Check if media is uploaded
-      if (mediaPreviewUrls.value.length === 0) {
+      if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
         errors.push('Please upload a video or image for your Instagram post');
       }
 
@@ -243,8 +236,8 @@
       // In edit mode with existing video (no new upload), allow saving
       if (
         editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type === 'video' &&
-        mediaPreviewUrls.value.length > 0 &&
-        mediaPreviewUrls.value[0] ===
+        editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0 &&
+        editorDataStore.selectedPost.value.mediaPreviewUrls[0] ===
           editorDataStore.selectedPost?.value.mediaFiles?.[0]?.url
       ) {
         return validationErrors.value.length === 0;
@@ -283,7 +276,7 @@
 
       // If it's a video, only allow one video per post
       if (isVideo) {
-        if (mediaPreviewUrls.value.length > 0) {
+        if (editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0) {
           toast.add({
             severity: 'warn',
             summary: 'Media limit exceeded',
@@ -305,7 +298,7 @@
         }
 
         const url = URL.createObjectURL(videoFile);
-        mediaPreviewUrls.value = [url];
+        editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
         selectedMedia.value = [videoFile];
         currentMediaType.value = 'video';
 
@@ -340,7 +333,8 @@
 
       // For images, keep existing logic with 4 images max
       const totalAllowedMedia = 4;
-      const currentMediaCount = mediaPreviewUrls.value.length;
+      const currentMediaCount =
+        editorDataStore.selectedPost.value.mediaPreviewUrls.length;
       const remainingSlots = totalAllowedMedia - currentMediaCount;
 
       if (remainingSlots <= 0) {
@@ -360,18 +354,22 @@
       // Create preview URLs
       newFiles.forEach((file) => {
         const url = URL.createObjectURL(file);
-        mediaPreviewUrls.value.push(url);
+        editorDataStore.selectedPost.value.mediaPreviewUrls.push(url);
       });
     }
   }
 
   function removeMedia(index: number) {
-    const urlToRemove = mediaPreviewUrls.value[index];
-    const isInitialMedia = initialMediaUrls.value.includes(urlToRemove);
+    const urlToRemove =
+      editorDataStore.selectedPost.value.mediaPreviewUrls[index];
+    const isInitialMedia =
+      editorDataStore.selectedPost.value.initialMediaUrls.includes(urlToRemove);
 
     // Remove URL from preview
-    URL.revokeObjectURL(mediaPreviewUrls.value[index]);
-    mediaPreviewUrls.value.splice(index, 1);
+    URL.revokeObjectURL(
+      editorDataStore.selectedPost.value.mediaPreviewUrls[index]
+    );
+    editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
 
     // Only remove from selectedMedia if it's not an initial media
     if (!isInitialMedia) {
@@ -379,7 +377,7 @@
     }
 
     // Reset currentMediaType if no media left
-    if (mediaPreviewUrls.value.length === 0) {
+    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
       currentMediaType.value = null;
     }
   }
@@ -490,7 +488,7 @@
       );
       formData.append(
         'scheduledTime',
-        scheduledTime.value?.toISOString() || ''
+        editorDataStore.selectedDateTime.value?.toISOString() || ''
       );
       formData.append(
         'platforms',
@@ -509,9 +507,10 @@
 
       // Handle media
       if (action === 'update') {
-        const keptMediaUrls = mediaPreviewUrls.value.filter((url) =>
-          initialMediaUrls.value.includes(url)
-        );
+        const keptMediaUrls =
+          editorDataStore.selectedPost.value.mediaPreviewUrls.filter((url) =>
+            editorDataStore.selectedPost.value.initialMediaUrls.includes(url)
+          );
         formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
       }
 
@@ -679,7 +678,7 @@
   };
 
   onMounted(async () => {
-    console.log(scheduledTime.value);
+    console.log(editorDataStore.selectedDateTime.value);
     console.log('ss');
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
@@ -700,30 +699,39 @@
     await nextTick(() => {
       isLoading.value = false;
     });
-
-    if (!editorDataStore.selectedPost.value) {
-      scheduledTime.value = null; // Explicitly set null after the DOM is updated
-    }
   });
 
   // Watch for changes in selectedPost
   watch(
     () => editorDataStore.selectedPost.value,
-
     (newPost) => {
       if (newPost) {
-        scheduledTime.value = editorDataStore.selectedDateTime?.value || null;
-        editorDataStore.selectedPost.value!.platforms = newPost.platforms || [];
-        mediaPreviewUrls.value =
+        // Priority: If user clicked an existing draft, use its scheduled time
+        if (newPost.scheduledTime) {
+          editorDataStore.selectedDateTime.value = new Date(
+            newPost.scheduledTime
+          );
+        }
+        // Otherwise, if user clicked a timeslot, keep the selectedDateTime
+        else if (editorDataStore.selectedDateTime.value) {
+          // Do nothing, preserve the timeslot date
+        }
+        // If neither exists, keep it null
+        else {
+          editorDataStore.selectedDateTime.value = null;
+        }
+
+        // Sync other data
+        editorDataStore.selectedPost.value.platforms = newPost.platforms || [];
+        editorDataStore.selectedPost.value.mediaPreviewUrls =
           newPost.mediaFiles?.map((m: any) => m.url) || [];
-        initialMediaUrls.value =
+        editorDataStore.selectedPost.value.initialMediaUrls =
           newPost.mediaFiles?.map((m: any) => m.url) || [];
         currentMediaType.value = newPost.mediaFiles?.[0]?.type || null;
         videoTimestamp.value = newPost.videoTimestamp || 0;
         status.value = newPost.status || 'draft';
       }
     },
-
     { immediate: true }
   );
 </script>
@@ -883,9 +891,9 @@
 
               <div class="mb-4 mt-4 flex w-full gap-5">
                 <BaseButton @click=""> Back </BaseButton>
-                {{ scheduledTime }}
+                {{ editorDataStore.selectedDateTime.value }}
                 <DatePicker
-                  v-model="scheduledTime"
+                  v-model="editorDataStore.selectedDateTime.value"
                   showTime
                   showIcon
                   :showSeconds="false"
@@ -949,9 +957,11 @@
         class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#313131]"
       >
         <PreviewComponent
-          :content="editorDataStore.selectedPost.value?.content || ''"
-          :selected-platforms="editorDataStore.selectedPost.value?.platforms"
-          :media-preview-urls="mediaPreviewUrls"
+          :content="editorDataStore.selectedPost.value.content"
+          :selected-platforms="editorDataStore.selectedPost.value.platforms"
+          :media-preview-urls="
+            editorDataStore.selectedPost.value.mediaPreviewUrls
+          "
           :current-media-type="currentMediaType"
           :initial-video-timestamp="videoTimestamp"
           @update:videoRef="handleVideoRefUpdate"
