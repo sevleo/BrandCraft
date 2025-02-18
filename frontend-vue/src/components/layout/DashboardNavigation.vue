@@ -64,8 +64,6 @@
     showDropdown.value = false;
     router.push('/admin');
   }
-  ('2025-02-18T08:29:59.069Z');
-  ('2025-02-18T08:29:59.069Z');
 
   async function navigateToEditor(post: any) {
     console.log('Selected post:', post._id);
@@ -77,6 +75,12 @@
       await router.push('/dashboard/editor');
       editorDataStore.selectedPost.value = post;
     }
+  }
+
+  async function handleNewDraft() {
+    // If not on editor, navigate first then reset
+    await router.push('/dashboard/editor');
+    editorDataStore.reset();
   }
 
   function formatDate(date: string) {
@@ -198,16 +202,16 @@
       </div>
       <!-- Navigation Links -->
       <div class="border-layoutSoft mt-6 flex flex-col space-y-4 border-b px-4">
-        <router-link
-          to="/dashboard/editor"
+        <button
+          @click="handleNewDraft"
           class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
           :class="{
             'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
-              $route.path === '/dashboard/editor',
+              $route.path === '/dashboard/editor' && !selectedPostId,
           }"
         >
           <span class="font-medium">+ New draft</span>
-        </router-link>
+        </button>
         <router-link
           to="/dashboard/publish"
           class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"

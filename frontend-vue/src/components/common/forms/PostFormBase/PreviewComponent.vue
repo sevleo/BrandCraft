@@ -31,7 +31,7 @@
   };
 
   const props = defineProps<{
-    selectedPlatforms: string[];
+    selectedPlatforms: string[] | undefined;
     content: string;
     mediaPreviewUrls: string[];
     currentMediaType: 'image' | 'video' | null;

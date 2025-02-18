@@ -19,39 +19,35 @@
   import editorDataStore from '@/utils/editorDataStore';
 
   const isLoading = ref(true);
-  const postKey = computed(() => props.selectedPost?._id || 'new');
-
-  const props = defineProps<{
-    selectedPost?: any;
-    initialDateTime?: Date | null;
-  }>();
 
   onUnmounted(() => {
-    editorDataStore.selectedPost.value = null;
-    editorDataStore.selectedDateTime.value = null;
+    editorDataStore.reset();
   });
 
-  const content = ref<string>(props.selectedPost?.content || '');
-  const scheduledTime = ref<Date>(
-    props.initialDateTime instanceof Date ? props.initialDateTime : new Date()
+  const scheduledTime = ref<Date | null>(
+    editorDataStore.selectedPost.value?.initialDateTime
+      ? new Date(editorDataStore.selectedPost.value.initialDateTime)
+      : null
   );
-  const selectedPlatforms = ref<string[]>(props.selectedPost?.platforms || []);
+
   const selectedMedia = ref<File[]>([]);
   const mediaPreviewUrls = ref<string[]>(
-    props.selectedPost?.mediaFiles?.map((m: any) => m.url) || []
+    editorDataStore.selectedPost.value?.mediaFiles?.map((m: any) => m.url) || []
   );
   const initialMediaUrls = ref<string[]>(
-    props.selectedPost?.mediaFiles?.map((m: any) => m.url) || []
+    editorDataStore.selectedPost.value?.mediaFiles?.map((m: any) => m.url) || []
   );
   const toast = useToast();
   const currentMediaType = ref<'image' | 'video' | null>(
-    props.selectedPost?.mediaFiles[0]?.type || null
+    editorDataStore.selectedPost.value?.mediaFiles[0]?.type || null
   );
   const uploadProgress = ref<number>(0);
   const isUploading = ref<boolean>(false);
   const videoS3Key = ref<string | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
-  const videoTimestamp = ref<number>(props.selectedPost?.videoTimestamp || 0);
+  const videoTimestamp = ref<number>(
+    editorDataStore.selectedPost.value?.videoTimestamp || 0
+  );
   const handleVideoRefUpdate = (ref: HTMLVideoElement | null) => {
     videoRef.value = ref;
   };
@@ -86,9 +82,9 @@
   });
 
   // Populate settings from InitialPosts
-  if (props.selectedPost?.posts) {
+  if (editorDataStore.selectedPost.value?.posts) {
     // Populate TikTok settings from initialPosts if available
-    const tiktokPost = props.selectedPost.posts.find(
+    const tiktokPost = editorDataStore.selectedPost.value.posts.find(
       (post: any) => post.platform === 'tiktok'
     );
     if (tiktokPost?.platformSettings?.tiktok) {
@@ -107,7 +103,7 @@
     }
 
     // Populate Instagram settings from initialPosts if available
-    const instagramPost = props.selectedPost.posts.find(
+    const instagramPost = editorDataStore.selectedPost.value.posts.find(
       (post: any) => post.platform === 'instagram'
     );
     if (instagramPost?.platformSettings?.instagram) {
@@ -116,7 +112,7 @@
       };
     }
 
-    const youtubePost = props.selectedPost.posts.find(
+    const youtubePost = editorDataStore.selectedPost.value.posts.find(
       (post: any) => post.platform === 'youtube'
     );
     if (youtubePost?.platformSettings?.youtube) {
@@ -148,7 +144,11 @@
     }
 
     // TikTok errors
-    if (selectedPlatforms.value.some((p) => p.startsWith('tiktok'))) {
+    if (
+      editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+        p.startsWith('tiktok')
+      )
+    ) {
       // 1. Check if media is uploaded
       if (mediaPreviewUrls.value.length === 0) {
         errors.push('Please upload a video for your TikTok post');
@@ -184,7 +184,11 @@
     }
 
     // Instagram errors
-    if (selectedPlatforms.value.some((p) => p.startsWith('instagram'))) {
+    if (
+      editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+        p.startsWith('instagram')
+      )
+    ) {
       // 1. Check if media is uploaded
       if (mediaPreviewUrls.value.length === 0) {
         errors.push('Please upload a video or image for your Instagram post');
@@ -226,39 +230,22 @@
     return Math.floor(videoRef.value.duration) <= maxDuration;
   });
 
-  const PLATFORM_LIMITS = {
-    twitter: 280,
-    threads: 500,
-    bluesky: 300,
-  };
-  const status = ref<string>(props.selectedPost?.status || 'draft');
+  const status = ref<string>(
+    editorDataStore.selectedPost.value?.status || 'draft'
+  );
   const statusOptions = [
     { label: 'Scheduled', value: 'scheduled' },
     { label: 'Draft', value: 'draft' },
   ];
-  const maxCharacterLimit = computed(() => {
-    if (selectedPlatforms.value.length === 0) return Infinity;
-    return Math.min(
-      ...selectedPlatforms.value.map(
-        (platform) =>
-          PLATFORM_LIMITS[
-            platform.toLowerCase() as keyof typeof PLATFORM_LIMITS
-          ]
-      )
-    );
-  });
-
-  const isOverCharacterLimit = computed(() => {
-    return content.value.length > maxCharacterLimit.value;
-  });
 
   const canSavePost = computed(() => {
     if (currentMediaType.value === 'video') {
       // In edit mode with existing video (no new upload), allow saving
       if (
-        props.selectedPost?.mediaFiles?.[0]?.type === 'video' &&
+        editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type === 'video' &&
         mediaPreviewUrls.value.length > 0 &&
-        mediaPreviewUrls.value[0] === props.selectedPost?.mediaFiles?.[0]?.url
+        mediaPreviewUrls.value[0] ===
+          editorDataStore.selectedPost?.value.mediaFiles?.[0]?.url
       ) {
         return validationErrors.value.length === 0;
       }
@@ -273,7 +260,11 @@
   });
 
   const canPublishToTikTok = computed(() => {
-    if (!selectedPlatforms.value.some((p) => p.startsWith('tiktok')))
+    if (
+      !editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+        p.startsWith('tiktok')
+      )
+    )
       return true;
     if (
       tiktokSettings.value.commercialContent &&
@@ -452,11 +443,12 @@
           return account.platform;
       }
     })();
-    const index = selectedPlatforms.value.indexOf(accountId);
+    const index =
+      editorDataStore.selectedPost.value?.platforms.indexOf(accountId);
     if (index === -1) {
-      selectedPlatforms.value.push(accountId);
+      editorDataStore.selectedPost.value?.platforms.push(accountId);
     } else {
-      selectedPlatforms.value.splice(index, 1);
+      editorDataStore.selectedPost.value?.platforms.splice(index, 1);
     }
     if (account.platform === 'tiktok') {
       await getCreatorInfo(account.id);
@@ -464,21 +456,11 @@
   };
 
   async function handlePost(action: 'update' | 'schedule' | 'draft') {
-    if (isOverCharacterLimit.value) {
-      toast.add({
-        severity: 'error',
-        summary: 'Validation Error',
-        detail: 'Content exceeds character limit for selected platforms',
-        life: 3000,
-      });
-      return;
-    }
-
     try {
       // Validate content
-      const hasContent = content.value.trim() !== '';
-      const hasMedia = mediaPreviewUrls.value.length > 0;
-      if (!hasContent && !hasMedia) {
+      const hasContent =
+        editorDataStore.selectedPost.value?.content.trim() !== '';
+      if (!hasContent) {
         toast.add({
           severity: 'error',
           summary: 'Error',
@@ -489,7 +471,7 @@
       }
 
       // Validate platforms
-      if (selectedPlatforms.value.length === 0) {
+      if (editorDataStore.selectedPost.value?.platforms.length === 0) {
         toast.add({
           severity: 'error',
           summary: 'Error',
@@ -502,9 +484,18 @@
       const formData = new FormData();
 
       // Add common post details
-      formData.append('content', content.value);
-      formData.append('scheduledTime', scheduledTime.value.toISOString());
-      formData.append('platforms', JSON.stringify(selectedPlatforms.value));
+      formData.append(
+        'content',
+        editorDataStore.selectedPost.value?.content || ''
+      );
+      formData.append(
+        'scheduledTime',
+        scheduledTime.value?.toISOString() || ''
+      );
+      formData.append(
+        'platforms',
+        JSON.stringify(editorDataStore.selectedPost.value?.platforms)
+      );
       formData.append('sameContent', 'true');
 
       // Set status based on action
@@ -535,7 +526,11 @@
       }
 
       // Add TikTok settings
-      if (selectedPlatforms.value.some((p) => p.startsWith('tiktok'))) {
+      if (
+        editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+          p.startsWith('tiktok')
+        )
+      ) {
         formData.append(
           'tiktokSettings',
           JSON.stringify({
@@ -551,7 +546,11 @@
       }
 
       // Add Instagram settings
-      if (selectedPlatforms.value.some((p) => p.startsWith('instagram'))) {
+      if (
+        editorDataStore.selectedPost.value?.platforms.some((p) =>
+          p.startsWith('instagram')
+        )
+      ) {
         formData.append(
           'instagramSettings',
           JSON.stringify({
@@ -560,7 +559,11 @@
         );
       }
 
-      if (selectedPlatforms.value.some((p) => p.startsWith('youtube'))) {
+      if (
+        editorDataStore.selectedPost.value?.platforms.some((p) =>
+          p.startsWith('youtube')
+        )
+      ) {
         formData.append(
           'youtubeSettings',
           JSON.stringify({
@@ -574,7 +577,10 @@
 
       // Send request based on action
       if (action === 'update') {
-        await updatePostBundle(props.selectedPost?._id!, formData);
+        await updatePostBundle(
+          editorDataStore.selectedPost.value?._id!,
+          formData
+        );
       } else {
         await createPostBundle(formData);
       }
@@ -595,13 +601,6 @@
         detail: successMessages[action],
         life: 3000,
       });
-
-      // Reset form
-      content.value = '';
-      selectedPlatforms.value = [];
-      selectedMedia.value = [];
-      mediaPreviewUrls.value.forEach((url) => URL.revokeObjectURL(url));
-      mediaPreviewUrls.value = [];
     } catch (error: any) {
       const errorMessages = {
         update: 'Failed to update post',
@@ -663,9 +662,10 @@
     if (textarea) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      const text = content.value;
+      const text = editorDataStore.selectedPost.value?.content;
 
-      content.value = text.substring(0, start) + emoji + text.substring(end);
+      editorDataStore.selectedPost.value!.content =
+        text?.substring(0, start) + emoji + text?.substring(end);
 
       // Move cursor after the inserted emoji
       setTimeout(() => {
@@ -679,33 +679,41 @@
   };
 
   onMounted(async () => {
+    console.log(scheduledTime.value);
+    console.log('ss');
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
 
     if (
-      props.selectedPost?.platforms?.some((p: any) => p.startsWith('tiktok'))
+      editorDataStore.selectedPost.value?.platforms?.some((p: any) =>
+        p.startsWith('tiktok')
+      )
     ) {
       await getCreatorInfo(
-        props.selectedPost?.platforms?.[0].split('-').slice(1).join('-')
+        editorDataStore.selectedPost.value?.platforms?.[0]
+          .split('-')
+          .slice(1)
+          .join('-')
       );
     }
 
-    nextTick(() => {
+    await nextTick(() => {
       isLoading.value = false;
     });
+
+    if (!editorDataStore.selectedPost.value) {
+      scheduledTime.value = null; // Explicitly set null after the DOM is updated
+    }
   });
 
   // Watch for changes in selectedPost
   watch(
-    () => props.selectedPost,
+    () => editorDataStore.selectedPost.value,
+
     (newPost) => {
       if (newPost) {
-        content.value = newPost.content || '';
-        scheduledTime.value =
-          props.initialDateTime instanceof Date
-            ? props.initialDateTime
-            : new Date();
-        selectedPlatforms.value = newPost.platforms || [];
+        scheduledTime.value = editorDataStore.selectedDateTime?.value || null;
+        editorDataStore.selectedPost.value!.platforms = newPost.platforms || [];
         mediaPreviewUrls.value =
           newPost.mediaFiles?.map((m: any) => m.url) || [];
         initialMediaUrls.value =
@@ -724,7 +732,6 @@
   <transition name="fade" mode="out-in">
     <div
       v-if="!isLoading"
-      :key="postKey"
       class="transition-container flex items-start justify-center gap-4"
     >
       <!-- Left Component (Scheduling Form) -->
@@ -749,7 +756,7 @@
                 :key="account.id"
                 :account="account"
                 :is-selected="
-                  selectedPlatforms.includes(
+                  editorDataStore.selectedPost.value?.platforms.includes(
                     account.platform === 'twitter'
                       ? `twitter-${account.id}`
                       : account.platform === 'threads'
@@ -783,9 +790,7 @@
               >
                 <textarea
                   ref="textareaRef"
-                  v-model="content"
-                  :maxlength="maxCharacterLimit"
-                  :class="{ 'border-red-500': isOverCharacterLimit }"
+                  v-model="editorDataStore.selectedPost.value.content"
                   class="h-[300px] w-full resize-none rounded-lg bg-white p-2 text-black dark:bg-[#1a1a1a]"
                   placeholder="Write your post content..."
                 ></textarea>
@@ -823,14 +828,7 @@
                   >
                     <emoji-picker></emoji-picker>
                   </div>
-                  <div
-                    class="ml-auto text-sm"
-                    :class="{ 'text-red-500': isOverCharacterLimit }"
-                  >
-                    {{ content.length }}/{{
-                      maxCharacterLimit === Infinity ? '∞' : maxCharacterLimit
-                    }}
-                  </div>
+                  <div class="ml-auto text-sm"></div>
                 </div>
               </div>
 
@@ -853,8 +851,8 @@
               <div class="flex flex-col gap-1">
                 <TikTokPresets
                   v-if="
-                    selectedPlatforms.some((platform) =>
-                      platform.startsWith('tiktok')
+                    editorDataStore.selectedPost.value?.platforms.some(
+                      (platform: any) => platform.startsWith('tiktok')
                     )
                   "
                   :currentMediaType="currentMediaType"
@@ -863,8 +861,8 @@
                 />
                 <InstagramPresets
                   v-if="
-                    selectedPlatforms.some((platform) =>
-                      platform.startsWith('instagram')
+                    editorDataStore.selectedPost.value?.platforms.some(
+                      (platform: any) => platform.startsWith('instagram')
                     )
                   "
                   :currentMediaType="currentMediaType"
@@ -873,8 +871,8 @@
                 />
                 <YouTubePresets
                   v-if="
-                    selectedPlatforms.some((platform) =>
-                      platform.startsWith('youtube')
+                    editorDataStore.selectedPost.value?.platforms.some(
+                      (platform: any) => platform.startsWith('youtube')
                     )
                   "
                   :currentMediaType="currentMediaType"
@@ -885,6 +883,7 @@
 
               <div class="mb-4 mt-4 flex w-full gap-5">
                 <BaseButton @click=""> Back </BaseButton>
+                {{ scheduledTime }}
                 <DatePicker
                   v-model="scheduledTime"
                   showTime
@@ -950,8 +949,8 @@
         class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#313131]"
       >
         <PreviewComponent
-          :content="content"
-          :selected-platforms="selectedPlatforms"
+          :content="editorDataStore.selectedPost.value?.content || ''"
+          :selected-platforms="editorDataStore.selectedPost.value?.platforms"
           :media-preview-urls="mediaPreviewUrls"
           :current-media-type="currentMediaType"
           :initial-video-timestamp="videoTimestamp"
