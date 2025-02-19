@@ -1067,6 +1067,7 @@
               </div>
             </div>
           </div>
+          {{ '_id: ' + editorDataStore.selectedPost.value._id }}
         </div>
       </div>
 

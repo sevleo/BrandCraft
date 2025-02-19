@@ -29,6 +29,7 @@ async function createPostBundle(postData: FormData) {
       postData,
       config
     );
+
     return response.data;
   } catch (error) {
     console.error('Failed to create scheduled post:', error);
@@ -70,7 +71,7 @@ async function savePostGroup(postData: FormData, id?: string) {
       response = await axiosInstance.post('/create', postData, config);
     }
 
-    return response.data;
+    return response.data.postGroup;
   } catch (error) {
     console.error('Failed to update scheduled post:', error);
     throw error;

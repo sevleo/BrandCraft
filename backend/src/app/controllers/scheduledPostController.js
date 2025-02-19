@@ -389,6 +389,9 @@ exports.createPostGroup = async (req, res) => {
       youtubeSettings,
       videoTimestamp,
     } = req.body;
+
+    console.log("test");
+
     const userId = req.user._id;
 
     // Parse platforms if it's a string
@@ -396,7 +399,8 @@ exports.createPostGroup = async (req, res) => {
       typeof platforms === "string" ? JSON.parse(platforms) : platforms;
 
     // Validate scheduled time
-    const scheduledDate = await validateScheduledTime(scheduledTime);
+    const scheduledDate =
+      scheduledTime && (await validateScheduledTime(scheduledTime));
 
     // Create the bundle
     const postGroup = new ScheduledPostGroup({
@@ -458,64 +462,66 @@ exports.createPostGroup = async (req, res) => {
     });
 
     // Create individual posts for each platform
-    const posts = await Promise.all(
-      parsedPlatforms.map(async (platform) => {
-        const platformName = platform.split("-")[0];
-        const platformId = platform.split("-").slice(1).join("-");
+    const posts =
+      parsedPlatforms &&
+      (await Promise.all(
+        parsedPlatforms.map(async (platform) => {
+          const platformName = platform.split("-")[0];
+          const platformId = platform.split("-").slice(1).join("-");
 
-        const post = {
-          postGroupId: postGroup._id,
-          userId: userId,
-          content: content,
-          platform: platformName,
-          platformId: platformId,
-          status: status,
-          videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
-        };
-
-        // Add platform-specific settings
-        if (platformName === "tiktok" && tiktokSettings) {
-          const parsedTiktokSettings = JSON.parse(tiktokSettings);
-          post.platformSettings = {
-            tiktok: {
-              viewerSetting: parsedTiktokSettings.viewerSetting,
-              allowComments: parsedTiktokSettings.allowComments,
-              allowDuet: parsedTiktokSettings.allowDuet,
-              allowStitch: parsedTiktokSettings.allowStitch,
-              commercialContent: parsedTiktokSettings.commercialContent,
-              brandOrganic: parsedTiktokSettings.brandOrganic,
-              brandedContent: parsedTiktokSettings.brandedContent,
-            },
+          const post = {
+            postGroupId: postGroup._id,
+            userId: userId,
+            content: content,
+            platform: platformName,
+            platformId: platformId,
+            status: status,
+            videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
           };
-        }
 
-        if (platformName === "instagram" && instagramSettings) {
-          const parsedInstagramSettings = JSON.parse(instagramSettings);
-          post.platformSettings = {
-            instagram: {
-              videoType: parsedInstagramSettings.videoType,
-            },
-          };
-        }
+          // Add platform-specific settings
+          if (platformName === "tiktok" && tiktokSettings) {
+            const parsedTiktokSettings = JSON.parse(tiktokSettings);
+            post.platformSettings = {
+              tiktok: {
+                viewerSetting: parsedTiktokSettings.viewerSetting,
+                allowComments: parsedTiktokSettings.allowComments,
+                allowDuet: parsedTiktokSettings.allowDuet,
+                allowStitch: parsedTiktokSettings.allowStitch,
+                commercialContent: parsedTiktokSettings.commercialContent,
+                brandOrganic: parsedTiktokSettings.brandOrganic,
+                brandedContent: parsedTiktokSettings.brandedContent,
+              },
+            };
+          }
 
-        if (platformName === "youtube" && youtubeSettings) {
-          const parsedYoutubeSettings = JSON.parse(youtubeSettings);
-          post.platformSettings = {
-            youtube: {
-              privacy: parsedYoutubeSettings.privacy,
-              title: parsedYoutubeSettings.title,
-            },
-          };
-        }
+          if (platformName === "instagram" && instagramSettings) {
+            const parsedInstagramSettings = JSON.parse(instagramSettings);
+            post.platformSettings = {
+              instagram: {
+                videoType: parsedInstagramSettings.videoType,
+              },
+            };
+          }
 
-        const newPost = new ScheduledPost(post);
-        await newPost.save();
-        return newPost;
-      })
-    );
+          if (platformName === "youtube" && youtubeSettings) {
+            const parsedYoutubeSettings = JSON.parse(youtubeSettings);
+            post.platformSettings = {
+              youtube: {
+                privacy: parsedYoutubeSettings.privacy,
+                title: parsedYoutubeSettings.title,
+              },
+            };
+          }
+
+          const newPost = new ScheduledPost(post);
+          await newPost.save();
+          return newPost;
+        })
+      ));
 
     // Add posts to bundle & update status
-    postGroup.posts = posts.map((post) => post._id);
+    postGroup.posts = posts && posts.map((post) => post._id);
     postGroup.status = status;
 
     await postGroup.save();

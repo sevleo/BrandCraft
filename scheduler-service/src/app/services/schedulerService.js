@@ -68,7 +68,7 @@ class SchedulerService {
       console.log(`Found ${validPosts.length} posts to process.`);
 
       // Even if no new groups were found, we still need to process existing posts
-      if (validPosts.length > 0) {
+      if (validPosts && validPosts.length > 0) {
         await Promise.all(
           validPosts.map((post) => this.processSinglePost(post))
         );
@@ -227,32 +227,34 @@ class SchedulerService {
     const postGroups = await ScheduledPostGroup.find().populate("posts");
 
     await Promise.all(
-      postGroups.map(async (group) => {
-        const totalPosts = group.posts.length;
+      postGroups
+        .filter((group) => group.status !== "draft" && group.posts.length > 0) // Exclude drafts and empty groups
+        .map(async (group) => {
+          const totalPosts = group.posts.length;
 
-        const publishedPosts = group.posts.filter(
-          (post) => post.status === "published"
-        ).length;
+          const publishedPosts = group.posts.filter(
+            (post) => post.status === "published"
+          ).length;
 
-        const failedPosts = group.posts.filter(
-          (post) => post.status === "failed"
-        ).length;
+          const failedPosts = group.posts.filter(
+            (post) => post.status === "failed"
+          ).length;
 
-        if (publishedPosts === totalPosts) {
-          group.status = "published";
-        } else if (totalPosts === failedPosts) {
-          group.status = "failed";
-        } else if (totalPosts === publishedPosts + failedPosts) {
-          group.status = "published";
-        } else {
-          return; // Group is still processing, don't update status
-        }
+          if (publishedPosts === totalPosts) {
+            group.status = "published";
+          } else if (totalPosts === failedPosts) {
+            group.status = "failed";
+          } else if (totalPosts === publishedPosts + failedPosts) {
+            group.status = "published";
+          } else {
+            return; // Group is still processing, don't update status
+          }
 
-        await group.save();
+          await group.save();
 
-        // Step 5: Cleanup media files only when group is fully processed
-        await this.cleanupMediaFiles(group);
-      })
+          // Step 5: Cleanup media files only when group is fully processed
+          await this.cleanupMediaFiles(group);
+        })
     );
 
     console.log("All group statuses updated.");

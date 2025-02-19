@@ -28,6 +28,7 @@ export default defineConfig({
       '@assets': path.resolve(__dirname, './src/assets'), // API alias
       '@components': path.resolve(__dirname, './src/components'), // Components alias
       '@utils': path.resolve(__dirname, './src/utils'), // Utilities alias
+      '@helpers': path.resolve(__dirname, './src/helpers'), // Helpers alias
     },
   },
   optimizeDeps: {
