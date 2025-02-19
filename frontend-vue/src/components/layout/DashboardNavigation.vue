@@ -33,6 +33,7 @@
   const router = useRouter();
   const showDropdown = ref(false);
   const dropdownRef = ref<HTMLElement | null>(null);
+  const activeView = ref('drafts');
 
   async function handleLogout() {
     try {
@@ -109,6 +110,33 @@
   const sortedDraftPosts = computed(() => {
     return [...postsStore.draftPosts.value].sort((a, b) => {
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+  });
+
+  const sortedScheduledPosts = computed(() => {
+    return [...postsStore.scheduledPosts.value].sort((a, b) => {
+      return (
+        new Date(b.scheduledTime).getTime() -
+        new Date(a.scheduledTime).getTime()
+      );
+    });
+  });
+
+  const sortedPublishedPosts = computed(() => {
+    return [...postsStore.publishedPosts.value].sort((a, b) => {
+      return (
+        new Date(b.scheduledTime).getTime() -
+        new Date(a.scheduledTime).getTime()
+      );
+    });
+  });
+
+  const sortedFailedPosts = computed(() => {
+    return [...postsStore.failedPosts.value].sort((a, b) => {
+      return (
+        new Date(b.scheduledTime).getTime() -
+        new Date(a.scheduledTime).getTime()
+      );
     });
   });
 
@@ -212,61 +240,96 @@
         >
           <span class="font-medium">+ New draft</span>
         </button>
-        <router-link
-          to="/dashboard/publish"
-          class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
-          :class="{
-            'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
-              $route.path === '/dashboard/publish',
-          }"
-        >
-          Publish
-        </router-link>
       </div>
       <!-- Posts -->
-      <h3 class="mb-2 text-sm font-medium text-gray-500">Draft Posts</h3>
-      <div class="sidebar-scrollable mb-[250px] mt-6 h-full overflow-auto">
-        <div class="border-layoutSoft border-t">
-          <div
-            v-for="post in sortedDraftPosts"
-            :key="post.id"
-            @click="navigateToEditor(post)"
-            class="border-layoutSoft group flex cursor-pointer flex-col gap-2 border-b bg-[#f5f5f5]"
-            :class="{
-              'bg-white dark:bg-[#d9d9d9]/10': post._id === selectedPostId,
-            }"
+      <div class="flex flex-col">
+        <!-- View Switcher -->
+        <div class="flex">
+          <button
+            @click="activeView = 'drafts'"
+            class="flex-1 border-b-[2px] px-4 py-2 text-sm font-medium transition-all"
+            :class="
+              activeView === 'drafts'
+                ? 'border-gray-300 text-gray-900 dark:text-gray-100'
+                : 'border-b-transparent text-gray-500'
+            "
           >
+            Drafts
+          </button>
+          <button
+            @click="activeView = 'scheduled'"
+            class="flex-1 border-b-[2px] px-4 py-2 text-sm font-medium transition-all"
+            :class="
+              activeView === 'scheduled'
+                ? 'border-gray-300 text-gray-900 dark:text-gray-100'
+                : 'border-b-transparent text-gray-500'
+            "
+          >
+            Scheduled
+          </button>
+          <button
+            @click="activeView = 'published'"
+            class="flex-1 border-b-[2px] px-4 py-2 text-sm font-medium transition-all"
+            :class="
+              activeView === 'published'
+                ? 'border-gray-300 text-gray-900 dark:text-gray-100'
+                : 'border-b-transparent text-gray-500'
+            "
+          >
+            Posted
+          </button>
+        </div>
+
+        <!-- Posts List -->
+        <div class="sidebar-scrollable mb-[250px] overflow-auto">
+          <div class="border-layoutSoft border-t">
             <div
-              class="flex h-[80px] flex-col justify-between border-l-[5px] px-4 py-2"
+              v-for="post in activeView === 'drafts'
+                ? sortedDraftPosts
+                : activeView === 'scheduled'
+                  ? sortedScheduledPosts
+                  : sortedPublishedPosts"
+              :key="post.id"
+              @click="navigateToEditor(post)"
+              class="border-layoutSoft group flex cursor-pointer flex-col gap-2 border-b bg-[#f5f5f5]"
               :class="{
-                'border-l-[#00e676]': post._id === selectedPostId,
-                'border-l-transparent': post._id !== selectedPostId,
+                'bg-white dark:bg-[#d9d9d9]/10': post._id === selectedPostId,
               }"
             >
-              <!-- Post Content -->
               <div
-                class="mb-2 line-clamp-2 text-sm text-gray-700 dark:text-gray-300"
+                class="flex h-[80px] flex-col justify-between border-l-[5px] px-4 py-2"
+                :class="{
+                  'border-l-[#00e676]': post._id === selectedPostId,
+                  'border-l-transparent': post._id !== selectedPostId,
+                }"
               >
-                {{ post.content }}
-              </div>
-
-              <!-- Post Details -->
-              <div class="flex items-center justify-end text-xs">
-                <!-- Scheduled Time -->
-                <div class="flex items-center text-gray-500 dark:text-gray-400">
-                  {{ formatDate(post.scheduledTime) }}
+                <!-- Post Content -->
+                <div
+                  class="mb-2 line-clamp-2 text-sm text-gray-700 dark:text-gray-300"
+                >
+                  {{ post.content }}
                 </div>
 
-                <!-- Platforms -->
-                <div class="flex items-center space-x-1">
-                  <Instagram
-                    v-if="post.platforms?.includes('instagram')"
-                    class="h-3 w-3 text-gray-500 dark:text-gray-400"
-                  />
-                  <Youtube
-                    v-if="post.platforms?.includes('youtube')"
-                    class="h-3 w-3 text-gray-500 dark:text-gray-400"
-                  />
+                <!-- Post Details -->
+                <div class="flex items-center justify-end text-xs">
+                  <!-- Scheduled Time -->
+                  <div
+                    class="flex items-center text-gray-500 dark:text-gray-400"
+                  >
+                    {{ formatDate(post.scheduledTime) }}
+                  </div>
+
+                  <!-- Platforms -->
+                  <div class="flex items-center space-x-1">
+                    <Instagram
+                      v-if="post.platforms?.includes('instagram')"
+                      class="h-3 w-3 text-gray-500 dark:text-gray-400"
+                    />
+                    <Youtube
+                      v-if="post.platforms?.includes('youtube')"
+                      class="h-3 w-3 text-gray-500 dark:text-gray-400"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -331,6 +394,11 @@
 </template>
 
 <style scoped>
+  .sidebar-scrollable {
+    max-height: calc(100vh - 428px);
+    overflow-y: auto;
+  }
+
   .sidebar-scrollable::-webkit-scrollbar {
     width: 2px; /* Adjust scrollbar width */
   }
