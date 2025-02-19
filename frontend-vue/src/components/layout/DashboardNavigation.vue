@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ref, onMounted, onUnmounted, computed } from 'vue';
+  import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
   import authData from '@/utils/authDataStore';
   import { logout, verifyAuth } from '@/api/authApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
@@ -33,7 +33,14 @@
   const router = useRouter();
   const showDropdown = ref(false);
   const dropdownRef = ref<HTMLElement | null>(null);
-  const activeView = ref('drafts');
+  const activeView = ref(
+    localStorage.getItem('dashboardActiveView') || 'drafts'
+  );
+
+  // Watch for changes in activeView and save to localStorage
+  watch(activeView, (newValue) => {
+    localStorage.setItem('dashboardActiveView', newValue);
+  });
 
   async function handleLogout() {
     try {

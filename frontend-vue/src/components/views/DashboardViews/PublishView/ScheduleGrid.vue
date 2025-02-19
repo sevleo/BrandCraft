@@ -344,6 +344,7 @@
       targetDate.setDate(today.getDate() + daysToAdd);
       targetDate.setHours(hours, minutes, 0, 0);
     }
+    editorDataStore.reset();
     editorDataStore.selectedDateTime.value = targetDate;
     await nextTick();
     router.push('/dashboard/editor');
