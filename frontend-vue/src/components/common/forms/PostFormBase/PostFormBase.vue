@@ -853,7 +853,7 @@
     <div
       v-if="!isLoading"
       :key="postKey"
-      class="transition-container flex items-start justify-center gap-4"
+      class="transition-container flex w-fit items-start justify-start gap-4"
     >
       <!-- Left Component (Scheduling Form) -->
       <div
@@ -1073,8 +1073,12 @@
 
       <!-- Right Component (Preview) -->
       <div
-        :class="currentMediaType ? 'w-[400px]' : 'w-[0px] border-0'"
-        class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#313131]"
+        :class="
+          currentMediaType
+            ? 'w-[400px] opacity-100'
+            : 'w-[0px] border-0 opacity-0'
+        "
+        class="preview-container ml-auto overflow-hidden rounded-[10px] rounded-r-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#313131]"
       >
         <PreviewComponent
           :content="editorDataStore.selectedPost.value.content"
@@ -1255,6 +1259,6 @@
   /* Right component transition */
   .preview-container {
     overflow: hidden;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
 </style>

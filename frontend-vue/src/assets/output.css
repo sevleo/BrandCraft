@@ -897,6 +897,14 @@ video {
   margin-bottom: 5050px;
 }
 
+.ml-\[500px\] {
+  margin-left: 500px;
+}
+
+.ml-\[10px\] {
+  margin-left: 10px;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -1254,6 +1262,11 @@ video {
   width: 100%;
 }
 
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
 .min-w-\[45px\] {
   min-width: 45px;
 }
@@ -1558,6 +1571,14 @@ video {
 
 .self-start {
   align-self: flex-start;
+}
+
+.self-end {
+  align-self: flex-end;
+}
+
+.justify-self-end {
+  justify-self: end;
 }
 
 .overflow-auto {
