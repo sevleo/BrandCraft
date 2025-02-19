@@ -453,6 +453,108 @@
     }
   };
 
+  async function handleSave() {
+    try {
+      const keptMediaUrls =
+        editorDataStore.selectedPost.value.mediaPreviewUrls.filter((url) =>
+          editorDataStore.selectedPost.value.initialMediaUrls.includes(url)
+        );
+
+      const formData = new FormData();
+
+      // Add common post details
+      formData.append(
+        'content',
+        editorDataStore.selectedPost.value?.content || ''
+      );
+      formData.append(
+        'scheduledTime',
+        editorDataStore.selectedDateTime.value?.toISOString() || ''
+      );
+      formData.append(
+        'platforms',
+        JSON.stringify(editorDataStore.selectedPost.value?.platforms)
+      );
+      formData.append('sameContent', 'true');
+      formData.append('status', 'draft');
+      formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
+
+      if (currentMediaType.value === 'video' && videoS3Key.value) {
+        formData.append('videoS3Key', videoS3Key.value);
+      }
+
+      if (currentMediaType.value === 'image') {
+        selectedMedia.value.forEach((file) => {
+          formData.append('media', file);
+        });
+      }
+
+      // Add TikTok settings
+      if (
+        editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+          p.startsWith('tiktok')
+        )
+      ) {
+        formData.append(
+          'tiktokSettings',
+          JSON.stringify({
+            viewerSetting: tiktokSettings.value.viewerSetting.value,
+            allowComments: tiktokSettings.value.allowComments,
+            allowDuet: tiktokSettings.value.allowDuet,
+            allowStitch: tiktokSettings.value.allowStitch,
+            commercialContent: tiktokSettings.value.commercialContent,
+            brandOrganic: tiktokSettings.value.brandOrganic,
+            brandedContent: tiktokSettings.value.brandedContent,
+          })
+        );
+      }
+
+      // Add Instagram settings
+      if (
+        editorDataStore.selectedPost.value?.platforms.some((p) =>
+          p.startsWith('instagram')
+        )
+      ) {
+        formData.append(
+          'instagramSettings',
+          JSON.stringify({
+            videoType: instagramSettings.value.videoType,
+          })
+        );
+      }
+
+      // Add YouTube settings
+      if (
+        editorDataStore.selectedPost.value?.platforms.some((p) =>
+          p.startsWith('youtube')
+        )
+      ) {
+        formData.append(
+          'youtubeSettings',
+          JSON.stringify({
+            privacy: youtubeSettings.value.privacy,
+            title: youtubeSettings.value.title,
+          })
+        );
+      }
+
+      formData.append('videoTimestamp', videoTimestamp.value.toString());
+    } catch (error: any) {
+      const errorMessages = {
+        update: 'Failed to update post',
+        schedule: 'Failed to schedule post',
+        draft: 'Failed to save draft',
+      };
+
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.response?.data?.message || errorMessages[action],
+        life: 3000,
+      });
+    }
+  }
+
   async function handlePost(action: 'update' | 'schedule' | 'draft') {
     try {
       // Validate content
