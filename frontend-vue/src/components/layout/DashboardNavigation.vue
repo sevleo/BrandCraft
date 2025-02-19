@@ -20,6 +20,7 @@
     User,
     Instagram,
     Youtube,
+    PencilLine,
   } from 'lucide-vue-next';
   import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';
@@ -227,18 +228,7 @@
         </div>
       </div>
       <!-- Navigation Links -->
-      <div class="border-layoutSoft mt-6 flex flex-col space-y-4 border-b px-4">
-        <button
-          @click="savePostGroup"
-          class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
-          :class="{
-            'bg-gray-100 text-gray-900 dark:bg-[#d9d9d9]/10':
-              $route.path === '/dashboard/editor' && !selectedPostId,
-          }"
-        >
-          <span class="font-medium">+ New draft</span>
-        </button>
-      </div>
+
       <!-- Posts -->
       <div class="flex flex-col">
         <!-- View Switcher -->
@@ -277,10 +267,23 @@
             Posted
           </button>
         </div>
+        <div
+          @click="savePostGroup"
+          class="border-layoutSoft group flex h-[80px] cursor-pointer items-center border-b border-t bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
+        >
+          <PencilLine
+            class="mr-[5px] h-4 w-4 stroke-gray-500 transition-all duration-100 group-hover:stroke-gray-900"
+          />
+          <p
+            class="italic text-gray-500 transition-all duration-100 group-hover:text-gray-900"
+          >
+            New draft
+          </p>
+        </div>
 
         <!-- Posts List -->
         <div class="sidebar-scrollable mb-[250px] overflow-auto">
-          <div class="border-layoutSoft border-t">
+          <div class="">
             <div
               v-for="post in activeView === 'drafts'
                 ? sortedDraftPosts
@@ -396,7 +399,7 @@
 
 <style scoped>
   .sidebar-scrollable {
-    max-height: calc(100vh - 428px);
+    max-height: calc(100vh - 447px);
     overflow-y: auto;
   }
 

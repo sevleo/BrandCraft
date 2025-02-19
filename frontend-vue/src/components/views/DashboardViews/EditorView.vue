@@ -27,13 +27,16 @@
 
 <template>
   <main
-    class="ml-[270px] flex h-auto max-w-[1200px] items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
+    class="ml-[270px] flex h-auto items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
   >
     <DashboardNavigation />
 
     <transition name="fade" mode="out-in">
       <!-- Post edit view -->
-      <div v-if="!isLoading" class="h-full max-h-[800px] w-full">
+      <div
+        v-if="!isLoading"
+        class="flex h-full max-h-[800px] w-full items-center justify-center"
+      >
         <PostFormBase />
       </div>
     </transition>

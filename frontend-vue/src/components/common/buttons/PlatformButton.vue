@@ -11,7 +11,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="flex items-center gap-2">
     <button
       type="button"
       class="relative flex h-[50px] w-[50px] items-center justify-center gap-2 rounded-full text-sm"
@@ -22,27 +22,27 @@
       ]"
       @click="onClick"
     >
-      <div class="icon-container flex items-center justify-center">
+      <!-- <div class="icon-container flex items-center justify-center">
         <FontAwesomeIcon
           :icon="account.platformIcon"
           class="icon h-[27px] rounded-full text-lg"
         />
-      </div>
+      </div> -->
 
-      <!-- <img
-      :src="account.profileImageUrl"
-      class="rounded-full p-[3px]"
-      :alt="account.username"
-    />
-
-    <div
-      class="icon-container absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border border-black bg-black p-[4px]"
-    >
-      <FontAwesomeIcon
-        :icon="account.platformIcon"
-        class="icon h-[27px] rounded-full text-lg"
+      <img
+        :src="account.profileImageUrl"
+        class="rounded-full p-[3px]"
+        :alt="account.username"
       />
-    </div> -->
+
+      <div
+        class="icon-container absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full border border-black bg-black p-[4px]"
+      >
+        <FontAwesomeIcon
+          :icon="account.platformIcon"
+          class="icon h-[15px] rounded-full text-lg"
+        />
+      </div>
     </button>
     <div>
       {{ account.username }}
@@ -52,7 +52,7 @@
 
 <style scope>
   .icon-container path {
-    fill: #212121 !important;
+    fill: white !important;
   }
 
   .dark .icon-container path {

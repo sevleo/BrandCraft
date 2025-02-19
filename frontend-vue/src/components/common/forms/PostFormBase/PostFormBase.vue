@@ -855,6 +855,34 @@
       :key="postKey"
       class="transition-container flex w-fit items-start justify-start gap-4"
     >
+      <div class="flex flex-col gap-2">
+        <PlatformButton
+          v-for="account in connectionsDataStore.connectedAccounts.value"
+          :key="account.id"
+          :account="account"
+          :is-selected="
+            editorDataStore.selectedPost.value?.platforms.includes(
+              account.platform === 'twitter'
+                ? `twitter-${account.id}`
+                : account.platform === 'threads'
+                  ? `threads-${account.id}`
+                  : account.platform === 'bluesky'
+                    ? `bluesky-${account.id}`
+                    : account.platform === 'mastodon'
+                      ? `mastodon-${account.id}`
+                      : account.platform === 'tiktok'
+                        ? `tiktok-${account.id}`
+                        : account.platform === 'instagram'
+                          ? `instagram-${account.id}`
+                          : account.platform === 'youtube'
+                            ? `youtube-${account.id}`
+                            : account.platform
+            )
+          "
+          :onClick="() => togglePlatform(account)"
+        />
+      </div>
+
       <!-- Left Component (Scheduling Form) -->
       <div
         class="scheduling-form flex h-fit min-h-[600px] w-[600px] rounded-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#121212]"
@@ -876,38 +904,6 @@
           </div>
           <div>{{ editorDataStore.selectedPost.value.initialMediaUrls }}</div>
           <div>{{ editorDataStore.selectedPost.value.mediaPreviewUrls }}</div> -->
-          <div class="">
-            <div class="flex flex-wrap gap-2">
-              <PlatformButton
-                v-for="account in connectionsDataStore.connectedAccounts.value"
-                :key="account.id"
-                :account="account"
-                :is-selected="
-                  editorDataStore.selectedPost.value?.platforms.includes(
-                    account.platform === 'twitter'
-                      ? `twitter-${account.id}`
-                      : account.platform === 'threads'
-                        ? `threads-${account.id}`
-                        : account.platform === 'bluesky'
-                          ? `bluesky-${account.id}`
-                          : account.platform === 'mastodon'
-                            ? `mastodon-${account.id}`
-                            : account.platform === 'tiktok'
-                              ? `tiktok-${account.id}`
-                              : account.platform === 'instagram'
-                                ? `instagram-${account.id}`
-                                : account.platform === 'youtube'
-                                  ? `youtube-${account.id}`
-                                  : account.platform
-                  )
-                "
-                :onClick="() => togglePlatform(account)"
-              />
-            </div>
-            <!-- <div v-for="account in connectionsDataStore.connectedAccounts.value">
-          {{ account }}
-        </div> -->
-          </div>
 
           <div class="flex h-full w-full gap-8">
             <!-- Form Panel -->

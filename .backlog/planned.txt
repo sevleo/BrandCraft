@@ -40,6 +40,8 @@ Built by Creator, for Creators
 - when log out with black theme, login screen looks bad. change to white on login screen always.
 
 
+- add API for logging into BrandCraft and uploading a post
+
 
 - Implement Brands design
   - user can connect up to 5 accounts per social network
