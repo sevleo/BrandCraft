@@ -18,12 +18,8 @@
     Users,
     MessageCircle,
     User,
-    FilePlus2,
-    LayoutDashboard,
     Instagram,
     Youtube,
-    Send,
-    Clock,
   } from 'lucide-vue-next';
   import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';

@@ -38,6 +38,20 @@ router.put(
   scheduledPostController.updateScheduledPost
 );
 
+router.post(
+  "/create",
+  authenticateWithRefresh,
+  upload.fields([{ name: "media", maxCount: 4 }]),
+  scheduledPostController.createPostGroup
+);
+
+router.put(
+  "/update/:id",
+  authenticateWithRefresh,
+  upload.fields([{ name: "media", maxCount: 4 }]),
+  scheduledPostController.updatePostGroup
+);
+
 router.get(
   "/scheduled-posts",
   authenticateWithRefresh,

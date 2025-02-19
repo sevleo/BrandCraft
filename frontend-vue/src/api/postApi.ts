@@ -55,6 +55,28 @@ async function updatePostBundle(id: string, postData: FormData) {
   }
 }
 
+async function savePostGroup(postData: FormData, id?: string) {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    let response;
+    if (id) {
+      response = await axiosInstance.put(`/update/${id}`, postData, config);
+    } else {
+      response = await axiosInstance.post('/create', postData, config);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update scheduled post:', error);
+    throw error;
+  }
+}
+
 async function getPostGroups() {
   try {
     const response = await axiosInstance.get('/scheduled-posts');
@@ -88,8 +110,9 @@ async function getPostsStats() {
 
 export {
   createPostBundle,
-  getPostGroups,
   updatePostBundle,
+  savePostGroup,
+  getPostGroups,
   deleteScheduledPost,
   getPostsStats,
 };

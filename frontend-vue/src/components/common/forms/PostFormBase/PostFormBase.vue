@@ -1,7 +1,11 @@
 <script setup lang="ts">
   import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
-  import { updatePostBundle, createPostBundle } from '@/api/postApi';
+  import {
+    updatePostBundle,
+    createPostBundle,
+    savePostGroup,
+  } from '@/api/postApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import DatePicker from 'primevue/datepicker';
   import { Image as ImageIcon, Video, Smile } from 'lucide-vue-next';
@@ -21,11 +25,9 @@
   const toast = useToast();
 
   const isLoading = ref(true);
-
-  // onUnmounted(() => {
-  //   console.log('unmounted');
-  //   editorDataStore.reset();
-  // });
+  const postKey = computed(
+    () => editorDataStore.selectedPost?.value._id || 'new'
+  );
 
   const selectedMedia = ref<File[]>([]);
   const currentMediaType = ref<'image' | 'video' | null>(
@@ -539,6 +541,10 @@
       }
 
       formData.append('videoTimestamp', videoTimestamp.value.toString());
+
+      await savePostGroup(formData, editorDataStore.selectedPost.value?._id);
+
+      await postsStore.getAllPostGroups();
     } catch (error: any) {
       const errorMessages = {
         update: 'Failed to update post',
@@ -660,6 +666,7 @@
         );
       }
 
+      // Add YouTube settings
       if (
         editorDataStore.selectedPost.value?.platforms.some((p) =>
           p.startsWith('youtube')
@@ -842,6 +849,7 @@
   <transition name="fade" mode="out-in">
     <div
       v-if="!isLoading"
+      :key="postKey"
       class="transition-container flex items-start justify-center gap-4"
     >
       <!-- Left Component (Scheduling Form) -->
@@ -1223,5 +1231,18 @@
     outline: none; /* Prevent default outline */
     border: 1px solid #ececec; /* Initial border */
     transition: border-color 0.3s ease; /* Smooth transition for any changes */
+  }
+</style>
+
+<style scoped>
+  /* Left component transition */
+  .scheduling-form {
+    transition: all 0.5s ease-in-out;
+  }
+
+  /* Right component transition */
+  .preview-container {
+    overflow: hidden;
+    transition: all 0.5s ease-in-out;
   }
 </style>
