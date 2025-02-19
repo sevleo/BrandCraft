@@ -24,6 +24,8 @@
   const videoCurrentTime = ref(0);
   const currentImageIndex = ref(0);
 
+  const isTransitioning = ref(false);
+
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -31,8 +33,6 @@
   };
 
   const props = defineProps<{
-    selectedPlatforms: string[] | undefined;
-    content: string;
     mediaPreviewUrls: string[];
     currentMediaType: 'image' | 'video' | null;
     initialVideoTimestamp?: number;
@@ -226,10 +226,18 @@
 <template>
   <div
     id="preview-panel"
-    class="mt-5 flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] p-4 dark:bg-[#121212]"
+    class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
   >
     <div class="flex min-h-[600px] w-full flex-col items-center justify-start">
-      <div class="flex w-[340px] flex-col">
+      <div v-if="!props.currentMediaType && !isTransitioning">
+        Select a media type
+      </div>
+      <div
+        class="preview-container flex flex-col"
+        :class="props.currentMediaType ? 'w-[340px]' : 'w-[0px] border-0'"
+        @transitionstart="isTransitioning = true"
+        @transitionend="isTransitioning = false"
+      >
         <div class="relative h-[600px] overflow-hidden rounded-lg bg-black">
           <!-- Video Preview -->
           <template v-if="props.currentMediaType === 'video'">
@@ -480,5 +488,13 @@
       opacity: 0;
       transform: translateX(-20px);
     }
+  }
+</style>
+
+<style scoped>
+  /* Right component transition */
+  .preview-container {
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
   }
 </style>

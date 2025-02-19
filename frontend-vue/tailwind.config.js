@@ -30,6 +30,7 @@ export default {
         green: '#30A567',
         greenLight: '#34b26f',
         lightWhite: '#fbfbfb',
+        layoutSoft: '#ececec',
       },
       borderColor: {
         imgBorderHover: '#415471',

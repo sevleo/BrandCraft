@@ -12,7 +12,6 @@
   import 'emoji-picker-element';
   import postsStore from '@/utils/postsStore';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
-  import Select from 'primevue/select';
   import { uploadVideoToS3 } from '@/api/mediaApi';
   import BaseButton from '@/components/common/buttons/BaseButton.vue';
   import { getCreatorInfo } from '@api/tiktokApi';
@@ -224,10 +223,6 @@
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
   );
-  const statusOptions = [
-    { label: 'Scheduled', value: 'scheduled' },
-    { label: 'Draft', value: 'draft' },
-  ];
 
   const canSavePost = computed(() => {
     if (currentMediaType.value === 'video') {
@@ -855,7 +850,7 @@
       :key="postKey"
       class="transition-container flex w-fit items-start justify-start gap-4"
     >
-      <div class="flex flex-col gap-2">
+      <div class="-r flex flex-col gap-2 p-2">
         <PlatformButton
           v-for="account in connectionsDataStore.connectedAccounts.value"
           :key="account.id"
@@ -883,21 +878,12 @@
         />
       </div>
 
+      <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
       <!-- Left Component (Scheduling Form) -->
       <div
-        class="scheduling-form flex h-fit min-h-[600px] w-[600px] rounded-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#121212]"
+        class="scheduling-form border-greenBG flex h-fit min-h-[600px] w-[450px] rounded-[10px] bg-[white] dark:bg-[#121212]"
       >
-        <div class="flex h-auto w-full flex-col gap-2 p-4">
-          <div class="mb-4 flex items-center gap-2">
-            <Select
-              v-model="status"
-              :options="statusOptions"
-              optionLabel="label"
-              optionValue="value"
-              class="w-[150px]"
-            ></Select>
-          </div>
-
+        <div class="flex h-auto w-full flex-col gap-2 p-2">
           <!-- <div>{{ currentMediaType }}</div>
           <div>
             {{ editorDataStore.selectedPost.value.mediaFiles }}
@@ -909,7 +895,7 @@
             <!-- Form Panel -->
             <div class="flex h-auto w-full flex-1 flex-col">
               <div
-                class="text-area-container-with-buttons relative flex h-fit w-full flex-col rounded-[8px] dark:border-[#313131] dark:bg-[#1a1a1a]"
+                class="text-area-container-with-buttons relative flex h-fit w-full flex-col rounded-[8px] dark:bg-[#1a1a1a]"
               >
                 <textarea
                   ref="textareaRef"
@@ -1005,8 +991,6 @@
               </div>
 
               <div class="mb-4 mt-4 flex w-full gap-5">
-                <BaseButton @click=""> Back </BaseButton>
-                {{ editorDataStore.selectedDateTime.value }}
                 <DatePicker
                   v-model="editorDataStore.selectedDateTime.value"
                   showTime
@@ -1066,19 +1050,17 @@
           {{ '_id: ' + editorDataStore.selectedPost.value._id }}
         </div>
       </div>
+      <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
 
       <!-- Right Component (Preview) -->
       <div
         :class="
-          currentMediaType
-            ? 'w-[400px] opacity-100'
-            : 'w-[0px] border-0 opacity-0'
+          currentMediaType ? 'w-[340px] opacity-100' : 'w-[340px] border-0'
         "
-        class="preview-container ml-auto overflow-hidden rounded-[10px] rounded-r-[10px] border border-[#d8d8d8] bg-[white] dark:bg-[#313131]"
+        class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] bg-[white] dark:bg-[#313131]"
       >
         <PreviewComponent
-          :content="editorDataStore.selectedPost.value.content"
-          :selected-platforms="editorDataStore.selectedPost.value.platforms"
+          v-show="currentMediaType"
           :media-preview-urls="
             editorDataStore.selectedPost.value.mediaPreviewUrls
           "
@@ -1090,7 +1072,10 @@
           @update:timestamp="handleTimestampUpdate"
           @removeMedia="removeMedia"
         />
+
+        <!-- <div v-else>Choose media type</div> -->
       </div>
+      <!-- <div class="fixed right-0 top-0 h-screen w-[200px] bg-[red]">test</div> -->
     </div>
   </transition>
 </template>
@@ -1237,12 +1222,6 @@
   textarea:active {
     outline: none; /* Prevent default outline */
     border: none; /* Ensure consistent border styling */
-  }
-
-  .text-area-container-with-buttons {
-    outline: none; /* Prevent default outline */
-    border: 1px solid #ececec; /* Initial border */
-    transition: border-color 0.3s ease; /* Smooth transition for any changes */
   }
 </style>
 

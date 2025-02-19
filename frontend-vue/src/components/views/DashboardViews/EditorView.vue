@@ -27,7 +27,7 @@
 
 <template>
   <main
-    class="ml-[270px] flex h-auto items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
+    class="ml-[270px] flex h-auto items-center justify-start bg-[white] px-2 py-4 dark:bg-[#121212]"
   >
     <DashboardNavigation />
 
