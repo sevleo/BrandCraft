@@ -1,9 +1,9 @@
 <script setup>
   import { onMounted } from 'vue';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
 
   onMounted(async () => {
-    await scheduledPostsStore.updatePostStats();
+    await postsStore.updatePostStats();
   });
 </script>
 
@@ -17,7 +17,7 @@
       <div class="rounded-xl bg-gray-50 p-6 dark:bg-[#393939]">
         <h3 class="mb-2 text-base font-medium text-gray-600">Post Groups</h3>
         <p class="text-4xl font-bold">
-          {{ scheduledPostsStore.animatedTotalGroups }}
+          {{ postsStore.animatedTotalGroups }}
         </p>
       </div>
 
@@ -27,7 +27,7 @@
           Posts by Platform
         </h3>
         <p class="text-4xl font-bold">
-          {{ scheduledPostsStore.animatedTotalPosts }}
+          {{ postsStore.animatedTotalPosts }}
         </p>
       </div>
     </div>
@@ -39,7 +39,7 @@
       <div class="rounded-xl bg-gray-50 p-6 dark:bg-[#393939]">
         <h3 class="mb-2 text-base font-medium text-gray-600">Scheduled</h3>
         <p class="text-4xl font-bold">
-          {{ scheduledPostsStore.animatedScheduledPosts }}
+          {{ postsStore.animatedScheduledPosts }}
         </p>
       </div>
 
@@ -47,7 +47,7 @@
       <div class="rounded-xl bg-gray-50 p-6 dark:bg-[#393939]">
         <h3 class="mb-2 text-base font-medium text-gray-600">Published</h3>
         <p class="text-4xl font-bold">
-          {{ scheduledPostsStore.animatedPublishedPosts }}
+          {{ postsStore.animatedPublishedPosts }}
         </p>
       </div>
 
@@ -55,7 +55,7 @@
       <div class="rounded-xl bg-gray-50 p-6 dark:bg-[#393939]">
         <h3 class="mb-2 text-base font-medium text-gray-600">Draft</h3>
         <p class="text-4xl font-bold">
-          {{ scheduledPostsStore.animatedDraftPosts }}
+          {{ postsStore.animatedDraftPosts }}
         </p>
       </div>
 
@@ -63,7 +63,7 @@
       <div class="rounded-xl bg-gray-50 p-6 dark:bg-[#393939]">
         <h3 class="mb-2 text-base font-medium text-gray-600">Failed</h3>
         <p class="text-4xl font-bold">
-          {{ scheduledPostsStore.animatedFailedPosts }}
+          {{ postsStore.animatedFailedPosts }}
         </p>
       </div>
     </div>

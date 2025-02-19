@@ -1,14 +1,15 @@
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
-type ScheduledPost = {
+type SelectedPost = {
   _id: string;
   content: string;
   platforms: string[];
   status: 'draft' | 'scheduled';
   scheduledTime: string | null;
-  mediaFiles?: { url: string; type: string }[];
+  mediaFiles: { url: string; type: 'image' | 'video' }[];
   mediaPreviewUrls: string[];
   initialMediaUrls: string[];
+  videoTimestamp: number;
   posts?: any[];
   platformSettings?: {
     tiktok?: any;
@@ -17,7 +18,7 @@ type ScheduledPost = {
   };
 };
 
-const defaultPost: ScheduledPost = {
+const defaultPost: SelectedPost = {
   _id: 'new',
   content: '',
   platforms: [],
@@ -26,25 +27,18 @@ const defaultPost: ScheduledPost = {
   mediaFiles: [],
   mediaPreviewUrls: [],
   initialMediaUrls: [],
+  videoTimestamp: 0,
   posts: [],
   platformSettings: {},
 };
 
-const selectedPost = ref<ScheduledPost>(structuredClone(defaultPost));
+const selectedPost = ref<SelectedPost>(structuredClone(defaultPost));
 const selectedDateTime = ref<Date | null>(null);
 
 const reset = () => {
-  console.log('reset');
   selectedPost.value = structuredClone(defaultPost);
   selectedDateTime.value = null;
 };
-
-watch(
-  () => selectedDateTime.value,
-  (newDate) => {
-    console.log('selectedDateTime changed:', newDate);
-  }
-);
 
 export default {
   selectedPost,

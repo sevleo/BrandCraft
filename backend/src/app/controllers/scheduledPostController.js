@@ -182,9 +182,9 @@ exports.updateScheduledPost = async (req, res) => {
         _id: id,
         userId,
       },
-      { 
+      {
         status: "pending",
-        $currentDate: { updatedAt: true }
+        $currentDate: { updatedAt: true },
       },
       { new: true }
     );
@@ -420,7 +420,7 @@ exports.deleteScheduledPost = async (req, res) => {
   }
 };
 
-exports.getScheduledPosts = async (req, res) => {
+exports.getPostGroups = async (req, res) => {
   try {
     const userId = req.user._id;
     const postGroups = await ScheduledPostGroup.find({ userId })

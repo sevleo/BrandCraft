@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import PostFormBase from '@/components/common/forms/PostFormBase/PostFormBase.vue';
   import { useThemeStore } from '@/utils/themeStore';
@@ -17,7 +17,7 @@
     try {
       await Promise.all([
         connectionsDataStore.getAllAccounts(),
-        scheduledPostsStore.getAllPostGroups(),
+        postsStore.getAllPostGroups(),
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);

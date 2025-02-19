@@ -1,12 +1,12 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+  import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
-  import { updatePostBundle, createPostBundle } from '@api/scheduledPostApi';
+  import { updatePostBundle, createPostBundle } from '@/api/postApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import DatePicker from 'primevue/datepicker';
   import { Image as ImageIcon, Video, Smile } from 'lucide-vue-next';
   import 'emoji-picker-element';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import Select from 'primevue/select';
   import { uploadVideoToS3 } from '@/api/mediaApi';
@@ -29,7 +29,7 @@
 
   const selectedMedia = ref<File[]>([]);
   const currentMediaType = ref<'image' | 'video' | null>(
-    editorDataStore.selectedPost.value?.mediaFiles[0]?.type || null
+    editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type || null
   );
 
   const videoTimestamp = ref<number>(
@@ -585,7 +585,7 @@
       }
 
       // Update store and close modal
-      await scheduledPostsStore.getAllPostGroups();
+      await postsStore.getAllPostGroups();
 
       // Show success message
       const successMessages = {

@@ -41,7 +41,7 @@ router.put(
 router.get(
   "/scheduled-posts",
   authenticateWithRefresh,
-  scheduledPostController.getScheduledPosts
+  scheduledPostController.getPostGroups
 );
 
 router.delete(

@@ -2,7 +2,7 @@
   import { ref, onMounted, onUnmounted, nextTick } from 'vue';
   import { format } from 'date-fns';
   import connectionsDataStore from '@/utils/connectionsDataStore';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
   import publishViewDataStore from '@/utils/publishViewDataStore';
   import { SquarePlus } from 'lucide-vue-next';
   import { useThemeStore } from '@/utils/themeStore';
@@ -125,7 +125,7 @@
       week.push({
         date: new Date(year, month, day),
         isCurrentMonth: true,
-        hasEvents: scheduledPostsStore.scheduledPosts.value.some((post) => {
+        hasEvents: postsStore.postGroups.value.some((post) => {
           const postDate = new Date(post.scheduledTime);
 
           // Compare year, month, day
@@ -262,10 +262,10 @@
     );
   }
 
-  function getScheduledPostsForSlot(day: WeekDay, time: string) {
+  function getPostsForSlot(day: WeekDay, time: string) {
     if (
-      !scheduledPostsStore.scheduledPosts.value ||
-      scheduledPostsStore.scheduledPosts.value.length === 0
+      !postsStore.postGroups.value ||
+      postsStore.postGroups.value.length === 0
     ) {
       return [];
     }
@@ -284,24 +284,22 @@
 
     const [hour] = time.split(':').map(Number);
 
-    if (scheduledPostsStore.scheduledPosts.value.length === 0) {
+    if (postsStore.postGroups.value.length === 0) {
     }
-    const filteredPosts = scheduledPostsStore.scheduledPosts.value.filter(
-      (post) => {
-        const postDate = new Date(post.scheduledTime);
+    const filteredPosts = postsStore.postGroups.value.filter((post) => {
+      const postDate = new Date(post.scheduledTime);
 
-        // Compare year, month, day
-        const isSameDay =
-          postDate.getFullYear() === targetDate.getFullYear() &&
-          postDate.getMonth() === targetDate.getMonth() &&
-          postDate.getDate() === targetDate.getDate();
+      // Compare year, month, day
+      const isSameDay =
+        postDate.getFullYear() === targetDate.getFullYear() &&
+        postDate.getMonth() === targetDate.getMonth() &&
+        postDate.getDate() === targetDate.getDate();
 
-        // Check if post is within this hour slot
-        const isSameHour = postDate.getHours() === hour;
+      // Check if post is within this hour slot
+      const isSameHour = postDate.getHours() === hour;
 
-        return isSameDay && isSameHour;
-      }
-    );
+      return isSameDay && isSameHour;
+    });
 
     return filteredPosts;
   }
@@ -325,9 +323,7 @@
   }
 
   function handlePostClick(post: any) {
-    console.log('ggg');
     editorDataStore.selectedPost.value = post;
-    console.log(editorDataStore.selectedPost.value);
     router.push('/dashboard/editor');
   }
 
@@ -349,7 +345,6 @@
       targetDate.setHours(hours, minutes, 0, 0);
     }
     editorDataStore.selectedDateTime.value = targetDate;
-    console.log('Selected Date:', editorDataStore.selectedDateTime.value);
     await nextTick();
     router.push('/dashboard/editor');
   }
@@ -449,7 +444,7 @@
                       class="flex h-min min-h-[50px] flex-grow-0 flex-col items-end gap-2"
                     >
                       <div
-                        v-for="post in getScheduledPostsForSlot(day, slot.time)"
+                        v-for="post in getPostsForSlot(day, slot.time)"
                         :key="post.id"
                         id="post-note"
                         class="z-50 flex min-h-[50px] w-full max-w-[85%] flex-1 cursor-pointer rounded-l-[5px] bg-[white] text-[12px] shadow-md transition-all hover:max-w-[100%] dark:bg-[#292929]"

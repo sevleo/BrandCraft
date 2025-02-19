@@ -8,9 +8,9 @@
   import DatePicker from 'primevue/datepicker';
   import Dropdown from 'primevue/dropdown';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
 
-  import { createPostBundle, updatePostBundle } from '@/api/scheduledPostApi';
+  import { createPostBundle, updatePostBundle } from '@/api/postApi';
 
   const isLoading = ref(true);
 
@@ -407,7 +407,7 @@
       });
 
       // Refresh the posts store
-      await scheduledPostsStore.getAllPostGroups();
+      await postsStore.getAllPostGroups();
     } catch (error: any) {
       toast.add({
         severity: 'error',

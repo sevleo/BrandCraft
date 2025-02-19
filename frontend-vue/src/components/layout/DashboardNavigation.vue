@@ -14,7 +14,6 @@
     ExternalLink,
     Shield,
     ChevronDown,
-    Calendar,
     List,
     Users,
     MessageCircle,
@@ -23,9 +22,10 @@
     LayoutDashboard,
     Instagram,
     Youtube,
+    Send,
     Clock,
   } from 'lucide-vue-next';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';
 
   const themeStore = useThemeStore();
@@ -107,7 +107,7 @@
   );
 
   const sortedDraftPosts = computed(() => {
-    return [...scheduledPostsStore.draftPosts.value].sort((a, b) => {
+    return [...postsStore.draftPosts.value].sort((a, b) => {
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
   });
@@ -124,7 +124,7 @@
 
 <template>
   <nav
-    class="border-layoutSoft fixed left-0 top-0 h-screen w-[270px] border-r bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
+    class="border-layoutSoft fixed bottom-0 left-0 top-0 h-screen w-[270px] border-r bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
   >
     <div class="bg-lightWhite flex h-full flex-col">
       <!-- User Profile Section -->
@@ -224,8 +224,8 @@
         </router-link>
       </div>
       <!-- Posts -->
-      <div class="mt-6">
-        <h3 class="mb-2 text-sm font-medium text-gray-500">Draft Posts</h3>
+      <h3 class="mb-2 text-sm font-medium text-gray-500">Draft Posts</h3>
+      <div class="sidebar-scrollable mb-[250px] mt-6 h-full overflow-auto">
         <div class="border-layoutSoft border-t">
           <div
             v-for="post in sortedDraftPosts"
@@ -237,7 +237,7 @@
             }"
           >
             <div
-              class="border-l-[3px] px-4 py-2"
+              class="flex h-[80px] flex-col justify-between border-l-[5px] px-4 py-2"
               :class="{
                 'border-l-[#00e676]': post._id === selectedPostId,
                 'border-l-transparent': post._id !== selectedPostId,
@@ -251,10 +251,9 @@
               </div>
 
               <!-- Post Details -->
-              <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center justify-end text-xs">
                 <!-- Scheduled Time -->
                 <div class="flex items-center text-gray-500 dark:text-gray-400">
-                  <Clock class="mr-1 h-3 w-3" />
                   {{ formatDate(post.scheduledTime) }}
                 </div>
 
@@ -332,6 +331,22 @@
 </template>
 
 <style scoped>
+  .sidebar-scrollable::-webkit-scrollbar {
+    width: 2px; /* Adjust scrollbar width */
+  }
+
+  .sidebar-scrollable::-webkit-scrollbar-track {
+    background: transparent; /* Hides the track */
+  }
+
+  .sidebar-scrollable::-webkit-scrollbar-thumb {
+    background: #d1d5db; /* Visible scrollbar */
+  }
+
+  .sidebar-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #a1a1aa; /* Darker shade on hover */
+  }
+
   .dropdown-enter-active,
   .dropdown-leave-active {
     transition:

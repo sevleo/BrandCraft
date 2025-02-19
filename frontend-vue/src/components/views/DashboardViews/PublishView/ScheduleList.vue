@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
-  import { deleteScheduledPost } from '@/api/scheduledPostApi';
+  import postsStore from '@/utils/postsStore';
+  import { deleteScheduledPost, updatePostBundle } from '@/api/postApi';
   import { useToast } from 'primevue';
   import DatePicker from 'primevue/datepicker';
   import { ref, computed, onMounted, watch } from 'vue';
@@ -11,7 +11,6 @@
   import MediaPreviewDialog from '@/components/miscellaneous/MediaPreviewDialog.vue';
   import publishViewDataStore from '@/utils/publishViewDataStore';
   import tabStateStore from '@/utils/tabStateStore';
-  import { updatePostBundle } from '@/api/scheduledPostApi';
   import { format as formatDate, startOfDay, addDays } from 'date-fns';
 
   const toast = useToast();
@@ -35,7 +34,7 @@
   }
 
   const tabCounts: any = computed(() => {
-    const posts = scheduledPostsStore.scheduledPosts.value;
+    const posts = postsStore.postGroups.value;
     return {
       scheduled: posts.filter((post) => post.status === 'scheduled').length,
       drafts: posts.filter((post) => post.status === 'draft').length,
@@ -77,7 +76,7 @@
   };
 
   const filteredAndSortedPosts = computed(() => {
-    let posts = [...scheduledPostsStore.filteredPosts.value];
+    let posts = [...postsStore.filteredPosts.value];
 
     // Filter by tab/status
     posts = posts.filter((post: any) => {
@@ -183,11 +182,11 @@
   });
 
   const selectedDateRange = computed({
-    get: () => scheduledPostsStore.dates.value,
+    get: () => postsStore.dates.value,
     set: (value) => {
-      scheduledPostsStore.dates.value = value;
+      postsStore.dates.value = value;
       if (value && value.length === 2) {
-        scheduledPostsStore.setDateRange(value[0], value[1]);
+        postsStore.setDateRange(value[0], value[1]);
       }
     },
   });
@@ -235,10 +234,9 @@
   const handleDeletePost = async (postId: string) => {
     try {
       await deleteScheduledPost(postId);
-      scheduledPostsStore.scheduledPosts.value =
-        scheduledPostsStore.scheduledPosts.value.filter(
-          (post: any) => post._id !== postId
-        );
+      postsStore.postGroups.value = postsStore.postGroups.value.filter(
+        (post: any) => post._id !== postId
+      );
 
       toast.add({
         severity: 'success',
@@ -297,7 +295,7 @@
       formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
 
       await updatePostBundle(post._id, formData);
-      await scheduledPostsStore.getAllPostGroups();
+      await postsStore.getAllPostGroups();
 
       toast.add({
         severity: 'success',
@@ -340,7 +338,7 @@
     }
 
     // Update the store and local state
-    scheduledPostsStore.setDateRange(startDate, endDate);
+    postsStore.setDateRange(startDate, endDate);
     selectedDateRange.value = [startDate, endDate];
   });
 
@@ -364,7 +362,7 @@
         selectedSortOption.value = 'thisWeek';
       }
 
-      scheduledPostsStore.setDateRange(startDate, endDate);
+      postsStore.setDateRange(startDate, endDate);
       selectedDateRange.value = [startDate, endDate];
     }
   );
@@ -562,8 +560,6 @@
                       <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                           <div class="flex gap-3">
-                            <!-- {{ scheduledPostsStore.scheduledPosts }} -->
-
                             <div
                               v-for="platform in postGroup.posts"
                               :key="platform"

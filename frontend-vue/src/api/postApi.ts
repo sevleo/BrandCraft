@@ -55,7 +55,7 @@ async function updatePostBundle(id: string, postData: FormData) {
   }
 }
 
-async function getScheduledPosts() {
+async function getPostGroups() {
   try {
     const response = await axiosInstance.get('/scheduled-posts');
     console.log(response.data);
@@ -76,7 +76,7 @@ async function deleteScheduledPost(id: string) {
   }
 }
 
-async function getScheduledPostsStats() {
+async function getPostsStats() {
   try {
     const response = await axiosInstance.get('/scheduled-posts-stats');
     return response.data;
@@ -88,8 +88,8 @@ async function getScheduledPostsStats() {
 
 export {
   createPostBundle,
-  getScheduledPosts,
+  getPostGroups,
   updatePostBundle,
   deleteScheduledPost,
-  getScheduledPostsStats,
+  getPostsStats,
 };

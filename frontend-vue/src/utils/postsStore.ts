@@ -1,8 +1,5 @@
 import { ref, computed, watch } from 'vue';
-import {
-  getScheduledPosts,
-  getScheduledPostsStats,
-} from '../api/scheduledPostApi';
+import { getPostGroups, getPostsStats } from '../api/postApi';
 import {
   startOfDay,
   endOfDay,
@@ -12,10 +9,10 @@ import {
   subMonths,
 } from 'date-fns';
 
-const scheduledPosts = ref<any[]>([]);
+const postGroups = ref<any[]>([]);
 const posts = computed(() =>
-  scheduledPosts.value.reduce(
-    (acc, scheduledPost) => acc.concat(scheduledPost.posts || []),
+  postGroups.value.reduce(
+    (acc, postGroup) => acc.concat(postGroup.posts || []),
     []
   )
 );
@@ -23,14 +20,14 @@ const posts = computed(() =>
 const postStats = ref<{
   totalGroups: number;
   totalPosts: number;
-  scheduledPosts: number;
+  postGroups: number;
   publishedPosts: number;
   draftPosts: number;
   failedPosts: number;
 }>({
   totalGroups: 0,
   totalPosts: 0,
-  scheduledPosts: 0,
+  postGroups: 0,
   publishedPosts: 0,
   draftPosts: 0,
   failedPosts: 0,
@@ -90,10 +87,10 @@ const filteredPosts = computed(() => {
   const { start, end } = dateRange.value;
 
   if (!start || !end) {
-    return scheduledPosts.value;
+    return postGroups.value;
   }
 
-  const filteredPosts = scheduledPosts.value.filter((post) => {
+  const filteredPosts = postGroups.value.filter((post) => {
     const postDate = new Date(post.scheduledTime);
 
     return postDate >= start && postDate <= end;
@@ -103,14 +100,14 @@ const filteredPosts = computed(() => {
 });
 
 const draftPosts = computed(() =>
-  scheduledPosts.value.filter((post) => post.status === 'draft')
+  postGroups.value.filter((post) => post.status === 'draft')
 );
 
 async function getAllPostGroups() {
   try {
-    const response = await getScheduledPosts();
-    scheduledPosts.value = response.postGroups;
-    console.log(scheduledPosts.value);
+    const response = await getPostGroups();
+    postGroups.value = response.postGroups;
+    console.log(postGroups.value);
     return response.data;
   } catch (error) {
     console.error('Failed to get scheduled posts:', error);
@@ -120,7 +117,7 @@ async function getAllPostGroups() {
 
 async function updatePostStats() {
   try {
-    const stats = await getScheduledPostsStats();
+    const stats = await getPostsStats();
     postStats.value = stats;
 
     // Only animate if the animated values are 0 (initial state)
@@ -157,7 +154,7 @@ async function animateStats(targetStats: typeof postStats.value) {
         targetStats.totalPosts * easedProgress
       );
       animatedScheduledPosts.value = Math.round(
-        targetStats.scheduledPosts * easedProgress
+        targetStats.postGroups * easedProgress
       );
       animatedPublishedPosts.value = Math.round(
         targetStats.publishedPosts * easedProgress
@@ -193,7 +190,7 @@ function setPredefinedRange(rangeName: keyof typeof predefinedRanges) {
 }
 
 export default {
-  scheduledPosts,
+  postGroups,
   draftPosts,
   postStats,
   animatedTotalGroups,

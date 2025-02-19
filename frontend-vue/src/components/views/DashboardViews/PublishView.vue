@@ -2,7 +2,7 @@
   import { onMounted, ref } from 'vue';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import ScheduleGrid from '@/components/views/DashboardViews/PublishView/ScheduleGrid.vue';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
   import ScheduleList from '@/components/views/DashboardViews/PublishView/ScheduleList.vue';
   import publishViewDataStore from '@/utils/publishViewDataStore';
   import { List, Calendar, FilePlus2 } from 'lucide-vue-next';
@@ -44,7 +44,7 @@
     try {
       await Promise.all([
         connectionsDataStore.getAllAccounts(),
-        scheduledPostsStore.getAllPostGroups(),
+        postsStore.getAllPostGroups(),
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);

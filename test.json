@@ -4,38 +4,40 @@
     "scheduledTime": "2025-02-22T15:06:00.000Z",
     "platforms": ["twitter-1878505319028207600"],
     "sameContent": true,
-    "content": "ttt",
+    "content": "this is recently updated post",
     "videoTimestamp": 0,
     "mediaFiles": [],
-    "status": "draft",
+    "status": "pending",
     "posts": [
       {
         "_id": "67b44507e993b84ace1fa31d",
-        "content": "ttt",
+        "content": "this is recently updated post agaaan",
         "platform": "twitter",
         "platformId": "1878505319028207600",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-18T11:53:35.417Z"
   },
   {
     "_id": "67b432764e592273ff753db7",
-    "scheduledTime": "2025-02-21T15:00:00.000Z",
+    "scheduledTime": "2025-02-21T15:07:00.000Z",
     "platforms": ["twitter-1878505319028207600"],
     "sameContent": true,
-    "content": "qeqe",
+    "content": "hehehehehehehehehehehehehehehehehehehehehehehehehehehe\r\nhehehehehehehehehehehehehehehehehehe\r\nhehehehehehehehehehehehe",
     "videoTimestamp": 0,
     "mediaFiles": [],
     "status": "draft",
     "posts": [
       {
         "_id": "67b432764e592273ff753dba",
-        "content": "qeqe",
+        "content": "hehehehehehehehehehehehehehehehehehehehehehehehehehehe\r\nhehehehehehehehehehehehehehehehehehe\r\nhehehehehehehehehehehehe",
         "platform": "twitter",
         "platformId": "1878505319028207600",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-19T03:56:39.910Z"
   },
   {
     "_id": "67b446e6e993b84ace1fa6d4",
@@ -54,7 +56,8 @@
         "platformId": "1878505319028207600",
         "status": "scheduled"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-18T08:37:58.600Z"
   },
   {
     "_id": "67b3586fef3cf56ed9af3a90",
@@ -91,7 +94,8 @@
         "platformId": "9032919996762280",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-17T15:40:31.323Z"
   },
   {
     "_id": "67b3586fef3cf56ed9af3a96",
@@ -102,33 +106,34 @@
       "threads-9032919996762280"
     ],
     "sameContent": true,
-    "content": "test",
+    "content": "testqq",
     "videoTimestamp": 0,
     "mediaFiles": [],
     "status": "draft",
     "posts": [
       {
         "_id": "67b3586fef3cf56ed9af3a9f",
-        "content": "test",
+        "content": "testqq",
         "platform": "twitter",
         "platformId": "1878505319028207600",
         "status": "draft"
       },
       {
         "_id": "67b43fe3e993b84ace1f9e45",
-        "content": "test",
+        "content": "testqq",
         "platform": "bluesky",
         "platformId": "did:plc:z4dora24q37ypuivxdbk7cms",
         "status": "draft"
       },
       {
         "_id": "67b43fe3e993b84ace1f9e46",
-        "content": "test",
+        "content": "testqq",
         "platform": "threads",
         "platformId": "9032919996762280",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-17T15:40:31.421Z"
   },
   {
     "_id": "67b3586fef3cf56ed9af3aa1",
@@ -147,7 +152,8 @@
         "platformId": "1878505319028207600",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-17T15:40:31.561Z"
   },
   {
     "_id": "67b3586fef3cf56ed9af3ab7",
@@ -184,64 +190,128 @@
         "platformId": "did:plc:z4dora24q37ypuivxdbk7cms",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-17T15:40:31.898Z"
   },
   {
     "_id": "67b3586fef3cf56ed9af3aba",
     "scheduledTime": "2025-02-20T15:40:25.000Z",
     "platforms": ["twitter-1878505319028207600"],
     "sameContent": true,
-    "content": "2eqe",
+    "content": "2eqedada",
     "videoTimestamp": 0,
     "mediaFiles": [],
     "status": "draft",
     "posts": [
       {
         "_id": "67b3586fef3cf56ed9af3ac3",
-        "content": "2eqe",
+        "content": "2eqedada",
         "platform": "twitter",
         "platformId": "1878505319028207600",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-18T10:04:12.678Z"
   },
   {
-    "_id": "67b35870ef3cf56ed9af3ad3",
-    "scheduledTime": "2025-02-20T15:40:25.000Z",
+    "_id": "67b480170785caf85643a267",
+    "scheduledTime": "2025-02-20T12:41:51.000Z",
     "platforms": ["twitter-1878505319028207600"],
     "sameContent": true,
-    "content": "2eqe",
+    "content": "hello worldsssshello worldsssshello worldsssshello worldsssshello worldssss\r\nhello worldsssshello worldsssshello worldsssshello worldssss",
     "videoTimestamp": 0,
     "mediaFiles": [],
     "status": "draft",
     "posts": [
       {
-        "_id": "67b35870ef3cf56ed9af3adb",
-        "content": "2eqe",
+        "_id": "67b480170785caf85643a26a",
+        "content": "hello worldsssshello worldsssshello worldsssshello worldsssshello worldssss\r\nhello worldsssshello worldsssshello worldsssshello worldssss",
         "platform": "twitter",
         "platformId": "1878505319028207600",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-19T03:56:27.448Z"
   },
   {
     "_id": "67b446fde993b84ace1fa743",
     "scheduledTime": "2025-02-20T12:38:14.000Z",
     "platforms": ["twitter-1878505319028207600"],
     "sameContent": true,
-    "content": "qq",
+    "content": "adasdsd",
     "videoTimestamp": 0,
     "mediaFiles": [],
     "status": "draft",
     "posts": [
       {
         "_id": "67b446fde993b84ace1fa746",
-        "content": "qq",
+        "content": "adasdsd",
         "platform": "twitter",
         "platformId": "1878505319028207600",
         "status": "draft"
       }
-    ]
+    ],
+    "updatedAt": "2025-02-18T10:09:01.201Z"
+  },
+  {
+    "_id": "67b47db60785caf856439f9a",
+    "scheduledTime": "2025-02-20T12:31:54.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "test drafttest drafttest drafttest drafttest drafttest drafttest drafttest drafttest drafttest draft",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b47db60785caf856439f9d",
+        "content": "test drafttest drafttest drafttest drafttest drafttest drafttest drafttest drafttest drafttest draft",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ],
+    "updatedAt": "2025-02-19T03:56:46.932Z"
+  },
+  {
+    "_id": "67b45c5f710ba1e74b6418f9",
+    "scheduledTime": "2025-02-20T10:09:51.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "ccdcdscsd",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b45c5f710ba1e74b6418fc",
+        "content": "ccdcdscsd",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ],
+    "updatedAt": "2025-02-18T10:10:01.154Z"
+  },
+  {
+    "_id": "67b35870ef3cf56ed9af3ad3",
+    "scheduledTime": "2025-02-19T11:53:31.000Z",
+    "platforms": ["twitter-1878505319028207600"],
+    "sameContent": true,
+    "content": "play",
+    "videoTimestamp": 0,
+    "mediaFiles": [],
+    "status": "draft",
+    "posts": [
+      {
+        "_id": "67b35870ef3cf56ed9af3adb",
+        "content": "play",
+        "platform": "twitter",
+        "platformId": "1878505319028207600",
+        "status": "draft"
+      }
+    ],
+    "updatedAt": "2025-02-18T11:54:27.724Z"
   },
   {
     "_id": "67b441cfe993b84ace1fa0a8",
@@ -261,7 +331,8 @@
         "status": "published",
         "errorMessage": null
       }
-    ]
+    ],
+    "updatedAt": "2025-02-19T04:05:00.843Z"
   },
   {
     "_id": "67b05e35fe41a7ebde18da31",
@@ -281,7 +352,8 @@
         "status": "published",
         "errorMessage": null
       }
-    ]
+    ],
+    "updatedAt": "2025-02-19T04:05:00.843Z"
   },
   {
     "_id": "67ac5f7d7facccecb65b19e2",
@@ -320,6 +392,7 @@
         "status": "published",
         "errorMessage": null
       }
-    ]
+    ],
+    "updatedAt": "2025-02-19T04:05:00.843Z"
   }
 ]

@@ -2,7 +2,7 @@
   import ScheduleGrid from './PublishView/ScheduleGrid.vue';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import connectionsDataStore from '@/utils/connectionsDataStore';
-  import scheduledPostsStore from '@/utils/scheduledPostsStore';
+  import postsStore from '@/utils/postsStore';
 
   import { onMounted, ref } from 'vue';
 
@@ -14,7 +14,7 @@
     try {
       await Promise.all([
         connectionsDataStore.getAllAccounts(),
-        scheduledPostsStore.getAllPostGroups(),
+        postsStore.getAllPostGroups(),
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);
