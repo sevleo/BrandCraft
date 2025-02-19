@@ -34,10 +34,6 @@
     editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type || null
   );
 
-  const videoTimestamp = ref<number>(
-    editorDataStore.selectedPost.value?.videoTimestamp || 0
-  );
-
   const uploadProgress = ref<number>(0);
   const isUploading = ref<boolean>(false);
   const videoS3Key = ref<string | null>(null);
@@ -48,7 +44,7 @@
   };
 
   const handleTimestampUpdate = (timestamp: number) => {
-    videoTimestamp.value = timestamp;
+    editorDataStore.selectedPost.value.videoTimestamp = timestamp;
   };
 
   const tiktokSettings = ref({
@@ -540,7 +536,10 @@
         );
       }
 
-      formData.append('videoTimestamp', videoTimestamp.value.toString());
+      formData.append(
+        'videoTimestamp',
+        editorDataStore.selectedPost.value?.videoTimestamp.toString()
+      );
 
       await savePostGroup(formData, editorDataStore.selectedPost.value?._id);
 
@@ -681,7 +680,10 @@
         );
       }
 
-      formData.append('videoTimestamp', videoTimestamp.value.toString());
+      formData.append(
+        'videoTimestamp',
+        editorDataStore.selectedPost.value?.videoTimestamp.toString()
+      );
 
       // Send request based on action
       if (action === 'update') {
@@ -837,7 +839,8 @@
         editorDataStore.selectedPost.value.initialMediaUrls =
           newPost.mediaFiles?.map((m: any) => m.url) || [];
         currentMediaType.value = newPost.mediaFiles?.[0]?.type || null;
-        videoTimestamp.value = newPost.videoTimestamp || 0;
+        editorDataStore.selectedPost.value.videoTimestamp =
+          newPost.videoTimestamp || 0;
         status.value = newPost.status || 'draft';
       }
     },
@@ -867,6 +870,12 @@
             ></Select>
           </div>
 
+          <!-- <div>{{ currentMediaType }}</div>
+          <div>
+            {{ editorDataStore.selectedPost.value.mediaFiles }}
+          </div>
+          <div>{{ editorDataStore.selectedPost.value.initialMediaUrls }}</div>
+          <div>{{ editorDataStore.selectedPost.value.mediaPreviewUrls }}</div> -->
           <div class="">
             <div class="flex flex-wrap gap-2">
               <PlatformButton
@@ -1073,7 +1082,9 @@
             editorDataStore.selectedPost.value.mediaPreviewUrls
           "
           :current-media-type="currentMediaType"
-          :initial-video-timestamp="videoTimestamp"
+          :initial-video-timestamp="
+            editorDataStore.selectedPost.value.videoTimestamp
+          "
           @update:videoRef="handleVideoRefUpdate"
           @update:timestamp="handleTimestampUpdate"
           @removeMedia="removeMedia"
