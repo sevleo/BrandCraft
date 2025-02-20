@@ -228,8 +228,12 @@
     id="preview-panel"
     class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
   >
-    <div class="flex min-h-[600px] w-full flex-col items-center justify-start">
-      <div v-if="!props.currentMediaType && !isTransitioning">
+    <div class="flex h-[800px] w-full flex-col items-center justify-start">
+      <div
+        id="empty-preview"
+        v-if="!props.currentMediaType && !isTransitioning"
+        class="h-[600px] min-h-[600px] w-full bg-[gray]"
+      >
         Select a media type
       </div>
       <div
@@ -385,7 +389,7 @@
           </div>
         </div>
 
-        <div class="mt-4 flex items-center justify-between gap-4">
+        <div class="flex items-center justify-between gap-4">
           <button
             v-if="props.currentMediaType === 'video'"
             @click="openCoverModal"
