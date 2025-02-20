@@ -23,6 +23,7 @@
     PencilLine,
     Trash2,
     Check,
+    Loader2,
   } from 'lucide-vue-next';
   import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';
@@ -144,18 +145,27 @@
 
   // Track which post is waiting for delete confirmation
   const deletingPostId = ref<string | null>(null);
+  const deletingPosts = ref<Set<string>>(new Set());
 
   // Handle post deletion
   const handleDeletePost = async (postId: string, event: Event) => {
     event.stopPropagation(); // Prevent navigation when clicking delete
 
+    // Prevent duplicate deletion requests
+    if (deletingPosts.value.has(postId)) {
+      return;
+    }
+
     if (deletingPostId.value === postId) {
       try {
+        deletingPosts.value.add(postId);
         await deleteScheduledPost(postId);
         await postsStore.getAllPostGroups();
-        deletingPostId.value = null;
       } catch (error) {
         console.error('Error deleting post:', error);
+      } finally {
+        deletingPosts.value.delete(postId);
+        deletingPostId.value = null;
       }
     } else {
       deletingPostId.value = postId;
@@ -363,23 +373,38 @@
                   </div>
                 </div>
                 <button
-                  class="absolute right-1 top-1 hidden rounded text-gray-400 group-hover:block"
+                  class="absolute right-1 top-1 rounded text-gray-400"
+                  :class="
+                    deletingPosts.has(post._id)
+                      ? 'block'
+                      : 'hidden group-hover:block'
+                  "
                   @click="(e) => handleDeletePost(post._id, e)"
-                  @mouseleave="handleMouseLeave"
+                  @mouseleave="deletingPosts.has(post._id) ? undefined : handleMouseLeave()"
                   :title="
-                    deletingPostId === post._id
-                      ? 'Click again to confirm delete'
-                      : 'Delete post'
+                    deletingPosts.has(post._id)
+                      ? 'Deleting...'
+                      : deletingPostId === post._id
+                        ? 'Click again to confirm delete'
+                        : 'Delete post'
                   "
                 >
                   <component
-                    :is="deletingPostId === post._id ? Check : Trash2"
-                    class="h-5 w-5 rounded-full p-1 transition-all duration-200"
-                    :class="
-                      deletingPostId === post._id
-                        ? 'bg-red-50 stroke-red-500 hover:bg-red-100'
-                        : 'stroke-gray-400 hover:bg-gray-200 hover:stroke-black'
+                    :is="
+                      deletingPosts.has(post._id)
+                        ? Loader2
+                        : deletingPostId === post._id
+                          ? Check
+                          : Trash2
                     "
+                    class="h-5 w-5 rounded-full p-1 transition-all duration-200"
+                    :class="[
+                      deletingPosts.has(post._id)
+                        ? 'animate-spin stroke-blue-500'
+                        : deletingPostId === post._id
+                          ? 'bg-red-50 stroke-red-500 hover:bg-red-100'
+                          : 'stroke-gray-400 hover:bg-gray-200 hover:stroke-black',
+                    ]"
                   />
                 </button>
               </div>

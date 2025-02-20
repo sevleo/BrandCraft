@@ -869,6 +869,45 @@
           class="w-[250px]"
         />
 
+        <!-- <button
+          @click="() => handlePost('update')"
+          :disabled="!canSavePost || !canPublishToTikTok"
+          :class="[
+            'rounded-lg px-4 py-2 font-medium text-white',
+            canSavePost && canPublishToTikTok
+              ? 'bg-green hover:bg-greenLight'
+              : 'cursor-not-allowed bg-blue-300',
+          ]"
+        >
+          Update
+        </button>
+
+        <button
+          @click="() => handlePost('schedule')"
+          :disabled="validationErrors.length > 0"
+          class="group relative"
+          :class="[
+            'rounded-lg px-4 py-2 font-medium text-white',
+            validationErrors.length === 0
+              ? 'bg-green hover:bg-greenLight'
+              : 'cursor-not-allowed bg-blue-300',
+          ]"
+        >
+          Schedule
+          <div
+            v-if="validationErrors.length > 0"
+            class="absolute bottom-full left-1/2 mb-2 hidden w-[400px] -translate-x-1/2 rounded-lg border border-gray-900 bg-[white] p-2 text-sm text-gray-900 group-hover:block"
+          >
+            <div class="flex flex-col items-start justify-start gap-1">
+              <div v-for="(error, index) in validationErrors" :key="index">
+                • {{ error }}
+              </div>
+            </div>
+            <div
+              class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+            ></div>
+          </div>
+        </button> -->
         <button @click="() => handleSave()">Save</button>
       </div>
       <div class="flex items-start justify-start gap-4">
