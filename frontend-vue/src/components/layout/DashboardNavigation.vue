@@ -269,7 +269,7 @@
         </div>
         <div
           @click="savePostGroup"
-          class="border-layoutSoft group flex h-[80px] cursor-pointer items-center border-b border-t bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
+          class="border-layoutSoft group flex h-[80px] cursor-pointer items-start border-b border-t bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
         >
           <PencilLine
             class="mr-[5px] h-4 w-4 stroke-gray-500 transition-all duration-100 group-hover:stroke-gray-900"

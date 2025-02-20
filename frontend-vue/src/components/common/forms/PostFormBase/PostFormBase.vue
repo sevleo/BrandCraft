@@ -841,6 +841,8 @@
     },
     { immediate: true }
   );
+
+  const replicatedValue = ref('');
 </script>
 
 <template>
@@ -848,234 +850,242 @@
     <div
       v-if="!isLoading"
       :key="postKey"
-      class="transition-container flex w-fit items-start justify-start gap-4"
+      class="transition-container flex w-fit flex-col items-start justify-start gap-4"
     >
-      <div class="-r flex flex-col gap-2 p-2">
-        <PlatformButton
-          v-for="account in connectionsDataStore.connectedAccounts.value"
-          :key="account.id"
-          :account="account"
-          :is-selected="
-            editorDataStore.selectedPost.value?.platforms.includes(
-              account.platform === 'twitter'
-                ? `twitter-${account.id}`
-                : account.platform === 'threads'
-                  ? `threads-${account.id}`
-                  : account.platform === 'bluesky'
-                    ? `bluesky-${account.id}`
-                    : account.platform === 'mastodon'
-                      ? `mastodon-${account.id}`
-                      : account.platform === 'tiktok'
-                        ? `tiktok-${account.id}`
-                        : account.platform === 'instagram'
-                          ? `instagram-${account.id}`
-                          : account.platform === 'youtube'
-                            ? `youtube-${account.id}`
-                            : account.platform
-            )
-          "
-          :onClick="() => togglePlatform(account)"
+      <div class="flex w-full items-center justify-end p-2">
+        <DatePicker
+          v-model="editorDataStore.selectedDateTime.value"
+          showTime
+          showIcon
+          :showSeconds="false"
+          hourFormat="12"
+          class="w-[250px]"
         />
-      </div>
 
-      <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
-      <!-- Left Component (Scheduling Form) -->
-      <div
-        class="scheduling-form border-greenBG flex h-fit min-h-[600px] w-[450px] rounded-[10px] bg-[white] dark:bg-[#121212]"
-      >
-        <div class="flex h-auto w-full flex-col gap-2 p-2">
-          <!-- <div>{{ currentMediaType }}</div>
+        <button
+          @click="() => handlePost('update')"
+          :disabled="!canSavePost || !canPublishToTikTok"
+          :class="[
+            'rounded-lg px-4 py-2 font-medium text-white',
+            canSavePost && canPublishToTikTok
+              ? 'bg-green hover:bg-greenLight'
+              : 'cursor-not-allowed bg-blue-300',
+          ]"
+        >
+          Update
+        </button>
+
+        <button
+          @click="() => handlePost('schedule')"
+          :disabled="validationErrors.length > 0"
+          class="group relative"
+          :class="[
+            'rounded-lg px-4 py-2 font-medium text-white',
+            validationErrors.length === 0
+              ? 'bg-green hover:bg-greenLight'
+              : 'cursor-not-allowed bg-blue-300',
+          ]"
+        >
+          Schedule
+          <!-- Validation Messages Tooltip -->
+          <div
+            v-if="validationErrors.length > 0"
+            class="absolute bottom-full left-1/2 mb-2 hidden w-[400px] -translate-x-1/2 rounded-lg border border-gray-900 bg-[white] p-2 text-sm text-gray-900 group-hover:block"
+          >
+            <div class="flex flex-col items-start justify-start gap-1">
+              <div v-for="(error, index) in validationErrors" :key="index">
+                • {{ error }}
+              </div>
+            </div>
+            <!-- Arrow -->
+            <div
+              class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900"
+            ></div>
+          </div>
+        </button>
+      </div>
+      <div class="flex items-start justify-start gap-4">
+        <div class="-r flex flex-col gap-2 p-2">
+          <PlatformButton
+            v-for="account in connectionsDataStore.connectedAccounts.value"
+            :key="account.id"
+            :account="account"
+            :is-selected="
+              editorDataStore.selectedPost.value?.platforms.includes(
+                account.platform === 'twitter'
+                  ? `twitter-${account.id}`
+                  : account.platform === 'threads'
+                    ? `threads-${account.id}`
+                    : account.platform === 'bluesky'
+                      ? `bluesky-${account.id}`
+                      : account.platform === 'mastodon'
+                        ? `mastodon-${account.id}`
+                        : account.platform === 'tiktok'
+                          ? `tiktok-${account.id}`
+                          : account.platform === 'instagram'
+                            ? `instagram-${account.id}`
+                            : account.platform === 'youtube'
+                              ? `youtube-${account.id}`
+                              : account.platform
+              )
+            "
+            :onClick="() => togglePlatform(account)"
+          />
+        </div>
+
+        <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
+        <!-- Left Component (Scheduling Form) -->
+        <div
+          class="scheduling-form border-greenBG flex h-fit min-h-[600px] w-[450px] rounded-[10px] bg-[white] dark:bg-[#121212]"
+        >
+          <div class="flex h-auto w-full flex-col gap-2 p-2">
+            <!-- <div>{{ currentMediaType }}</div>
           <div>
             {{ editorDataStore.selectedPost.value.mediaFiles }}
           </div>
           <div>{{ editorDataStore.selectedPost.value.initialMediaUrls }}</div>
           <div>{{ editorDataStore.selectedPost.value.mediaPreviewUrls }}</div> -->
 
-          <div class="flex h-full w-full gap-8">
-            <!-- Form Panel -->
-            <div class="flex h-auto w-full flex-1 flex-col">
-              <div
-                class="text-area-container-with-buttons relative flex h-fit w-full flex-col rounded-[8px] dark:bg-[#1a1a1a]"
-              >
-                <textarea
-                  ref="textareaRef"
-                  v-model="editorDataStore.selectedPost.value.content"
-                  class="h-[300px] w-full resize-none rounded-lg bg-white p-2 text-black dark:bg-[#1a1a1a]"
-                  placeholder="Write your post content..."
-                ></textarea>
-                <div class="flex items-center justify-between gap-2">
-                  <button
-                    @click="handlePhotoUpload"
-                    class="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
-                  >
-                    <ImageIcon class="h-4 w-4" />
-                    Photo
-                  </button>
-                  <button
-                    @click="handleVideoUpload"
-                    class="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
-                  >
-                    <Video class="h-4 w-4"></Video>
-                    Video
-                  </button>
-                  <button
-                    ref="emojiButtonRef"
-                    @click="toggleEmojiPicker"
-                    class="relative flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
-                    :class="{
-                      'bg-gray-200 dark:bg-[#404040]': showEmojiPicker,
-                    }"
-                  >
-                    <Smile class="h-4 w-4" />
-                    Emoji
-                  </button>
-                  <!-- Emoji Picker -->
-                  <div
-                    v-if="showEmojiPicker"
-                    ref="emojiPickerRef"
-                    class="absolute left-1/2 top-full z-50 -translate-x-1/2 rounded-lg border shadow-lg"
-                  >
-                    <emoji-picker></emoji-picker>
-                  </div>
-                  <div class="ml-auto text-sm"></div>
-                </div>
-              </div>
-
-              <!-- Upload progress -->
-              <div
-                v-if="uploadProgress > 0 && uploadProgress < 100"
-                class="h-5 bg-[red]"
-              >
+            <div class="flex h-full w-full gap-8">
+              <!-- Form Panel -->
+              <div class="flex w-full flex-1 flex-col">
                 <div
-                  class="h-full bg-blue-500 transition-all duration-300"
-                  :style="{ width: uploadProgress + '%' }"
+                  class="relative flex w-full flex-col rounded-[8px] dark:bg-[#1a1a1a]"
                 >
-                  {{ uploadProgress }}%
-                </div>
-              </div>
-
-              <div class="mb-4"></div>
-
-              <!-- Settings Panel -->
-              <div class="flex flex-col gap-1">
-                <TikTokPresets
-                  v-if="
-                    editorDataStore.selectedPost.value?.platforms.some(
-                      (platform: any) => platform.startsWith('tiktok')
-                    )
-                  "
-                  :currentMediaType="currentMediaType"
-                  :initialSettings="tiktokSettings"
-                  @update:settings="handleTikTokSettingsUpdate"
-                />
-                <InstagramPresets
-                  v-if="
-                    editorDataStore.selectedPost.value?.platforms.some(
-                      (platform: any) => platform.startsWith('instagram')
-                    )
-                  "
-                  :currentMediaType="currentMediaType"
-                  :initialSettings="instagramSettings"
-                  @update:settings="handleInstagramSettingsUpdate"
-                />
-                <YouTubePresets
-                  v-if="
-                    editorDataStore.selectedPost.value?.platforms.some(
-                      (platform: any) => platform.startsWith('youtube')
-                    )
-                  "
-                  :currentMediaType="currentMediaType"
-                  :initialSettings="youtubeSettings"
-                  @update:settings="handleYoutubeSettingsUpdate"
-                />
-              </div>
-
-              <div class="mb-4 mt-4 flex w-full gap-5">
-                <DatePicker
-                  v-model="editorDataStore.selectedDateTime.value"
-                  showTime
-                  showIcon
-                  :showSeconds="false"
-                  hourFormat="12"
-                  class="w-[250px]"
-                />
-
-                <button
-                  @click="() => handlePost('update')"
-                  :disabled="!canSavePost || !canPublishToTikTok"
-                  :class="[
-                    'mr-auto rounded-lg px-4 py-2 font-medium text-white',
-                    canSavePost && canPublishToTikTok
-                      ? 'bg-green hover:bg-greenLight'
-                      : 'cursor-not-allowed bg-blue-300',
-                  ]"
-                >
-                  Update
-                </button>
-
-                <button
-                  @click="() => handlePost('schedule')"
-                  :disabled="validationErrors.length > 0"
-                  class="group relative"
-                  :class="[
-                    'rounded-lg px-4 py-2 font-medium text-white',
-                    validationErrors.length === 0
-                      ? 'bg-green hover:bg-greenLight'
-                      : 'cursor-not-allowed bg-blue-300',
-                  ]"
-                >
-                  Schedule
-                  <!-- Validation Messages Tooltip -->
                   <div
-                    v-if="validationErrors.length > 0"
-                    class="absolute bottom-full left-1/2 mb-2 hidden w-[400px] -translate-x-1/2 rounded-lg border border-gray-900 bg-[white] p-2 text-sm text-gray-900 group-hover:block"
+                    class="grow-wrap"
+                    :data-replicated-value="replicatedValue"
                   >
-                    <div class="flex flex-col items-start justify-start gap-1">
-                      <div
-                        v-for="(error, index) in validationErrors"
-                        :key="index"
-                      >
-                        • {{ error }}
-                      </div>
-                    </div>
-                    <!-- Arrow -->
-                    <div
-                      class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900"
-                    ></div>
+                    <textarea
+                      placeholder="Write your post here..."
+                      ref="textareaRef"
+                      v-model="editorDataStore.selectedPost.value.content"
+                      class="w-full rounded-lg bg-white text-black dark:bg-[#1a1a1a]"
+                      name="text"
+                      id="text"
+                      @input="
+                        (e) =>
+                          (replicatedValue = (e.target as HTMLTextAreaElement)
+                            .value)
+                      "
+                    ></textarea>
                   </div>
-                </button>
+
+                  <div class="flex items-center justify-between gap-2">
+                    <button
+                      @click="handlePhotoUpload"
+                      class="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
+                    >
+                      <ImageIcon class="h-4 w-4" />
+                      Photo
+                    </button>
+                    <button
+                      @click="handleVideoUpload"
+                      class="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
+                    >
+                      <Video class="h-4 w-4"></Video>
+                      Video
+                    </button>
+                    <button
+                      ref="emojiButtonRef"
+                      @click="toggleEmojiPicker"
+                      class="relative flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
+                      :class="{
+                        'bg-gray-200 dark:bg-[#404040]': showEmojiPicker,
+                      }"
+                    >
+                      <Smile class="h-4 w-4" />
+                      Emoji
+                    </button>
+                    <!-- Emoji Picker -->
+                    <div
+                      v-if="showEmojiPicker"
+                      ref="emojiPickerRef"
+                      class="absolute left-1/2 top-full z-50 -translate-x-1/2 rounded-lg border shadow-lg"
+                    >
+                      <emoji-picker></emoji-picker>
+                    </div>
+                    <div class="ml-auto text-sm"></div>
+                  </div>
+                </div>
+
+                <!-- Upload progress -->
+                <div
+                  v-if="uploadProgress > 0 && uploadProgress < 100"
+                  class="h-5 bg-[red]"
+                >
+                  <div
+                    class="h-full bg-blue-500 transition-all duration-300"
+                    :style="{ width: uploadProgress + '%' }"
+                  >
+                    {{ uploadProgress }}%
+                  </div>
+                </div>
+
+                <div class="mb-4"></div>
+
+                <!-- Settings Panel -->
+                <div class="flex flex-col gap-1">
+                  <TikTokPresets
+                    v-if="
+                      editorDataStore.selectedPost.value?.platforms.some(
+                        (platform: any) => platform.startsWith('tiktok')
+                      )
+                    "
+                    :currentMediaType="currentMediaType"
+                    :initialSettings="tiktokSettings"
+                    @update:settings="handleTikTokSettingsUpdate"
+                  />
+                  <InstagramPresets
+                    v-if="
+                      editorDataStore.selectedPost.value?.platforms.some(
+                        (platform: any) => platform.startsWith('instagram')
+                      )
+                    "
+                    :currentMediaType="currentMediaType"
+                    :initialSettings="instagramSettings"
+                    @update:settings="handleInstagramSettingsUpdate"
+                  />
+                  <YouTubePresets
+                    v-if="
+                      editorDataStore.selectedPost.value?.platforms.some(
+                        (platform: any) => platform.startsWith('youtube')
+                      )
+                    "
+                    :currentMediaType="currentMediaType"
+                    :initialSettings="youtubeSettings"
+                    @update:settings="handleYoutubeSettingsUpdate"
+                  />
+                </div>
+
+                <div
+                  class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] bg-[white] dark:bg-[#313131]"
+                >
+                  <PreviewComponent
+                    v-show="currentMediaType"
+                    :media-preview-urls="
+                      editorDataStore.selectedPost.value.mediaPreviewUrls
+                    "
+                    :current-media-type="currentMediaType"
+                    :initial-video-timestamp="
+                      editorDataStore.selectedPost.value.videoTimestamp
+                    "
+                    @update:videoRef="handleVideoRefUpdate"
+                    @update:timestamp="handleTimestampUpdate"
+                    @removeMedia="removeMedia"
+                  />
+                </div>
               </div>
             </div>
+            {{ '_id: ' + editorDataStore.selectedPost.value._id }}
+
+            {{ editorDataStore.selectedPost.value.content }}
           </div>
-          {{ '_id: ' + editorDataStore.selectedPost.value._id }}
         </div>
-      </div>
-      <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
+        <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
 
-      <!-- Right Component (Preview) -->
-      <div
-        :class="
-          currentMediaType ? 'w-[340px] opacity-100' : 'w-[340px] border-0'
-        "
-        class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] bg-[white] dark:bg-[#313131]"
-      >
-        <PreviewComponent
-          v-show="currentMediaType"
-          :media-preview-urls="
-            editorDataStore.selectedPost.value.mediaPreviewUrls
-          "
-          :current-media-type="currentMediaType"
-          :initial-video-timestamp="
-            editorDataStore.selectedPost.value.videoTimestamp
-          "
-          @update:videoRef="handleVideoRefUpdate"
-          @update:timestamp="handleTimestampUpdate"
-          @removeMedia="removeMedia"
-        />
-
-        <!-- <div v-else>Choose media type</div> -->
+        <!-- Right Component (Preview) -->
       </div>
-      <!-- <div class="fixed right-0 top-0 h-screen w-[200px] bg-[red]">test</div> -->
     </div>
   </transition>
 </template>
@@ -1235,5 +1245,28 @@
   .preview-container {
     overflow: hidden;
     transition: all 0.3s ease-in-out;
+  }
+</style>
+
+<style scoped>
+  .grow-wrap {
+    display: grid;
+  }
+
+  .grow-wrap::after {
+    content: attr(data-replicated-value) ' ';
+    white-space: pre-wrap;
+    visibility: hidden;
+  }
+
+  .grow-wrap > textarea {
+    resize: none;
+    overflow: hidden;
+  }
+
+  .grow-wrap > textarea,
+  .grow-wrap::after {
+    font: inherit;
+    grid-area: 1 / 1 / 2 / 2;
   }
 </style>

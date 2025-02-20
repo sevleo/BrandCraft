@@ -2,6 +2,13 @@ Backlog:
 Built by Creator, for Creators
 
 
+- simplify media upload
+  - one button to upload
+  - if user selects wrong, throw error message
+  - allow to select to 4 images or 1 video
+  - preview them at the bottom
+
+
 - integrate Unsplash
 
 - Tweet-to-Reel feature (hypefury.com)

@@ -27,7 +27,7 @@
 
 <template>
   <main
-    class="ml-[270px] flex h-auto items-center justify-start bg-[white] px-2 py-4 dark:bg-[#121212]"
+    class="ml-[270px] flex h-auto items-center justify-start bg-[white] dark:bg-[#121212]"
   >
     <DashboardNavigation />
 
@@ -35,7 +35,7 @@
       <!-- Post edit view -->
       <div
         v-if="!isLoading"
-        class="flex h-full max-h-[800px] w-full items-center justify-center"
+        class="flex w-full items-center justify-center pt-[30px]"
       >
         <PostFormBase />
       </div>
