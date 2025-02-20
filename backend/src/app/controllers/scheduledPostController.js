@@ -571,6 +571,17 @@ exports.updatePostGroup = async (req, res) => {
       });
     }
 
+    if (
+      !content &&
+      !platforms &&
+      !scheduledTime &&
+      !keptMediaUrls &&
+      !videoS3Key &&
+      !req.files?.media
+    ) {
+      return res.json({ success: true, postGroup });
+    }
+
     // Parse arrays from form data
     const parsedPlatforms =
       typeof platforms === "string" ? JSON.parse(platforms) : platforms;
@@ -731,19 +742,49 @@ exports.updatePostGroup = async (req, res) => {
       platformId: { $nin: parsedPlatformIds }, // Delete only posts that are no longer needed
     });
 
-    // Final Optimized Update (Step 5 merged into Step 9)
-    await postGroup.updateOne({
-      content: content,
-      scheduledTime: await validateScheduledTime(scheduledTime),
-      platforms: parsedPlatforms,
-      sameContent: sameContent === "true",
-      videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
-      status: status || postGroup.status,
-      mediaFiles: [...keptMedia.map((m) => m._id), ...newMediaFiles], // Update mediaFiles array
-      posts: updatedPosts.map((post) => post._id), // Add updated posts
-    });
+    // Construct the update object dynamically
+    const updateData = {};
+
+    // Only include fields if they have values
+    if (content !== undefined) updateData.content = content;
+    if (scheduledTime !== undefined) {
+      const validatedTime = await validateScheduledTime(scheduledTime);
+      if (validatedTime) updateData.scheduledTime = validatedTime;
+    }
+    if (parsedPlatforms !== undefined) updateData.platforms = parsedPlatforms;
+    if (sameContent !== undefined)
+      updateData.sameContent = sameContent === "true";
+    if (videoTimestamp !== undefined)
+      updateData.videoTimestamp = parseFloat(videoTimestamp);
+    if (status !== undefined) updateData.status = status || postGroup.status;
+
+    // Update mediaFiles and posts if they exist
+    const allMediaFiles = [...keptMedia.map((m) => m._id), ...newMediaFiles];
+    if (allMediaFiles.length > 0) updateData.mediaFiles = allMediaFiles;
+
+    if (updatedPosts && updatedPosts.length > 0) {
+      updateData.posts = updatedPosts.map((post) => post._id);
+    }
+
+    // Perform the update only if there is data to update
+    if (Object.keys(updateData).length > 0) {
+      await postGroup.updateOne(updateData);
+    }
 
     res.json({ success: true, postGroup });
+
+    // await postGroup.updateOne({
+    //   content: content,
+    //   scheduledTime: await validateScheduledTime(scheduledTime),
+    //   platforms: parsedPlatforms,
+    //   sameContent: sameContent === "true",
+    //   videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
+    //   status: status || postGroup.status,
+    //   mediaFiles: [...keptMedia.map((m) => m._id), ...newMediaFiles],
+    //   posts: updatedPosts.map((post) => post._id),
+    // });
+
+    // res.json({ success: true, postGroup });
   } catch (error) {
     console.error("Update scheduled post error:", error);
     res.status(500).json({ error: "Failed to update scheduled post" });

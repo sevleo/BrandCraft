@@ -456,14 +456,20 @@
       const formData = new FormData();
 
       // Add common post details
-      formData.append(
-        'content',
-        editorDataStore.selectedPost.value?.content || ''
-      );
-      formData.append(
-        'scheduledTime',
-        editorDataStore.selectedDateTime.value?.toISOString() || ''
-      );
+      if (editorDataStore.selectedPost.value?.content) {
+        formData.append(
+          'content',
+          editorDataStore.selectedPost.value?.content || ''
+        );
+      }
+
+      if (editorDataStore.selectedDateTime.value) {
+        formData.append(
+          'scheduledTime',
+          editorDataStore.selectedDateTime.value?.toISOString() || ''
+        );
+      }
+
       formData.append(
         'platforms',
         JSON.stringify(editorDataStore.selectedPost.value?.platforms)
@@ -538,18 +544,19 @@
 
       await savePostGroup(formData, editorDataStore.selectedPost.value?._id);
 
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Post group saved successfully',
+        life: 3000,
+      });
+
       await postsStore.getAllPostGroups();
     } catch (error: any) {
-      const errorMessages = {
-        update: 'Failed to update post',
-        schedule: 'Failed to schedule post',
-        draft: 'Failed to save draft',
-      };
-
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: error.response?.data?.message || errorMessages[action],
+        detail: error.response?.data?.message,
         life: 3000,
       });
     }
@@ -862,47 +869,7 @@
           class="w-[250px]"
         />
 
-        <button
-          @click="() => handlePost('update')"
-          :disabled="!canSavePost || !canPublishToTikTok"
-          :class="[
-            'rounded-lg px-4 py-2 font-medium text-white',
-            canSavePost && canPublishToTikTok
-              ? 'bg-green hover:bg-greenLight'
-              : 'cursor-not-allowed bg-blue-300',
-          ]"
-        >
-          Update
-        </button>
-
-        <button
-          @click="() => handlePost('schedule')"
-          :disabled="validationErrors.length > 0"
-          class="group relative"
-          :class="[
-            'rounded-lg px-4 py-2 font-medium text-white',
-            validationErrors.length === 0
-              ? 'bg-green hover:bg-greenLight'
-              : 'cursor-not-allowed bg-blue-300',
-          ]"
-        >
-          Schedule
-          <!-- Validation Messages Tooltip -->
-          <div
-            v-if="validationErrors.length > 0"
-            class="absolute bottom-full left-1/2 mb-2 hidden w-[400px] -translate-x-1/2 rounded-lg border border-gray-900 bg-[white] p-2 text-sm text-gray-900 group-hover:block"
-          >
-            <div class="flex flex-col items-start justify-start gap-1">
-              <div v-for="(error, index) in validationErrors" :key="index">
-                • {{ error }}
-              </div>
-            </div>
-            <!-- Arrow -->
-            <div
-              class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900"
-            ></div>
-          </div>
-        </button>
+        <button @click="() => handleSave()">Save</button>
       </div>
       <div class="flex items-start justify-start gap-4">
         <div class="-r flex flex-col gap-2 p-2">

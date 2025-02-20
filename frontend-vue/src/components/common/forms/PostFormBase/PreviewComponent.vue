@@ -227,7 +227,7 @@
     id="preview-panel"
     class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
   >
-    <div class="flex h-[800px] w-full flex-col items-center justify-start">
+    <div class="flex w-full flex-col items-center justify-start">
       <div class="preview-container flex w-full flex-col">
         <div class="relative h-fit overflow-hidden rounded-lg bg-black">
           <!-- Video Preview -->
