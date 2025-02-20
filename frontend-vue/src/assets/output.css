@@ -735,6 +735,14 @@ video {
   right: 0.25rem;
 }
 
+.left-4 {
+  left: 1rem;
+}
+
+.top-4 {
+  top: 1rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -1370,6 +1378,14 @@ video {
 
 .max-w-xs {
   max-width: 20rem;
+}
+
+.max-w-\[800px\] {
+  max-width: 800px;
+}
+
+.max-w-\[1000px\] {
+  max-width: 1000px;
 }
 
 .flex-1 {
@@ -2162,6 +2178,14 @@ video {
   stroke: #3b82f6;
 }
 
+.stroke-gray-700 {
+  stroke: #374151;
+}
+
+.stroke-gray-300 {
+  stroke: #d1d5db;
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -2302,6 +2326,11 @@ video {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 .pb-4 {

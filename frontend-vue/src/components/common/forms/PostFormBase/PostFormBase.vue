@@ -8,7 +8,13 @@
   } from '@/api/postApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import DatePicker from 'primevue/datepicker';
-  import { Image as ImageIcon, Video, Smile } from 'lucide-vue-next';
+  import {
+    Image as ImageIcon,
+    Video,
+    Smile,
+    Loader2,
+    MoreHorizontal,
+  } from 'lucide-vue-next';
   import 'emoji-picker-element';
   import postsStore from '@/utils/postsStore';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
@@ -24,6 +30,7 @@
   const toast = useToast();
 
   const isLoading = ref(true);
+  const isSaving = ref(false);
   const postKey = computed(
     () => editorDataStore.selectedPost?.value._id || 'new'
   );
@@ -448,6 +455,7 @@
 
   async function handleSave() {
     try {
+      isSaving.value = true;
       const keptMediaUrls =
         editorDataStore.selectedPost.value.mediaPreviewUrls.filter((url) =>
           editorDataStore.selectedPost.value.initialMediaUrls.includes(url)
@@ -559,6 +567,8 @@
         detail: error.response?.data?.message,
         life: 3000,
       });
+    } finally {
+      isSaving.value = false;
     }
   }
 
@@ -857,8 +867,16 @@
     <div
       v-if="!isLoading"
       :key="postKey"
-      class="transition-container flex w-fit flex-col items-start justify-start gap-4"
+      class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
+      <!-- Loading Indicator -->
+      <div
+        v-if="isSaving"
+        class="absolute left-4 top-4 flex items-center gap-2 text-blue-500"
+      >
+        <Loader2 class="h-4 w-4 animate-spin stroke-blue-500" />
+      </div>
+
       <div class="flex w-full items-center justify-end p-2">
         <DatePicker
           v-model="editorDataStore.selectedDateTime.value"
@@ -882,7 +900,7 @@
           Update
         </button>
 
-        <button
+        <button 
           @click="() => handlePost('schedule')"
           :disabled="validationErrors.length > 0"
           class="group relative"
@@ -910,8 +928,8 @@
         </button> -->
         <button @click="() => handleSave()">Save</button>
       </div>
-      <div class="flex items-start justify-start gap-4">
-        <div class="-r flex flex-col gap-2 p-2">
+      <div class="flex w-full items-start justify-start gap-4">
+        <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">
           <PlatformButton
             v-for="account in connectionsDataStore.connectedAccounts.value"
             :key="account.id"
@@ -942,7 +960,7 @@
         <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
         <!-- Left Component (Scheduling Form) -->
         <div
-          class="scheduling-form border-greenBG flex h-fit min-h-[600px] w-[450px] rounded-[10px] bg-[white] dark:bg-[#121212]"
+          class="scheduling-form border-greenBG flex h-fit max-w-[800px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
         >
           <div class="flex h-auto w-full flex-col gap-2 p-2">
             <!-- <div>{{ currentMediaType }}</div>
@@ -977,32 +995,43 @@
                     ></textarea>
                   </div>
 
-                  <div class="flex items-center justify-between gap-2">
-                    <button
-                      @click="handlePhotoUpload"
-                      class="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
-                    >
-                      <ImageIcon class="h-4 w-4" />
-                      Photo
-                    </button>
-                    <button
-                      @click="handleVideoUpload"
-                      class="flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
-                    >
-                      <Video class="h-4 w-4"></Video>
-                      Video
-                    </button>
+                  <div class="flex items-center justify-end gap-1">
                     <button
                       ref="emojiButtonRef"
                       @click="toggleEmojiPicker"
-                      class="relative flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-700 hover:bg-gray-50 dark:hover:bg-[#303030]"
+                      class="group relative flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
                       :class="{
                         'bg-gray-200 dark:bg-[#404040]': showEmojiPicker,
                       }"
                     >
-                      <Smile class="h-4 w-4" />
-                      Emoji
+                      <Smile
+                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                      />
                     </button>
+                    <button
+                      @click="handlePhotoUpload"
+                      class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
+                    >
+                      <ImageIcon
+                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                      />
+                    </button>
+                    <button
+                      @click="handleVideoUpload"
+                      class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
+                    >
+                      <Video
+                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                      ></Video>
+                    </button>
+                    <button
+                      class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
+                    >
+                      <MoreHorizontal
+                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                      />
+                    </button>
+
                     <!-- Emoji Picker -->
                     <div
                       v-if="showEmojiPicker"
@@ -1011,7 +1040,6 @@
                     >
                       <emoji-picker></emoji-picker>
                     </div>
-                    <div class="ml-auto text-sm"></div>
                   </div>
                 </div>
 
@@ -1089,6 +1117,7 @@
           </div>
         </div>
         <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
+        <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">test</div>
 
         <!-- Right Component (Preview) -->
       </div>

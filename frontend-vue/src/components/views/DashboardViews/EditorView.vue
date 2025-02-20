@@ -35,7 +35,7 @@
       <!-- Post edit view -->
       <div
         v-if="!isLoading"
-        class="flex w-full items-center justify-center pt-[30px]"
+        class="relative flex w-full flex-grow items-center justify-center pt-[30px]"
       >
         <PostFormBase />
       </div>
