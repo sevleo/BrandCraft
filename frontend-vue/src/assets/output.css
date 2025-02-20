@@ -731,6 +731,10 @@ video {
   top: 100%;
 }
 
+.right-1 {
+  right: 0.25rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -1382,6 +1386,10 @@ video {
 
 .flex-grow-0 {
   flex-grow: 0;
+}
+
+.flex-grow {
+  flex-grow: 1;
 }
 
 .grow {
@@ -2132,6 +2140,22 @@ video {
 
 .stroke-gray-500 {
   stroke: #6b7280;
+}
+
+.stroke-\[red\] {
+  stroke: red;
+}
+
+.stroke-gray-400 {
+  stroke: #9ca3af;
+}
+
+.stroke-gray-200 {
+  stroke: #e5e7eb;
+}
+
+.stroke-red-500 {
+  stroke: #ef4444;
 }
 
 .object-contain {
@@ -2977,8 +3001,36 @@ body {
   background-color: rgb(255 255 255 / 0.5);
 }
 
+.hover\:bg-red-50:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-\[red\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-gray-400:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-red-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:bg-opacity-90:hover {
   --tw-bg-opacity: 0.9;
+}
+
+.hover\:stroke-black:hover {
+  stroke: #000;
+}
+
+.hover\:stroke-white:hover {
+  stroke: #fff;
 }
 
 .hover\:text-blue-600:hover {
@@ -3004,6 +3056,11 @@ body {
 .hover\:text-greenLight:hover {
   --tw-text-opacity: 1;
   color: rgb(168 240 194 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-red-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {
@@ -3114,6 +3171,10 @@ body {
 
 .group:hover .group-hover\:stroke-gray-900 {
   stroke: #111827;
+}
+
+.group:hover .group-hover\:stroke-black {
+  stroke: #000;
 }
 
 .group:hover .group-hover\:text-gray-600 {
@@ -3344,6 +3405,10 @@ body {
 .dark\:hover\:bg-red-800:hover:is(.dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(153 27 27 / var(--tw-bg-opacity, 1));
+}
+
+.dark\:hover\:bg-red-900\/20:hover:is(.dark *) {
+  background-color: rgb(127 29 29 / 0.2);
 }
 
 .dark\:hover\:text-gray-200:hover:is(.dark *) {

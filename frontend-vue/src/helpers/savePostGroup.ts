@@ -3,11 +3,11 @@ import postsStore from '@/utils/postsStore';
 import editorDataStore from '@/utils/editorDataStore';
 import router from '@/router';
 
-async function savePostGroup() {
+async function savePostGroup(status: string) {
   // If not on editor, navigate first then reset
 
   const formData = new FormData();
-  formData.append('status', 'draft');
+  formData.append('status', status);
 
   const newPostGroup = await apiSavePostGroup(formData);
 

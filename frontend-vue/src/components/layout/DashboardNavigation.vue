@@ -21,10 +21,13 @@
     Instagram,
     Youtube,
     PencilLine,
+    Trash2,
+    Check,
   } from 'lucide-vue-next';
   import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';
   import { savePostGroup } from '@/helpers/savePostGroup';
+  import { deleteScheduledPost } from '@/api/postApi';
 
   const themeStore = useThemeStore();
 
@@ -138,6 +141,30 @@
       );
     });
   });
+
+  // Track which post is waiting for delete confirmation
+  const deletingPostId = ref<string | null>(null);
+
+  // Handle post deletion
+  const handleDeletePost = async (postId: string, event: Event) => {
+    event.stopPropagation(); // Prevent navigation when clicking delete
+
+    if (deletingPostId.value === postId) {
+      try {
+        await deleteScheduledPost(postId);
+        await postsStore.getAllPostGroups();
+        deletingPostId.value = null;
+      } catch (error) {
+        console.error('Error deleting post:', error);
+      }
+    } else {
+      deletingPostId.value = postId;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    deletingPostId.value = null;
+  };
 
   onMounted(async () => {
     await verifyAuth();
@@ -268,7 +295,7 @@
           </button>
         </div>
         <div
-          @click="savePostGroup"
+          @click="() => savePostGroup('draft')"
           class="border-layoutSoft group flex h-[80px] cursor-pointer items-start border-b border-t bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
         >
           <PencilLine
@@ -298,7 +325,7 @@
               }"
             >
               <div
-                class="flex h-[80px] flex-col justify-between border-l-[5px] px-4 py-2"
+                class="relative flex h-[80px] flex-col justify-between border-l-[5px] px-4 py-2"
                 :class="{
                   'border-l-[#00e676]': post._id === selectedPostId,
                   'border-l-transparent': post._id !== selectedPostId,
@@ -335,6 +362,26 @@
                     />
                   </div>
                 </div>
+                <button
+                  class="absolute right-1 top-1 hidden rounded text-gray-400 group-hover:block"
+                  @click="(e) => handleDeletePost(post._id, e)"
+                  @mouseleave="handleMouseLeave"
+                  :title="
+                    deletingPostId === post._id
+                      ? 'Click again to confirm delete'
+                      : 'Delete post'
+                  "
+                >
+                  <component
+                    :is="deletingPostId === post._id ? Check : Trash2"
+                    class="h-5 w-5 rounded-full p-1 transition-all duration-200"
+                    :class="
+                      deletingPostId === post._id
+                        ? 'bg-red-50 stroke-red-500 hover:bg-red-100'
+                        : 'stroke-gray-400 hover:bg-gray-200 hover:stroke-black'
+                    "
+                  />
+                </button>
               </div>
             </div>
           </div>
