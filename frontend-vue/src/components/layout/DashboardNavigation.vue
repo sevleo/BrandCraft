@@ -146,6 +146,18 @@
   // Track which post is waiting for delete confirmation
   const deletingPostId = ref<string | null>(null);
   const deletingPosts = ref<Set<string>>(new Set());
+  const isCreatingDraft = ref(false);
+
+  const handleCreateDraft = async () => {
+    if (isCreatingDraft.value) return;
+
+    try {
+      isCreatingDraft.value = true;
+      await savePostGroup('draft');
+    } finally {
+      isCreatingDraft.value = false;
+    }
+  };
 
   // Handle post deletion
   const handleDeletePost = async (postId: string, event: Event) => {
@@ -305,17 +317,30 @@
           </button>
         </div>
         <div
-          @click="() => savePostGroup('draft')"
+          @click="handleCreateDraft"
           class="border-layoutSoft group flex h-[80px] cursor-pointer items-start border-b border-t bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
         >
-          <PencilLine
-            class="mr-[5px] h-4 w-4 stroke-gray-500 transition-all duration-100 group-hover:stroke-gray-900"
-          />
-          <p
-            class="italic text-gray-500 transition-all duration-100 group-hover:text-gray-900"
-          >
-            New draft
-          </p>
+          <div class="flex items-center">
+            <component
+              :is="isCreatingDraft ? Loader2 : PencilLine"
+              class="mr-[5px] h-4 w-4 transition-all duration-100"
+              :class="
+                isCreatingDraft
+                  ? 'animate-spin stroke-blue-500'
+                  : 'stroke-gray-500 group-hover:stroke-gray-900'
+              "
+            />
+            <p
+              class="italic transition-all duration-100"
+              :class="
+                isCreatingDraft
+                  ? 'text-blue-500'
+                  : 'text-gray-500 group-hover:text-gray-900'
+              "
+            >
+              {{ isCreatingDraft ? 'Creating...' : 'New draft' }}
+            </p>
+          </div>
         </div>
 
         <!-- Posts List -->
@@ -380,7 +405,9 @@
                       : 'hidden group-hover:block'
                   "
                   @click="(e) => handleDeletePost(post._id, e)"
-                  @mouseleave="deletingPosts.has(post._id) ? undefined : handleMouseLeave()"
+                  @mouseleave="
+                    deletingPosts.has(post._id) ? undefined : handleMouseLeave()
+                  "
                   :title="
                     deletingPosts.has(post._id)
                       ? 'Deleting...'
