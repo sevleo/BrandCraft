@@ -310,6 +310,8 @@
             uploadProgress.value = progress;
           });
 
+          console.log('success: ', videoS3Key.value);
+
           toast.add({
             severity: 'success',
             summary: 'Upload complete',
@@ -478,13 +480,16 @@
         );
       }
 
-      formData.append(
-        'platforms',
-        JSON.stringify(editorDataStore.selectedPost.value?.platforms)
-      );
-      formData.append('sameContent', 'true');
-      formData.append('status', 'draft');
-      formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
+      if (editorDataStore.selectedPost.value?.platforms) {
+        formData.append(
+          'platforms',
+          JSON.stringify(editorDataStore.selectedPost.value?.platforms)
+        );
+      }
+
+      if (keptMediaUrls) {
+        formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
+      }
 
       if (currentMediaType.value === 'video' && videoS3Key.value) {
         formData.append('videoS3Key', videoS3Key.value);
@@ -545,10 +550,15 @@
         );
       }
 
-      formData.append(
-        'videoTimestamp',
-        editorDataStore.selectedPost.value?.videoTimestamp.toString()
-      );
+      if (editorDataStore.selectedPost.value?.videoTimestamp) {
+        formData.append(
+          'videoTimestamp',
+          editorDataStore.selectedPost.value?.videoTimestamp.toString()
+        );
+      }
+
+      formData.append('sameContent', 'true');
+      formData.append('status', 'draft');
 
       await savePostGroup(formData, editorDataStore.selectedPost.value?._id);
 
@@ -1111,9 +1121,26 @@
                 </div>
               </div>
             </div>
-            {{ '_id: ' + editorDataStore.selectedPost.value._id }}
-
-            {{ editorDataStore.selectedPost.value.content }}
+            <p>
+              {{ '_id: ' + editorDataStore.selectedPost.value._id }}
+            </p>
+            <p>
+              {{
+                'mediaFiles: ' + editorDataStore.selectedPost.value.mediaFiles
+              }}
+            </p>
+            <p>
+              {{
+                'mediaPreviewUrls: ' +
+                editorDataStore.selectedPost.value.mediaPreviewUrls
+              }}
+            </p>
+            <p>
+              {{
+                'initialMediaUrls: ' +
+                editorDataStore.selectedPost.value.initialMediaUrls
+              }}
+            </p>
           </div>
         </div>
         <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
