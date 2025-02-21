@@ -21,6 +21,7 @@ const ScheduledPostGroupSchema = new mongoose.Schema(
     },
     content: {
       type: String,
+      default: "",
     },
     videoTimestamp: {
       type: Number,
@@ -58,28 +59,33 @@ const ScheduledPostGroupSchema = new mongoose.Schema(
             "MUTUAL_FOLLOW_FRIENDS",
             "FOLLOWER_OF_CREATOR",
             "SELF_ONLY",
+            "",
           ],
+          default: "",
         },
-        allowComments: Boolean,
-        allowDuet: Boolean,
-        allowStitch: Boolean,
-        commercialContent: Boolean,
-        brandOrganic: Boolean,
-        brandedContent: Boolean,
+        allowComments: { type: Boolean, default: true },
+        allowDuet: { type: Boolean, default: false },
+        allowStitch: { type: Boolean, default: false },
+        commercialContent: { type: Boolean, default: false },
+        brandOrganic: { type: Boolean, default: false },
+        brandedContent: { type: Boolean, default: false },
       },
       instagram: {
         videoType: {
           type: String,
           enum: ["REELS", "STORIES"],
+          default: "REELS",
         },
       },
       youtube: {
         privacy: {
           type: String,
           enum: ["private", "public", "unlisted"],
+          default: "public",
         },
         title: {
           type: String,
+          default: "",
         },
       },
     },

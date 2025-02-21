@@ -83,53 +83,6 @@ exports.createScheduledPost = async (req, res) => {
       );
     }
 
-    // Ensure platformSettings is initialized
-    postGroup.platformSettings = postGroup.platformSettings || {};
-
-    // Add platform-specific settings
-    if (platformName === "tiktok" && tiktokSettings) {
-      const parsedTiktokSettings = JSON.parse(tiktokSettings);
-
-      // Merge TikTok settings without overwriting others
-      postGroup.platformSettings = {
-        ...postGroup.platformSettings,
-        tiktok: {
-          viewerSetting: parsedTiktokSettings.viewerSetting,
-          allowComments: parsedTiktokSettings.allowComments,
-          allowDuet: parsedTiktokSettings.allowDuet,
-          allowStitch: parsedTiktokSettings.allowStitch,
-          commercialContent: parsedTiktokSettings.commercialContent,
-          brandOrganic: parsedTiktokSettings.brandOrganic,
-          brandedContent: parsedTiktokSettings.brandedContent,
-        },
-      };
-    }
-
-    if (platformName === "instagram" && instagramSettings) {
-      const parsedInstagramSettings = JSON.parse(instagramSettings);
-
-      // Merge Instagram settings without overwriting others
-      postGroup.platformSettings = {
-        ...postGroup.platformSettings,
-        instagram: {
-          videoType: parsedInstagramSettings.videoType,
-        },
-      };
-    }
-
-    if (platformName === "youtube" && youtubeSettings) {
-      const parsedYoutubeSettings = JSON.parse(youtubeSettings);
-
-      // Merge YouTube settings without overwriting others
-      postGroup.platformSettings = {
-        ...postGroup.platformSettings,
-        youtube: {
-          privacy: parsedYoutubeSettings.privacy,
-          title: parsedYoutubeSettings.title,
-        },
-      };
-    }
-
     await postGroup.updateOne({
       $addToSet: { mediaFiles: { $each: newMediaFiles } },
     });
@@ -391,152 +344,13 @@ exports.updateScheduledPost = async (req, res) => {
 
 exports.createPostGroup = async (req, res) => {
   try {
-    const {
-      content,
-      scheduledTime,
-      platforms,
-      sameContent,
-      status,
-      videoS3Key,
-      tiktokSettings,
-      instagramSettings,
-      youtubeSettings,
-      videoTimestamp,
-    } = req.body;
-
-    console.log("test");
-
+    const { status } = req.body;
     const userId = req.user._id;
 
-    // Parse platforms if it's a string
-    const parsedPlatforms =
-      typeof platforms === "string" ? JSON.parse(platforms) : platforms;
-
-    // Validate scheduled time
-    const scheduledDate =
-      scheduledTime && (await validateScheduledTime(scheduledTime));
-
-    // Create the bundle
     const postGroup = new ScheduledPostGroup({
       userId: userId,
-      scheduledTime: scheduledDate,
-      platforms: parsedPlatforms,
-      sameContent: sameContent,
-      content: content,
-      status: "pending",
-      videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
+      status: status,
     });
-
-    await postGroup.save();
-
-    let newMediaFiles = [];
-
-    if (videoS3Key) {
-      const existingVideo = await MediaFile.findOne({
-        userId: userId,
-        fileName: videoS3Key,
-      });
-
-      if (existingVideo) {
-        existingVideo.postGroupId = postGroup._id;
-        await existingVideo.save();
-
-        await postGroup.updateOne({
-          $addToSet: { mediaFiles: { $each: [existingVideo._id] } },
-        });
-      }
-    }
-
-    // Handle image uploads
-    if (!videoS3Key) {
-      const uploadedFiles = [];
-      const imageFiles = await handleImageUpload(req.files, userId);
-      uploadedFiles.push(...imageFiles);
-
-      newMediaFiles = await Promise.all(
-        uploadedFiles.map(async (file) => {
-          const newMediaFile = new MediaFile({
-            userId: userId,
-            postGroupId: postGroup._id,
-            url: file.url,
-            fileName: file.filename,
-            mimeType: file.mimeType,
-            size: file.size,
-            type: file.type,
-          });
-          await newMediaFile.save();
-
-          return newMediaFile._id;
-        })
-      );
-    }
-
-    await postGroup.updateOne({
-      $addToSet: { mediaFiles: { $each: newMediaFiles } },
-    });
-
-    // Create individual posts for each platform
-    const posts =
-      parsedPlatforms &&
-      (await Promise.all(
-        parsedPlatforms.map(async (platform) => {
-          const platformName = platform.split("-")[0];
-          const platformId = platform.split("-").slice(1).join("-");
-
-          const post = {
-            postGroupId: postGroup._id,
-            userId: userId,
-            content: content,
-            platform: platformName,
-            platformId: platformId,
-            status: status,
-            videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
-          };
-
-          // Add platform-specific settings
-          if (platformName === "tiktok" && tiktokSettings) {
-            const parsedTiktokSettings = JSON.parse(tiktokSettings);
-            post.platformSettings = {
-              tiktok: {
-                viewerSetting: parsedTiktokSettings.viewerSetting,
-                allowComments: parsedTiktokSettings.allowComments,
-                allowDuet: parsedTiktokSettings.allowDuet,
-                allowStitch: parsedTiktokSettings.allowStitch,
-                commercialContent: parsedTiktokSettings.commercialContent,
-                brandOrganic: parsedTiktokSettings.brandOrganic,
-                brandedContent: parsedTiktokSettings.brandedContent,
-              },
-            };
-          }
-
-          if (platformName === "instagram" && instagramSettings) {
-            const parsedInstagramSettings = JSON.parse(instagramSettings);
-            post.platformSettings = {
-              instagram: {
-                videoType: parsedInstagramSettings.videoType,
-              },
-            };
-          }
-
-          if (platformName === "youtube" && youtubeSettings) {
-            const parsedYoutubeSettings = JSON.parse(youtubeSettings);
-            post.platformSettings = {
-              youtube: {
-                privacy: parsedYoutubeSettings.privacy,
-                title: parsedYoutubeSettings.title,
-              },
-            };
-          }
-
-          const newPost = new ScheduledPost(post);
-          await newPost.save();
-          return newPost;
-        })
-      ));
-
-    // Add posts to bundle & update status
-    postGroup.posts = posts && posts.map((post) => post._id);
-    postGroup.status = status;
 
     await postGroup.save();
 
@@ -557,13 +371,15 @@ exports.updatePostGroup = async (req, res) => {
       status,
       keptMediaUrls,
       videoS3Key,
-      tiktokSettings,
-      instagramSettings,
-      youtubeSettings,
       videoTimestamp,
+      platformSettings,
     } = req.body;
     const userId = req.user._id;
     const { id } = req.params;
+
+    console.log("update");
+    console.log(req.body);
+    console.log(req.body.platformSettings);
 
     // Find bundle and verify ownership
     const postGroup = await ScheduledPostGroup.findOneAndUpdate(
@@ -591,6 +407,8 @@ exports.updatePostGroup = async (req, res) => {
       !scheduledTime &&
       !keptMediaUrls &&
       !videoS3Key &&
+      !videoTimestamp &&
+      !platformSettings &&
       !req.files?.media
     ) {
       return res.json({ success: true, postGroup });
@@ -702,50 +520,9 @@ exports.updatePostGroup = async (req, res) => {
         }
 
         await post.save();
-
-        // Prepare platform-specific settings
-        if (platformName === "tiktok" && tiktokSettings) {
-          const parsedTiktokSettings = JSON.parse(tiktokSettings);
-
-          post.platformSettings = {
-            tiktok: {
-              viewerSetting: parsedTiktokSettings.viewerSetting,
-              allowComments: parsedTiktokSettings.allowComments,
-              allowDuet: parsedTiktokSettings.allowDuet,
-              allowStitch: parsedTiktokSettings.allowStitch,
-              commercialContent: parsedTiktokSettings.commercialContent,
-              brandOrganic: parsedTiktokSettings.brandOrganic,
-              brandedContent: parsedTiktokSettings.brandedContent,
-            },
-          };
-        }
-
-        if (platformName === "instagram" && instagramSettings) {
-          const parsedInstagramSettings = JSON.parse(instagramSettings);
-          post.platformSettings = {
-            instagram: {
-              videoType: parsedInstagramSettings.videoType,
-            },
-          };
-        }
-
-        if (platformName === "youtube" && youtubeSettings) {
-          const parsedYoutubeSettings = JSON.parse(youtubeSettings);
-          post.platformSettings = {
-            youtube: {
-              privacy: parsedYoutubeSettings.privacy,
-              title: parsedYoutubeSettings.title,
-            },
-          };
-        }
-
-        await post.save();
         return post;
       })
     );
-
-    console.log("updated posts");
-    console.log(updatedPosts);
 
     // Step 8: Delete any posts that are no longer relevant
     const parsedPlatformIds = parsedPlatforms.map((platform) => {
@@ -780,6 +557,12 @@ exports.updatePostGroup = async (req, res) => {
 
     if (updatedPosts && updatedPosts.length > 0) {
       updateData.posts = updatedPosts.map((post) => post._id);
+    }
+
+    // Add platform-specific settings
+    if (platformSettings) {
+      const parsedPlatformSettings = JSON.parse(platformSettings);
+      updateData.platformSettings = parsedPlatformSettings;
     }
 
     // Perform the update only if there is data to update
@@ -859,15 +642,14 @@ exports.getPostGroups = async (req, res) => {
       .sort({ scheduledTime: -1 }) // Sort by newest first
       .populate({
         path: "posts",
-        select:
-          "content platform platformId status errorMessage platformSettings",
+        select: "content platform platformId status errorMessage ",
       })
       .populate({
         path: "mediaFiles",
         select: "url key fileName mimeType size type",
       })
       .select(
-        "scheduledTime platforms mediaFiles status content sameContent videoTimestamp updatedAt"
+        "scheduledTime platforms mediaFiles status content sameContent platformSettings videoTimestamp updatedAt"
       );
 
     // Refresh Threads profil

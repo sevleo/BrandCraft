@@ -10,6 +10,7 @@ type SelectedPost = {
   mediaPreviewUrls: string[];
   initialMediaUrls: string[];
   videoTimestamp: number;
+  posts?: any[];
   platformSettings: {
     tiktok?: TikTokSettings;
     instagram?: InstagramSettings;
@@ -18,7 +19,7 @@ type SelectedPost = {
 };
 
 interface TikTokSettings {
-  viewerSetting: { label: string; val: string };
+  viewerSetting: string;
   allowComments: boolean;
   allowDuet: boolean;
   allowStitch: boolean;
@@ -47,7 +48,18 @@ const defaultPost: SelectedPost = {
   mediaPreviewUrls: [],
   initialMediaUrls: [],
   videoTimestamp: 0,
-  platformSettings: {},
+  posts: [],
+  platformSettings: {
+    tiktok: {
+      viewerSetting: '',
+      allowComments: true,
+      allowDuet: false,
+      allowStitch: false,
+      commercialContent: false,
+      brandOrganic: false,
+      brandedContent: false,
+    },
+  },
 };
 
 // Reactive references

@@ -58,7 +58,17 @@
 
   watch(
     () => editorDataStore.selectedPost.value,
-    () => {
+    async () => {
+      const tiktokPlatform =
+        editorDataStore.selectedPost.value?.platforms?.find((p: any) =>
+          p.startsWith('tiktok')
+        );
+      if (tiktokPlatform) {
+        const creatorInfo = await getCreatorInfo(
+          tiktokPlatform.split('-').slice(1).join('-')
+        );
+        console.log(creatorInfo);
+      }
       // Populate settings from InitialPosts
       if (editorDataStore.selectedPost.value?.posts) {
         // Populate Instagram settings from initialPosts if available
@@ -90,11 +100,6 @@
 
   const handleYoutubeSettingsUpdate = (settings: any) => {
     youtubeSettings.value = settings;
-  };
-
-  const handleTikTokSettingsUpdate = (settings: any) => {
-    editorDataStore.tiktokSettings.value = settings;
-    // Object.assign(editorDataStore.tiktokSettings, settings);
   };
 
   const validationErrors = computed(() => {
@@ -129,20 +134,20 @@
       }
 
       // 2. Check if viewer setting is selected
-      if (!editorDataStore.tiktokSettings.value.viewerSetting) {
-        errors.push('Please select who can view your post');
-      }
+      // if (!editorDataStore.tiktokSettings.value.viewerSetting) {
+      //   errors.push('Please select who can view your post');
+      // }
 
       // 3. Check commercial content settings
-      if (
-        editorDataStore.tiktokSettings.value.commercialContent &&
-        !editorDataStore.tiktokSettings.value.brandOrganic &&
-        !editorDataStore.tiktokSettings.value.brandedContent
-      ) {
-        errors.push(
-          'You need to indicate if your content promotes yourself, a third party, or both.'
-        );
-      }
+      // if (
+      //   editorDataStore.tiktokSettings.value.commercialContent &&
+      //   !editorDataStore.tiktokSettings.value.brandOrganic &&
+      //   !editorDataStore.tiktokSettings.value.brandedContent
+      // ) {
+      //   errors.push(
+      //     'You need to indicate if your content promotes yourself, a third party, or both.'
+      //   );
+      // }
     }
 
     // Instagram errors
@@ -220,21 +225,21 @@
     return validationErrors.value.length === 0;
   });
 
-  const canPublishToTikTok = computed(() => {
-    if (
-      !editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-        p.startsWith('tiktok')
-      )
-    )
-      return true;
-    if (
-      editorDataStore.tiktokSettings.value.commercialContent &&
-      !editorDataStore.tiktokSettings.value.brandOrganic &&
-      !editorDataStore.tiktokSettings.value.brandedContent
-    )
-      return false;
-    return true;
-  });
+  // const canPublishToTikTok = computed(() => {
+  //   if (
+  //     !editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+  //       p.startsWith('tiktok')
+  //     )
+  //   )
+  //     return true;
+  //   if (
+  //     editorDataStore.tiktokSettings.value.commercialContent &&
+  //     !editorDataStore.tiktokSettings.value.brandOrganic &&
+  //     !editorDataStore.tiktokSettings.value.brandedContent
+  //   )
+  //     return false;
+  //   return true;
+  // });
 
   async function handleMediaSelect(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -447,178 +452,6 @@
     }
   }
 
-  async function handlePost(action: 'update' | 'schedule' | 'draft') {
-    try {
-      // Validate content
-      const hasContent =
-        editorDataStore.selectedPost.value?.content.trim() !== '';
-      if (!hasContent) {
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Please enter some content or add media for your post',
-          life: 3000,
-        });
-        return;
-      }
-
-      // Validate platforms
-      if (editorDataStore.selectedPost.value?.platforms.length === 0) {
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Please select at least one platform',
-          life: 3000,
-        });
-        return;
-      }
-
-      const formData = new FormData();
-
-      // Add common post details
-      formData.append(
-        'content',
-        editorDataStore.selectedPost.value?.content || ''
-      );
-      formData.append(
-        'scheduledTime',
-        editorDataStore.selectedDateTime.value?.toISOString() || ''
-      );
-      formData.append(
-        'platforms',
-        JSON.stringify(editorDataStore.selectedPost.value?.platforms)
-      );
-      formData.append('sameContent', 'true');
-
-      // Set status based on action
-      const postStatus =
-        action === 'schedule'
-          ? 'scheduled'
-          : action === 'draft'
-            ? 'draft'
-            : status.value;
-      formData.append('status', postStatus);
-
-      // Handle media
-      if (action === 'update') {
-        const keptMediaUrls =
-          editorDataStore.selectedPost.value.mediaPreviewUrls.filter((url) =>
-            editorDataStore.selectedPost.value.initialMediaUrls.includes(url)
-          );
-        formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
-      }
-
-      if (
-        editorDataStore.currentMediaType.value === 'video' &&
-        videoS3Key.value
-      ) {
-        formData.append('videoS3Key', videoS3Key.value);
-      }
-
-      if (editorDataStore.currentMediaType.value === 'image') {
-        selectedMedia.value.forEach((file) => {
-          formData.append('media', file);
-        });
-      }
-
-      // Add TikTok settings
-      if (
-        editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-          p.startsWith('tiktok')
-        )
-      ) {
-        formData.append(
-          'tiktokSettings',
-          JSON.stringify({
-            viewerSetting:
-              editorDataStore.tiktokSettings.value.viewerSetting.val,
-            allowComments: editorDataStore.tiktokSettings.value.allowComments,
-            allowDuet: editorDataStore.tiktokSettings.value.allowDuet,
-            allowStitch: editorDataStore.tiktokSettings.value.allowStitch,
-            commercialContent:
-              editorDataStore.tiktokSettings.value.commercialContent,
-            brandOrganic: editorDataStore.tiktokSettings.value.brandOrganic,
-            brandedContent: editorDataStore.tiktokSettings.value.brandedContent,
-          })
-        );
-      }
-
-      // Add Instagram settings
-      if (
-        editorDataStore.selectedPost.value?.platforms.some((p) =>
-          p.startsWith('instagram')
-        )
-      ) {
-        formData.append(
-          'instagramSettings',
-          JSON.stringify({
-            videoType: instagramSettings.value.videoType,
-          })
-        );
-      }
-
-      // Add YouTube settings
-      if (
-        editorDataStore.selectedPost.value?.platforms.some((p) =>
-          p.startsWith('youtube')
-        )
-      ) {
-        formData.append(
-          'youtubeSettings',
-          JSON.stringify({
-            privacy: youtubeSettings.value.privacy,
-            title: youtubeSettings.value.title,
-          })
-        );
-      }
-
-      formData.append(
-        'videoTimestamp',
-        editorDataStore.selectedPost.value?.videoTimestamp.toString()
-      );
-
-      // Send request based on action
-      if (action === 'update') {
-        await updatePostBundle(
-          editorDataStore.selectedPost.value?._id!,
-          formData
-        );
-      } else {
-        await createPostBundle(formData);
-      }
-
-      // Update store and close modal
-      await postsStore.getAllPostGroups();
-
-      // Show success message
-      const successMessages = {
-        update: 'Post updated successfully!',
-        schedule: 'Post scheduled successfully!',
-        draft: 'Post saved as draft!',
-      };
-
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: successMessages[action],
-        life: 3000,
-      });
-    } catch (error: any) {
-      const errorMessages = {
-        update: 'Failed to update post',
-        schedule: 'Failed to schedule post',
-        draft: 'Failed to save draft',
-      };
-
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: error.response?.data?.message || errorMessages[action],
-        life: 3000,
-      });
-    }
-  }
-
   const showEmojiPicker = ref(false);
   const emojiPickerRef = ref<HTMLDivElement | null>(null);
   const emojiButtonRef = ref<HTMLButtonElement | null>(null);
@@ -681,25 +514,14 @@
   };
 
   onMounted(async () => {
-    console.log(editorDataStore.selectedDateTime.value);
-    console.log('ss');
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
-
-    console.log('1');
 
     if (
       editorDataStore.selectedPost.value?.platforms?.some((p: any) =>
         p.startsWith('tiktok')
       )
     ) {
-      console.log('2');
-      await getCreatorInfo(
-        editorDataStore.selectedPost.value?.platforms?.[0]
-          .split('-')
-          .slice(1)
-          .join('-')
-      );
     }
 
     await nextTick(() => {
@@ -753,8 +575,12 @@
       :key="postKey"
       class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
-      {{ editorDataStore.selectedPost.value }}
-      {{ editorDataStore.tiktokSettings.value }}
+      <p>1 - {{ editorDataStore.selectedPost.value }}</p>
+      <p>2 - {{ editorDataStore.selectedPost.value.platformSettings }}</p>
+      <p>
+        3 - {{ editorDataStore.selectedPost.value.platformSettings?.tiktok }}
+      </p>
+
       <!-- Loading Indicator -->
       <div
         v-if="isSaving"
@@ -953,7 +779,6 @@
                       )
                     "
                     :currentMediaType="editorDataStore.currentMediaType.value"
-                    @update:settings="handleTikTokSettingsUpdate"
                   />
                   <InstagramPresets
                     v-if="

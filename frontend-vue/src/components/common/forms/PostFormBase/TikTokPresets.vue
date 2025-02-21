@@ -1,46 +1,99 @@
 <script setup lang="ts">
-  import { ref, computed, watch, defineEmits } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import Select from 'primevue/select';
   import CustomSwitch from '@/components/common/buttons/CustomSwitch.vue';
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
-  import { getCreatorInfo } from '@/api/tiktokApi';
   import editorDataStore from '@/utils/editorDataStore';
 
   const props = defineProps<{
     currentMediaType: 'image' | 'video' | null;
   }>();
 
-  const emit = defineEmits<{
-    (
-      e: 'update:settings',
-      settings: {
-        viewerSetting: string;
-        allowComments: boolean;
-        allowDuet: boolean;
-        allowStitch: boolean;
-        commercialContent: boolean;
-        brandOrganic: boolean;
-        brandedContent: boolean;
-      }
-    ): void;
-  }>();
-
   const tiktokOptionsExpanded = ref(false);
-  const tiktokViewerSetting = ref<any>('');
+  const tiktokViewerSetting = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.viewerSetting ?? '',
+    set: (val: any) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.viewerSetting =
+          val.val;
+      }
+    },
+  });
 
-  watch(
-    () => tiktokOptionsExpanded.value,
-    async () => {
-      await getCreatorInfo(
-        editorDataStore.selectedPost.value?.platforms?.[0]
-          .split('-')
-          .slice(1)
-          .join('-')
-      );
-      console.log(editorDataStore.tiktokSettings);
-    }
-  );
+  const tiktokAllowComments = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.allowComments ?? true,
+    set: (val: boolean) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.allowComments =
+          val;
+      }
+    },
+  });
+
+  const tiktokAllowDuet = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok?.allowDuet ??
+      false,
+    set: (val: boolean) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.allowDuet =
+          val;
+      }
+    },
+  });
+
+  const tiktokAllowStitch = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok?.allowStitch ??
+      false,
+    set: (val: boolean) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.allowStitch =
+          val;
+      }
+    },
+  });
+
+  const tiktokCommercialContent = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.commercialContent ?? false,
+    set: (val: boolean) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.commercialContent =
+          val;
+      }
+    },
+  });
+
+  const tiktokBrandOrganic = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.brandOrganic ?? false,
+    set: (val: boolean) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.brandOrganic =
+          val;
+      }
+    },
+  });
+
+  const tiktokBrandedContent = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.brandedContent ?? false,
+    set: (val: boolean) => {
+      if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok.brandedContent =
+          val;
+      }
+    },
+  });
 
   // Mapping for values to labels
   const valueToLabelMap: Record<string, string> = {
@@ -50,12 +103,14 @@
     SELF_ONLY: 'Only me',
   };
 
-  const tiktokViewerOptions = computed(() => {
+  const viewerSettingOptions = computed(() => {
     const privacyOptions =
       connectionsDataStore.tiktokAccount.value?.creatorInfo
         .privacy_level_options;
 
-    const isBrandedContent = tiktokBrandedContent.value;
+    const isBrandedContent =
+      editorDataStore.selectedPost.value?.platformSettings?.tiktok
+        ?.brandedContent;
 
     const options = [
       privacyOptions?.includes('FOLLOWER_OF_CREATOR') && {
@@ -82,7 +137,11 @@
   });
 
   const isOptionDisabled = (option: any) => {
-    return option.value === 'SELF_ONLY' && tiktokBrandedContent.value;
+    return (
+      option.value === 'SELF_ONLY' &&
+      editorDataStore.selectedPost.value?.platformSettings?.tiktok
+        ?.brandedContent
+    );
   };
 
   const isCommentsDisabled = computed(() => {
@@ -106,79 +165,30 @@
     );
   });
 
-  const tiktokAllowComments = ref(false);
-  const tiktokAllowDuet = ref(false);
-  const tiktokAllowStitch = ref(false);
-  const tiktokCommercialContent = ref(false);
-  const tiktokBrandOrganic = ref(false);
-  const tiktokBrandedContent = ref(false);
-
   watch(
-    [
-      tiktokViewerSetting,
-      tiktokAllowComments,
-      tiktokAllowDuet,
-      tiktokAllowStitch,
-      tiktokCommercialContent,
-      tiktokBrandOrganic,
-      tiktokBrandedContent,
-    ],
-    () => {
-      emit('update:settings', {
-        viewerSetting: tiktokViewerSetting.value,
-        allowComments: tiktokAllowComments.value,
-        allowDuet: tiktokAllowDuet.value,
-        allowStitch: tiktokAllowStitch.value,
-        commercialContent: tiktokCommercialContent.value,
-        brandOrganic: tiktokBrandOrganic.value,
-        brandedContent: tiktokBrandedContent.value,
-      });
-    },
-    { immediate: true } // Emit immediately during initialization
+    () =>
+      editorDataStore.selectedPost.value?.platformSettings?.tiktok
+        ?.commercialContent,
+    (newValue) => {
+      if (!newValue) {
+        editorDataStore.selectedPost.value.platformSettings.tiktok!.brandOrganic =
+          false;
+        editorDataStore.selectedPost.value.platformSettings.tiktok!.brandedContent =
+          false;
+      }
+    }
   );
 
-  watch(tiktokCommercialContent, (newValue) => {
-    if (newValue === false) {
-      tiktokBrandOrganic.value = false;
-      tiktokBrandedContent.value = false;
-    }
-  });
-
   const tiktokContentLabel = computed(() => {
-    if (!tiktokCommercialContent.value) return '';
-    if (tiktokBrandedContent.value)
+    const tiktokSettings =
+      editorDataStore.selectedPost.value.platformSettings.tiktok;
+    if (!tiktokSettings?.commercialContent) return '';
+    if (tiktokSettings.brandedContent)
       return 'Your photo/video will be labeled as "Paid partnership"';
-    if (tiktokBrandOrganic.value)
+    if (tiktokSettings.brandOrganic)
       return 'Your photo/video will be labeled as "Promotional content"';
     return '';
   });
-
-  // Populate initial settings for Edit
-  if (editorDataStore.tiktokSettings) {
-    const {
-      viewerSetting,
-      allowComments,
-      allowDuet,
-      allowStitch,
-      commercialContent,
-      brandOrganic,
-      brandedContent,
-    } = editorDataStore.tiktokSettings;
-
-    // tiktokViewerSetting.value = viewerSetting?.value || '';
-    tiktokViewerSetting.value = viewerSetting
-      ? {
-          value: viewerSetting.val,
-          label: valueToLabelMap[viewerSetting.val],
-        }
-      : '';
-    tiktokAllowComments.value = allowComments || false;
-    tiktokAllowDuet.value = allowDuet || false;
-    tiktokAllowStitch.value = allowStitch || false;
-    tiktokCommercialContent.value = commercialContent || false;
-    tiktokBrandOrganic.value = brandOrganic || false;
-    tiktokBrandedContent.value = brandedContent || false;
-  }
 </script>
 
 <template>
@@ -206,7 +216,6 @@
         </div>
       </div>
     </div>
-
     <div
       v-if="tiktokOptionsExpanded"
       :class="[
@@ -214,19 +223,19 @@
         tiktokOptionsExpanded ? 'py-3 opacity-100' : 'max-h-0 opacity-0',
       ]"
     >
-      {{ editorDataStore.tiktokSettings }}
       <div class="space-y-4">
         <div>
           <div class="relative">
             <Select
               v-model="tiktokViewerSetting"
-              :options="tiktokViewerOptions"
+              :options="viewerSettingOptions"
+              :disabled="isOptionDisabled(tiktokViewerSetting)"
               optionLabel="label"
               class="w-full"
               :placeholder="
                 tiktokViewerSetting
-                  ? valueToLabelMap[tiktokViewerSetting.value] !== undefined
-                    ? valueToLabelMap[tiktokViewerSetting.value]
+                  ? valueToLabelMap[tiktokViewerSetting] !== undefined
+                    ? valueToLabelMap[tiktokViewerSetting]
                     : 'Who can view your post?'
                   : 'Who can view your post?'
               "

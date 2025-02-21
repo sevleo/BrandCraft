@@ -16,6 +16,7 @@ async function createPostGroup() {
   editorDataStore.reset();
   editorDataStore.selectedPost.value._id = newPostGroup._id;
   router.push('/dashboard/editor');
+  console.log(editorDataStore.selectedPost.value);
 }
 
 async function updatePostGroup(
@@ -65,57 +66,40 @@ async function updatePostGroup(
     });
   }
 
-  console.log(editorDataStore.tiktokSettings.value);
-
-  // Add TikTok settings
-  if (
-    editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-      p.startsWith('tiktok')
-    )
-  ) {
+  console.log(editorDataStore.selectedPost.value);
+  if (editorDataStore.selectedPost.value?.platformSettings) {
     formData.append(
-      'tiktokSettings',
-      JSON.stringify({
-        viewerSetting: editorDataStore.tiktokSettings.value.viewerSetting.val,
-        allowComments: editorDataStore.tiktokSettings.value.allowComments,
-        allowDuet: editorDataStore.tiktokSettings.value.allowDuet,
-        allowStitch: editorDataStore.tiktokSettings.value.allowStitch,
-        commercialContent:
-          editorDataStore.tiktokSettings.value.commercialContent,
-        brandOrganic: editorDataStore.tiktokSettings.value.brandOrganic,
-        brandedContent: editorDataStore.tiktokSettings.value.brandedContent,
-      })
+      'platformSettings',
+      JSON.stringify(editorDataStore.selectedPost.value?.platformSettings)
     );
   }
 
-  // Add Instagram settings
-  if (
-    editorDataStore.selectedPost.value?.platforms.some((p) =>
-      p.startsWith('instagram')
-    )
-  ) {
-    formData.append(
-      'instagramSettings',
-      JSON.stringify({
-        videoType: instagramSettings.value.videoType,
-      })
-    );
-  }
+  //   if (
+  //     editorDataStore.selectedPost.value?.platforms.some((p) =>
+  //       p.startsWith('instagram')
+  //     )
+  //   ) {
+  //     formData.append(
+  //       'instagramSettings',
+  //       JSON.stringify({
+  //         videoType: instagramSettings.value.videoType,
+  //       })
+  //     );
+  //   }
 
-  // Add YouTube settings
-  if (
-    editorDataStore.selectedPost.value?.platforms.some((p) =>
-      p.startsWith('youtube')
-    )
-  ) {
-    formData.append(
-      'youtubeSettings',
-      JSON.stringify({
-        privacy: youtubeSettings.value.privacy,
-        title: youtubeSettings.value.title,
-      })
-    );
-  }
+  //   if (
+  //     editorDataStore.selectedPost.value?.platforms.some((p) =>
+  //       p.startsWith('youtube')
+  //     )
+  //   ) {
+  //     formData.append(
+  //       'youtubeSettings',
+  //       JSON.stringify({
+  //         privacy: youtubeSettings.value.privacy,
+  //         title: youtubeSettings.value.title,
+  //       })
+  //     );
+  //   }
 
   if (editorDataStore.selectedPost.value?.videoTimestamp) {
     formData.append(
