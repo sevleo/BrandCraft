@@ -32,40 +32,6 @@ const scheduledPostSchema = new mongoose.Schema({
       "failed",
     ],
   },
-  platformSettings: {
-    tiktok: {
-      viewerSetting: {
-        type: String,
-        enum: [
-          "PUBLIC_TO_EVERYONE",
-          "MUTUAL_FOLLOW_FRIENDS",
-          "FOLLOWER_OF_CREATOR",
-          "SELF_ONLY",
-        ],
-      },
-      allowComments: Boolean,
-      allowDuet: Boolean,
-      allowStitch: Boolean,
-      commercialContent: Boolean,
-      brandOrganic: Boolean,
-      brandedContent: Boolean,
-    },
-    instagram: {
-      videoType: {
-        type: String,
-        enum: ["REELS", "STORIES"],
-      },
-    },
-    youtube: {
-      privacy: {
-        type: String,
-        enum: ["private", "public", "unlisted"],
-      },
-      title: {
-        type: String,
-      },
-    },
-  },
   errorMessage: {
     type: String,
   },

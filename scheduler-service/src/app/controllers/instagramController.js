@@ -16,6 +16,10 @@ exports.postToInstagramInternal = async ({
     throw new Error("Instagram posts require at least one media item");
   }
 
+  await post.populate("postGroupId");
+
+  const instagramSettings = post.postGroupId.platformSettings?.instagram;
+
   const connection = await platformConnection.findOne({
     userId: user._id,
     platform: post.platform,
@@ -94,7 +98,7 @@ exports.postToInstagramInternal = async ({
           caption: trimmedContent, // Optional caption
           media_type:
             mediaType === "video_url"
-              ? post.platformSettings?.instagram?.videoType || "REELS"
+              ? instagramSettings?.videoType || "REELS"
               : "",
           access_token: connection.accessToken,
           thumb_offset: Math.round(post.postGroupId.videoTimestamp * 1000),

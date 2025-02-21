@@ -18,6 +18,10 @@ exports.postTikTokVideoInternal = async ({
     throw new Error("TikTok currently only supports single video upload");
   }
 
+  await post.populate("postGroupId");
+
+  const tiktokSettings = post.postGroupId.platformSettings?.tiktok;
+
   const connection = await platformConnection.findOne({
     userId: user._id,
     platform: post.platform,
@@ -36,15 +40,15 @@ exports.postTikTokVideoInternal = async ({
         {
           post_info: {
             title: content,
-            privacy_level: post.platformSettings?.tiktok?.viewerSetting,
-            disable_duet: !post.platformSettings?.tiktok?.allowDuet,
-            disable_comment: !post.platformSettings?.tiktok?.allowComments,
-            disable_stitch: !post.platformSettings?.tiktok?.allowStitch,
+            privacy_level: tiktokSettings.viewerSetting,
+            disable_duet: tiktokSettings.allowDuet,
+            disable_comment: tiktokSettings.allowComments,
+            disable_stitch: tiktokSettings.allowStitch,
             video_cover_timestamp_ms: Math.round(
               post.postGroupId.videoTimestamp * 1000
             ),
-            brand_content_toggle: post.platformSettings?.tiktok?.brandedContent,
-            brand_organic_toggle: post.platformSettings?.tiktok?.brandOrganic,
+            brand_content_toggle: tiktokSettings.brandedContent,
+            brand_organic_toggle: tiktokSettings.brandOrganic,
             is_aigc: false,
           },
           source_info: {

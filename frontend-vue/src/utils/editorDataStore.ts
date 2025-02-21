@@ -1,4 +1,4 @@
-import { ref, reactive, watch } from 'vue';
+import { ref } from 'vue';
 
 type SelectedPost = {
   _id: string;
@@ -10,11 +10,10 @@ type SelectedPost = {
   mediaPreviewUrls: string[];
   initialMediaUrls: string[];
   videoTimestamp: number;
-  posts?: any[];
-  platformSettings?: {
+  platformSettings: {
     tiktok?: TikTokSettings;
-    instagram?: any;
-    youtube?: any;
+    instagram?: InstagramSettings;
+    youtube?: YoutubeSettings;
   };
 };
 
@@ -28,6 +27,16 @@ interface TikTokSettings {
   brandedContent: boolean;
 }
 
+interface InstagramSettings {
+  videoType: 'REELS' | 'STORIES';
+}
+
+interface YoutubeSettings {
+  privacy: 'private' | 'public' | 'unlisted';
+  title: string;
+}
+
+// Default post template
 const defaultPost: SelectedPost = {
   _id: 'new',
   content: '',
@@ -38,102 +47,27 @@ const defaultPost: SelectedPost = {
   mediaPreviewUrls: [],
   initialMediaUrls: [],
   videoTimestamp: 0,
-  posts: [],
   platformSettings: {},
 };
 
+// Reactive references
 const selectedPost = ref<SelectedPost>(structuredClone(defaultPost));
 const selectedDateTime = ref<Date | null>(null);
 const currentMediaType = ref<'image' | 'video' | null>(null);
 const isUploading = ref<boolean>(false);
 
-// Use reactive for tiktokSettings
-const tiktokSettings = reactive<TikTokSettings>({
-  viewerSetting: { label: '', val: '' },
-  allowComments: false,
-  allowDuet: false,
-  allowStitch: false,
-  commercialContent: false,
-  brandOrganic: false,
-  brandedContent: false,
-});
-
+// ✅ Simple reset
 const reset = () => {
   selectedPost.value = structuredClone(defaultPost);
   selectedDateTime.value = null;
   currentMediaType.value = null;
   isUploading.value = false;
-
-  // Reset tiktokSettings reactively
-  Object.assign(tiktokSettings, {
-    viewerSetting: { label: '', val: '' },
-    allowComments: false,
-    allowDuet: false,
-    allowStitch: false,
-    commercialContent: false,
-    brandOrganic: false,
-    brandedContent: false,
-  });
 };
-
-//
-// Watcher to sync tiktokSettings with selectedPost
-//
-watch(
-  () => selectedPost.value,
-  () => {
-    if (selectedPost.value?.posts) {
-      const tiktokPost = selectedPost.value.posts.find(
-        (post: any) => post.platform === 'tiktok'
-      );
-
-      if (tiktokPost?.platformSettings?.tiktok) {
-        const viewerSettingRaw =
-          tiktokPost.platformSettings.tiktok.viewerSetting;
-
-        const viewerSetting =
-          typeof viewerSettingRaw === 'string'
-            ? { label: viewerSettingRaw, val: viewerSettingRaw }
-            : viewerSettingRaw || { label: '', val: '' };
-
-        // Use Object.assign to update reactive object
-        Object.assign(tiktokSettings, {
-          viewerSetting,
-          allowComments:
-            tiktokPost.platformSettings.tiktok.allowComments || false,
-          allowDuet: tiktokPost.platformSettings.tiktok.allowDuet || false,
-          allowStitch: tiktokPost.platformSettings.tiktok.allowStitch || false,
-          commercialContent:
-            tiktokPost.platformSettings.tiktok.commercialContent || false,
-          brandOrganic:
-            tiktokPost.platformSettings.tiktok.brandOrganic || false,
-          brandedContent:
-            tiktokPost.platformSettings.tiktok.brandedContent || false,
-        });
-      } else {
-        // Reset if no tiktok post found
-        Object.assign(tiktokSettings, {
-          viewerSetting: { label: '', val: '' },
-          allowComments: false,
-          allowDuet: false,
-          allowStitch: false,
-          commercialContent: false,
-          brandOrganic: false,
-          brandedContent: false,
-        });
-      }
-
-      console.log('Synced tiktokSettings:', tiktokSettings);
-    }
-  },
-  { immediate: true, deep: true }
-);
 
 export default {
   selectedPost,
   selectedDateTime,
   currentMediaType,
   isUploading,
-  tiktokSettings,
   reset,
 };

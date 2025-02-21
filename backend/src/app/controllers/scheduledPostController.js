@@ -83,6 +83,53 @@ exports.createScheduledPost = async (req, res) => {
       );
     }
 
+    // Ensure platformSettings is initialized
+    postGroup.platformSettings = postGroup.platformSettings || {};
+
+    // Add platform-specific settings
+    if (platformName === "tiktok" && tiktokSettings) {
+      const parsedTiktokSettings = JSON.parse(tiktokSettings);
+
+      // Merge TikTok settings without overwriting others
+      postGroup.platformSettings = {
+        ...postGroup.platformSettings,
+        tiktok: {
+          viewerSetting: parsedTiktokSettings.viewerSetting,
+          allowComments: parsedTiktokSettings.allowComments,
+          allowDuet: parsedTiktokSettings.allowDuet,
+          allowStitch: parsedTiktokSettings.allowStitch,
+          commercialContent: parsedTiktokSettings.commercialContent,
+          brandOrganic: parsedTiktokSettings.brandOrganic,
+          brandedContent: parsedTiktokSettings.brandedContent,
+        },
+      };
+    }
+
+    if (platformName === "instagram" && instagramSettings) {
+      const parsedInstagramSettings = JSON.parse(instagramSettings);
+
+      // Merge Instagram settings without overwriting others
+      postGroup.platformSettings = {
+        ...postGroup.platformSettings,
+        instagram: {
+          videoType: parsedInstagramSettings.videoType,
+        },
+      };
+    }
+
+    if (platformName === "youtube" && youtubeSettings) {
+      const parsedYoutubeSettings = JSON.parse(youtubeSettings);
+
+      // Merge YouTube settings without overwriting others
+      postGroup.platformSettings = {
+        ...postGroup.platformSettings,
+        youtube: {
+          privacy: parsedYoutubeSettings.privacy,
+          title: parsedYoutubeSettings.title,
+        },
+      };
+    }
+
     await postGroup.updateOne({
       $addToSet: { mediaFiles: { $each: newMediaFiles } },
     });
@@ -102,41 +149,6 @@ exports.createScheduledPost = async (req, res) => {
           status: status,
           videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
         };
-
-        // Add platform-specific settings
-        if (platformName === "tiktok" && tiktokSettings) {
-          const parsedTiktokSettings = JSON.parse(tiktokSettings);
-          post.platformSettings = {
-            tiktok: {
-              viewerSetting: parsedTiktokSettings.viewerSetting,
-              allowComments: parsedTiktokSettings.allowComments,
-              allowDuet: parsedTiktokSettings.allowDuet,
-              allowStitch: parsedTiktokSettings.allowStitch,
-              commercialContent: parsedTiktokSettings.commercialContent,
-              brandOrganic: parsedTiktokSettings.brandOrganic,
-              brandedContent: parsedTiktokSettings.brandedContent,
-            },
-          };
-        }
-
-        if (platformName === "instagram" && instagramSettings) {
-          const parsedInstagramSettings = JSON.parse(instagramSettings);
-          post.platformSettings = {
-            instagram: {
-              videoType: parsedInstagramSettings.videoType,
-            },
-          };
-        }
-
-        if (platformName === "youtube" && youtubeSettings) {
-          const parsedYoutubeSettings = JSON.parse(youtubeSettings);
-          post.platformSettings = {
-            youtube: {
-              privacy: parsedYoutubeSettings.privacy,
-              title: parsedYoutubeSettings.title,
-            },
-          };
-        }
 
         const newPost = new ScheduledPost(post);
         await newPost.save();

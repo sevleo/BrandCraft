@@ -23,6 +23,11 @@ exports.postToYoutubeInternal = async ({ content, user, media = [], post }) => {
     throw new Error("YouTube only supports video uploads");
   }
 
+  // Populate postGroupId to access platformSettings
+  await post.populate("postGroupId");
+
+  const youtubeSettings = post.postGroupId.platformSettings?.youtube;
+
   const connection = await platformConnection.findOne({
     userId: user._id,
     platform: post.platform,
@@ -46,20 +51,17 @@ exports.postToYoutubeInternal = async ({ content, user, media = [], post }) => {
       responseType: "stream",
     });
 
-    // Create upload
+    // Step 1: Create Youtube Upload
     const upload = await youtube.videos.insert({
       auth: oauth2Client,
       part: "snippet,status",
       requestBody: {
         snippet: {
-          title:
-            post.platformSettings?.youtube?.title ||
-            content?.substring(0, 70) ||
-            "",
+          title: youtubeSettings?.title || content?.substring(0, 70) || "",
           description: content || "",
         },
         status: {
-          privacyStatus: post.platformSettings?.youtube?.privacy || "public",
+          privacyStatus: youtubeSettings?.privacy || "public",
         },
       },
       media: {
@@ -162,25 +164,3 @@ const isTokenExpired = (accessTokenExpiresAt) => {
   // return true;
   return !accessTokenExpiresAt || Date.now() >= accessTokenExpiresAt - 60000; // If within 1 min of expiry, consider expired
 };
-
-[
-  {
-    platformSettings: { youtube: { privacy: "private", title: "test" } },
-    _id: "67a6043df00341503938e8fe",
-    content: "test",
-    platform: "youtube",
-    platformId: "UCIBCqZ14ykIxCdie6IRXqfg",
-    status: "published",
-    errorMessage: null,
-  },
-  {
-    platformSettings: { youtube: { privacy: "private", title: "test" } },
-    _id: "67a6043df00341503938e8ff",
-    content: "test",
-    platform: "youtube",
-    platformId: "UCGgIgeaHXD-ayAsj8aJmDEQ",
-    status: "failed",
-    errorMessage:
-      "TypeError: Cannot read properties of undefined (reading 'status')",
-  },
-];
