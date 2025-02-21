@@ -61,30 +61,6 @@
     () => {
       // Populate settings from InitialPosts
       if (editorDataStore.selectedPost.value?.posts) {
-        // Populate TikTok settings from initialPosts if available
-        const tiktokPost = editorDataStore.selectedPost.value.posts.find(
-          (post: any) => post.platform === 'tiktok'
-        );
-        if (tiktokPost?.platformSettings?.tiktok) {
-          editorDataStore.tiktokSettings.value = {
-            // viewerSetting: {
-            //   label:
-            //     tiktokPost.platformSettings.tiktok.viewerSetting?.label || '',
-            //   val: tiktokPost.platformSettings.tiktok.viewerSetting?.val || '',
-            // },
-            viewerSetting: tiktokPost.platformSettings.tiktok.viewerSetting,
-            allowComments: tiktokPost.platformSettings.tiktok.allowComments,
-            allowDuet: tiktokPost.platformSettings.tiktok.allowDuet,
-            allowStitch: tiktokPost.platformSettings.tiktok.allowStitch,
-            commercialContent:
-              tiktokPost.platformSettings.tiktok.commercialContent,
-            brandOrganic: tiktokPost.platformSettings.tiktok.brandOrganic,
-            brandedContent: tiktokPost.platformSettings.tiktok.brandedContent,
-          };
-        }
-
-        console.log(editorDataStore.tiktokSettings.value);
-
         // Populate Instagram settings from initialPosts if available
         const instagramPost = editorDataStore.selectedPost.value.posts.find(
           (post: any) => post.platform === 'instagram'
@@ -118,6 +94,7 @@
 
   const handleTikTokSettingsUpdate = (settings: any) => {
     editorDataStore.tiktokSettings.value = settings;
+    // Object.assign(editorDataStore.tiktokSettings, settings);
   };
 
   const validationErrors = computed(() => {
@@ -777,6 +754,7 @@
       class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
       {{ editorDataStore.selectedPost.value }}
+      {{ editorDataStore.tiktokSettings.value }}
       <!-- Loading Indicator -->
       <div
         v-if="isSaving"

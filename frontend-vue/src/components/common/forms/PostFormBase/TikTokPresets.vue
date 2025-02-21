@@ -38,7 +38,7 @@
           .slice(1)
           .join('-')
       );
-      console.log(editorDataStore.tiktokSettings.value);
+      console.log(editorDataStore.tiktokSettings);
     }
   );
 
@@ -154,7 +154,7 @@
   });
 
   // Populate initial settings for Edit
-  if (editorDataStore.tiktokSettings.value) {
+  if (editorDataStore.tiktokSettings) {
     const {
       viewerSetting,
       allowComments,
@@ -163,15 +163,13 @@
       commercialContent,
       brandOrganic,
       brandedContent,
-    } = editorDataStore.tiktokSettings.value;
-
-    console.log(editorDataStore.tiktokSettings.value);
+    } = editorDataStore.tiktokSettings;
 
     // tiktokViewerSetting.value = viewerSetting?.value || '';
-    tiktokViewerSetting.value = viewerSetting?.value
+    tiktokViewerSetting.value = viewerSetting
       ? {
-          value: viewerSetting.value,
-          label: valueToLabelMap[viewerSetting.value],
+          value: viewerSetting.val,
+          label: valueToLabelMap[viewerSetting.val],
         }
       : '';
     tiktokAllowComments.value = allowComments || false;
@@ -216,7 +214,7 @@
         tiktokOptionsExpanded ? 'py-3 opacity-100' : 'max-h-0 opacity-0',
       ]"
     >
-      {{ editorDataStore.tiktokSettings.value }}
+      {{ editorDataStore.tiktokSettings }}
       <div class="space-y-4">
         <div>
           <div class="relative">
@@ -227,7 +225,9 @@
               class="w-full"
               :placeholder="
                 tiktokViewerSetting
-                  ? valueToLabelMap[tiktokViewerSetting.value]
+                  ? valueToLabelMap[tiktokViewerSetting.value] !== undefined
+                    ? valueToLabelMap[tiktokViewerSetting.value]
+                    : 'Who can view your post?'
                   : 'Who can view your post?'
               "
               :optionDisabled="isOptionDisabled"
