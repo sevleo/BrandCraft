@@ -360,6 +360,10 @@ class SchedulerService {
       "* * * * *",
       this.cleanupOrphanedMediaFiles.bind(this)
     );
+    this.job = cron.schedule(
+      "* * * * *",
+      this.cleanupOrphanedMediaFiles.bind(this)
+    );
     console.log("Scheduler service started");
   }
 

@@ -2,6 +2,8 @@ const ScheduledPost = require("../models/scheduledPost");
 const ScheduledPostGroup = require("../models/scheduledPostGroup");
 const { uploadFileToS3, deleteFileFromS3 } = require("../services/s3Service");
 const MediaFile = require("../models/mediaFile");
+const platformConnection = require("../models/platformConnection");
+const axios = require("axios");
 
 exports.createScheduledPost = async (req, res) => {
   try {
@@ -853,6 +855,23 @@ exports.getPostGroups = async (req, res) => {
       .select(
         "scheduledTime platforms mediaFiles status content sameContent videoTimestamp updatedAt"
       );
+
+    // Refresh Threads profil
+    const threadsConnections = await platformConnection.find({
+      userId,
+      platform: "threads",
+    });
+    threadsConnections.forEach(async (connection) => {
+      const accessToken = connection.accessToken;
+
+      const userDetailsUrl = `https://graph.threads.net/me?fields=username,threads_profile_picture_url&access_token=${accessToken}`;
+
+      const userResponse = await axios.get(userDetailsUrl);
+
+      connection.profileImageUrl =
+        userResponse.data.threads_profile_picture_url;
+      await connection.save();
+    });
 
     res.json({
       success: true,

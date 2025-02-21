@@ -25,16 +25,6 @@ const ScheduledPostGroupSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  media: [
-    {
-      url: { type: String, required: true }, // S3 URL of the uploaded file
-      filename: { type: String, required: true }, // Unique filename in S3
-      mimetype: { type: String, required: true }, // File MIME type (e.g., "image/png")
-      size: { type: Number, required: true }, // File size in bytes
-      type: { type: String, enum: ["image", "video"], required: true }, // Media type
-      filePath: { type: String }, // Local file path (new field)
-    },
-  ],
   mediaFiles: [
     {
       type: mongoose.Schema.Types.ObjectId,
