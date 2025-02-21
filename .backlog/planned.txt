@@ -7,6 +7,8 @@ Built by Creator, for Creators
 - on change of schedule, trigger save
 - on change of cover images, trigger save
 - on change of platform settings, click change
+
+
 - to trigger status change, add Schedule button
   - validations should be on schedule button
 - on change of media, trigger save

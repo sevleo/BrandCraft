@@ -1,13 +1,10 @@
 <script setup lang="ts">
   import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
-  import {
-    updatePostBundle,
-    createPostBundle,
-    savePostGroup,
-  } from '@/api/postApi';
+  import { updatePostBundle, createPostBundle } from '@/api/postApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import DatePicker from 'primevue/datepicker';
+  import { updatePostGroup } from '@/helpers/savePostGroup';
   import {
     Image as ImageIcon,
     Video,
@@ -19,7 +16,6 @@
   import postsStore from '@/utils/postsStore';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import { uploadVideoToS3 } from '@/api/mediaApi';
-  import BaseButton from '@/components/common/buttons/BaseButton.vue';
   import { getCreatorInfo } from '@api/tiktokApi';
   import TikTokPresets from '@/components/common/forms/PostFormBase/TikTokPresets.vue';
   import InstagramPresets from '@/components/common/forms/PostFormBase/InstagramPresets.vue';
@@ -36,12 +32,7 @@
   );
 
   const selectedMedia = ref<File[]>([]);
-  const currentMediaType = ref<'image' | 'video' | null>(
-    editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type || null
-  );
-
-  const uploadProgress = ref<number>(0);
-  const isUploading = ref<boolean>(false);
+  const uploadProgress = ref(0);
   const videoS3Key = ref<string | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
 
@@ -52,19 +43,6 @@
   const handleTimestampUpdate = (timestamp: number) => {
     editorDataStore.selectedPost.value.videoTimestamp = timestamp;
   };
-
-  const tiktokSettings = ref({
-    viewerSetting: {
-      label: '',
-      value: '',
-    },
-    allowComments: false,
-    allowDuet: false,
-    allowStitch: false,
-    commercialContent: false,
-    brandOrganic: false,
-    brandedContent: false,
-  });
 
   const instagramSettings = ref<{ videoType: 'REELS' | 'STORIES' }>({
     videoType: 'REELS',
@@ -78,51 +56,57 @@
     title: '',
   });
 
-  // Populate settings from InitialPosts
-  if (editorDataStore.selectedPost.value?.posts) {
-    // Populate TikTok settings from initialPosts if available
-    const tiktokPost = editorDataStore.selectedPost.value.posts.find(
-      (post: any) => post.platform === 'tiktok'
-    );
-    if (tiktokPost?.platformSettings?.tiktok) {
-      tiktokSettings.value = {
-        viewerSetting: {
-          label: tiktokPost.platformSettings.tiktok.viewerSetting,
-          value: tiktokPost.platformSettings.tiktok.viewerSetting,
-        },
-        allowComments: tiktokPost.platformSettings.tiktok.allowComments,
-        allowDuet: tiktokPost.platformSettings.tiktok.allowDuet,
-        allowStitch: tiktokPost.platformSettings.tiktok.allowStitch,
-        commercialContent: tiktokPost.platformSettings.tiktok.commercialContent,
-        brandOrganic: tiktokPost.platformSettings.tiktok.brandOrganic,
-        brandedContent: tiktokPost.platformSettings.tiktok.brandedContent,
-      };
-    }
+  watch(
+    () => editorDataStore.selectedPost.value,
+    () => {
+      // Populate settings from InitialPosts
+      if (editorDataStore.selectedPost.value?.posts) {
+        // Populate TikTok settings from initialPosts if available
+        const tiktokPost = editorDataStore.selectedPost.value.posts.find(
+          (post: any) => post.platform === 'tiktok'
+        );
+        if (tiktokPost?.platformSettings?.tiktok) {
+          editorDataStore.tiktokSettings.value = {
+            // viewerSetting: {
+            //   label:
+            //     tiktokPost.platformSettings.tiktok.viewerSetting?.label || '',
+            //   val: tiktokPost.platformSettings.tiktok.viewerSetting?.val || '',
+            // },
+            viewerSetting: tiktokPost.platformSettings.tiktok.viewerSetting,
+            allowComments: tiktokPost.platformSettings.tiktok.allowComments,
+            allowDuet: tiktokPost.platformSettings.tiktok.allowDuet,
+            allowStitch: tiktokPost.platformSettings.tiktok.allowStitch,
+            commercialContent:
+              tiktokPost.platformSettings.tiktok.commercialContent,
+            brandOrganic: tiktokPost.platformSettings.tiktok.brandOrganic,
+            brandedContent: tiktokPost.platformSettings.tiktok.brandedContent,
+          };
+        }
 
-    // Populate Instagram settings from initialPosts if available
-    const instagramPost = editorDataStore.selectedPost.value.posts.find(
-      (post: any) => post.platform === 'instagram'
-    );
-    if (instagramPost?.platformSettings?.instagram) {
-      instagramSettings.value = {
-        videoType: instagramPost.platformSettings.instagram.videoType,
-      };
-    }
+        console.log(editorDataStore.tiktokSettings.value);
 
-    const youtubePost = editorDataStore.selectedPost.value.posts.find(
-      (post: any) => post.platform === 'youtube'
-    );
-    if (youtubePost?.platformSettings?.youtube) {
-      youtubeSettings.value = {
-        privacy: youtubePost.platformSettings.youtube.privacy,
-        title: youtubePost.platformSettings.youtube.title,
-      };
-    }
-  }
+        // Populate Instagram settings from initialPosts if available
+        const instagramPost = editorDataStore.selectedPost.value.posts.find(
+          (post: any) => post.platform === 'instagram'
+        );
+        if (instagramPost?.platformSettings?.instagram) {
+          instagramSettings.value = {
+            videoType: instagramPost.platformSettings.instagram.videoType,
+          };
+        }
 
-  const handleTikTokSettingsUpdate = (settings: any) => {
-    tiktokSettings.value = settings;
-  };
+        const youtubePost = editorDataStore.selectedPost.value.posts.find(
+          (post: any) => post.platform === 'youtube'
+        );
+        if (youtubePost?.platformSettings?.youtube) {
+          youtubeSettings.value = {
+            privacy: youtubePost.platformSettings.youtube.privacy,
+            title: youtubePost.platformSettings.youtube.title,
+          };
+        }
+      }
+    }
+  );
 
   const handleInstagramSettingsUpdate = (settings: any) => {
     instagramSettings.value = settings;
@@ -132,11 +116,15 @@
     youtubeSettings.value = settings;
   };
 
+  const handleTikTokSettingsUpdate = (settings: any) => {
+    editorDataStore.tiktokSettings.value = settings;
+  };
+
   const validationErrors = computed(() => {
     const errors = [];
 
     // Check if media is currently uploading
-    if (isUploading.value) {
+    if (editorDataStore.isUploading.value) {
       errors.push('Please wait for media upload to complete');
     }
 
@@ -150,7 +138,7 @@
       if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
         errors.push('Please upload a video for your TikTok post');
       } else if (
-        currentMediaType.value === 'video' &&
+        editorDataStore.currentMediaType.value === 'video' &&
         !isVideoDurationValid.value
       ) {
         const maxDuration =
@@ -159,20 +147,20 @@
         errors.push(
           `Video duration exceeds maximum allowed length of ${maxDuration} seconds`
         );
-      } else if (currentMediaType.value === 'image') {
+      } else if (editorDataStore.currentMediaType.value === 'image') {
         errors.push('Images are not supported for TikTok posts');
       }
 
       // 2. Check if viewer setting is selected
-      if (!tiktokSettings.value.viewerSetting) {
+      if (!editorDataStore.tiktokSettings.value.viewerSetting) {
         errors.push('Please select who can view your post');
       }
 
       // 3. Check commercial content settings
       if (
-        tiktokSettings.value.commercialContent &&
-        !tiktokSettings.value.brandOrganic &&
-        !tiktokSettings.value.brandedContent
+        editorDataStore.tiktokSettings.value.commercialContent &&
+        !editorDataStore.tiktokSettings.value.brandOrganic &&
+        !editorDataStore.tiktokSettings.value.brandedContent
       ) {
         errors.push(
           'You need to indicate if your content promotes yourself, a third party, or both.'
@@ -192,7 +180,10 @@
       }
 
       // 2. Check video duration limits for Reels and Stories
-      if (currentMediaType.value === 'video' && videoRef.value) {
+      if (
+        editorDataStore.currentMediaType.value === 'video' &&
+        videoRef.value
+      ) {
         const duration = Math.floor(videoRef.value.duration);
         const maxDuration =
           instagramSettings.value.videoType === 'REELS' ? 900 : 60;
@@ -216,7 +207,7 @@
     if (
       uploadProgress.value < 100 ||
       !videoRef.value ||
-      currentMediaType.value !== 'video'
+      editorDataStore.currentMediaType.value !== 'video'
     ) {
       return true; // Assume valid while upload is in progress or metadata isn't loaded
     }
@@ -232,7 +223,7 @@
   );
 
   const canSavePost = computed(() => {
-    if (currentMediaType.value === 'video') {
+    if (editorDataStore.currentMediaType.value === 'video') {
       // In edit mode with existing video (no new upload), allow saving
       if (
         editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type === 'video' &&
@@ -260,9 +251,9 @@
     )
       return true;
     if (
-      tiktokSettings.value.commercialContent &&
-      !tiktokSettings.value.brandOrganic &&
-      !tiktokSettings.value.brandedContent
+      editorDataStore.tiktokSettings.value.commercialContent &&
+      !editorDataStore.tiktokSettings.value.brandOrganic &&
+      !editorDataStore.tiktokSettings.value.brandedContent
     )
       return false;
     return true;
@@ -300,12 +291,12 @@
         const url = URL.createObjectURL(videoFile);
         editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
         selectedMedia.value = [videoFile];
-        currentMediaType.value = 'video';
+        editorDataStore.currentMediaType.value = 'video';
 
         try {
           // Start upload to S3
           uploadProgress.value = 0;
-          isUploading.value = true;
+          editorDataStore.isUploading.value = true;
           videoS3Key.value = await uploadVideoToS3(videoFile, (progress) => {
             uploadProgress.value = progress;
           });
@@ -328,7 +319,7 @@
           });
           return;
         } finally {
-          isUploading.value = false;
+          editorDataStore.isUploading.value = false;
         }
         return;
       }
@@ -351,7 +342,7 @@
 
       const newFiles = files.slice(0, remainingSlots);
       selectedMedia.value.push(...newFiles);
-      currentMediaType.value = 'image';
+      editorDataStore.currentMediaType.value = 'image';
 
       // Create preview URLs
       newFiles.forEach((file) => {
@@ -380,12 +371,12 @@
 
     // Reset currentMediaType if no media left
     if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
-      currentMediaType.value = null;
+      editorDataStore.currentMediaType.value = null;
     }
   }
 
   const handlePhotoUpload = () => {
-    if (currentMediaType.value === 'video') {
+    if (editorDataStore.currentMediaType.value === 'video') {
       toast.add({
         severity: 'warn',
         summary: 'Media type mismatch',
@@ -404,7 +395,7 @@
   };
 
   const handleVideoUpload = () => {
-    if (currentMediaType.value === 'image') {
+    if (editorDataStore.currentMediaType.value === 'image') {
       toast.add({
         severity: 'warn',
         summary: 'Media type mismatch',
@@ -458,109 +449,8 @@
   async function handleSave() {
     try {
       isSaving.value = true;
-      const keptMediaUrls =
-        editorDataStore.selectedPost.value.mediaPreviewUrls.filter((url) =>
-          editorDataStore.selectedPost.value.initialMediaUrls.includes(url)
-        );
 
-      const formData = new FormData();
-
-      // Add common post details
-      if (editorDataStore.selectedPost.value?.content) {
-        formData.append(
-          'content',
-          editorDataStore.selectedPost.value?.content || ''
-        );
-      }
-
-      if (editorDataStore.selectedDateTime.value) {
-        formData.append(
-          'scheduledTime',
-          editorDataStore.selectedDateTime.value?.toISOString() || ''
-        );
-      }
-
-      if (editorDataStore.selectedPost.value?.platforms) {
-        formData.append(
-          'platforms',
-          JSON.stringify(editorDataStore.selectedPost.value?.platforms)
-        );
-      }
-
-      if (keptMediaUrls) {
-        formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
-      }
-
-      if (currentMediaType.value === 'video' && videoS3Key.value) {
-        formData.append('videoS3Key', videoS3Key.value);
-      }
-
-      if (currentMediaType.value === 'image') {
-        selectedMedia.value.forEach((file) => {
-          formData.append('media', file);
-        });
-      }
-
-      // Add TikTok settings
-      if (
-        editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-          p.startsWith('tiktok')
-        )
-      ) {
-        formData.append(
-          'tiktokSettings',
-          JSON.stringify({
-            viewerSetting: tiktokSettings.value.viewerSetting.value,
-            allowComments: tiktokSettings.value.allowComments,
-            allowDuet: tiktokSettings.value.allowDuet,
-            allowStitch: tiktokSettings.value.allowStitch,
-            commercialContent: tiktokSettings.value.commercialContent,
-            brandOrganic: tiktokSettings.value.brandOrganic,
-            brandedContent: tiktokSettings.value.brandedContent,
-          })
-        );
-      }
-
-      // Add Instagram settings
-      if (
-        editorDataStore.selectedPost.value?.platforms.some((p) =>
-          p.startsWith('instagram')
-        )
-      ) {
-        formData.append(
-          'instagramSettings',
-          JSON.stringify({
-            videoType: instagramSettings.value.videoType,
-          })
-        );
-      }
-
-      // Add YouTube settings
-      if (
-        editorDataStore.selectedPost.value?.platforms.some((p) =>
-          p.startsWith('youtube')
-        )
-      ) {
-        formData.append(
-          'youtubeSettings',
-          JSON.stringify({
-            privacy: youtubeSettings.value.privacy,
-            title: youtubeSettings.value.title,
-          })
-        );
-      }
-
-      if (editorDataStore.selectedPost.value?.videoTimestamp) {
-        formData.append(
-          'videoTimestamp',
-          editorDataStore.selectedPost.value?.videoTimestamp.toString()
-        );
-      }
-
-      formData.append('sameContent', 'true');
-      formData.append('status', 'draft');
-
-      await savePostGroup(formData, editorDataStore.selectedPost.value?._id);
+      await updatePostGroup(videoS3Key.value, selectedMedia.value);
 
       toast.add({
         severity: 'success',
@@ -568,8 +458,6 @@
         detail: 'Post group saved successfully',
         life: 3000,
       });
-
-      await postsStore.getAllPostGroups();
     } catch (error: any) {
       toast.add({
         severity: 'error',
@@ -643,11 +531,14 @@
         formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
       }
 
-      if (currentMediaType.value === 'video' && videoS3Key.value) {
+      if (
+        editorDataStore.currentMediaType.value === 'video' &&
+        videoS3Key.value
+      ) {
         formData.append('videoS3Key', videoS3Key.value);
       }
 
-      if (currentMediaType.value === 'image') {
+      if (editorDataStore.currentMediaType.value === 'image') {
         selectedMedia.value.forEach((file) => {
           formData.append('media', file);
         });
@@ -662,13 +553,15 @@
         formData.append(
           'tiktokSettings',
           JSON.stringify({
-            viewerSetting: tiktokSettings.value.viewerSetting.value,
-            allowComments: tiktokSettings.value.allowComments,
-            allowDuet: tiktokSettings.value.allowDuet,
-            allowStitch: tiktokSettings.value.allowStitch,
-            commercialContent: tiktokSettings.value.commercialContent,
-            brandOrganic: tiktokSettings.value.brandOrganic,
-            brandedContent: tiktokSettings.value.brandedContent,
+            viewerSetting:
+              editorDataStore.tiktokSettings.value.viewerSetting.val,
+            allowComments: editorDataStore.tiktokSettings.value.allowComments,
+            allowDuet: editorDataStore.tiktokSettings.value.allowDuet,
+            allowStitch: editorDataStore.tiktokSettings.value.allowStitch,
+            commercialContent:
+              editorDataStore.tiktokSettings.value.commercialContent,
+            brandOrganic: editorDataStore.tiktokSettings.value.brandOrganic,
+            brandedContent: editorDataStore.tiktokSettings.value.brandedContent,
           })
         );
       }
@@ -816,11 +709,14 @@
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
 
+    console.log('1');
+
     if (
       editorDataStore.selectedPost.value?.platforms?.some((p: any) =>
         p.startsWith('tiktok')
       )
     ) {
+      console.log('2');
       await getCreatorInfo(
         editorDataStore.selectedPost.value?.platforms?.[0]
           .split('-')
@@ -860,7 +756,8 @@
           newPost.mediaFiles?.map((m: any) => m.url) || [];
         editorDataStore.selectedPost.value.initialMediaUrls =
           newPost.mediaFiles?.map((m: any) => m.url) || [];
-        currentMediaType.value = newPost.mediaFiles?.[0]?.type || null;
+        editorDataStore.currentMediaType.value =
+          newPost.mediaFiles?.[0]?.type || null;
         editorDataStore.selectedPost.value.videoTimestamp =
           newPost.videoTimestamp || 0;
         status.value = newPost.status || 'draft';
@@ -879,6 +776,7 @@
       :key="postKey"
       class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
+      {{ editorDataStore.selectedPost.value }}
       <!-- Loading Indicator -->
       <div
         v-if="isSaving"
@@ -1076,8 +974,7 @@
                         (platform: any) => platform.startsWith('tiktok')
                       )
                     "
-                    :currentMediaType="currentMediaType"
-                    :initialSettings="tiktokSettings"
+                    :currentMediaType="editorDataStore.currentMediaType.value"
                     @update:settings="handleTikTokSettingsUpdate"
                   />
                   <InstagramPresets
@@ -1086,7 +983,7 @@
                         (platform: any) => platform.startsWith('instagram')
                       )
                     "
-                    :currentMediaType="currentMediaType"
+                    :currentMediaType="editorDataStore.currentMediaType.value"
                     :initialSettings="instagramSettings"
                     @update:settings="handleInstagramSettingsUpdate"
                   />
@@ -1096,7 +993,7 @@
                         (platform: any) => platform.startsWith('youtube')
                       )
                     "
-                    :currentMediaType="currentMediaType"
+                    :currentMediaType="editorDataStore.currentMediaType"
                     :initialSettings="youtubeSettings"
                     @update:settings="handleYoutubeSettingsUpdate"
                   />
@@ -1106,11 +1003,11 @@
                   class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] bg-[white] dark:bg-[#313131]"
                 >
                   <PreviewComponent
-                    v-show="currentMediaType"
+                    v-show="editorDataStore.currentMediaType.value"
                     :media-preview-urls="
                       editorDataStore.selectedPost.value.mediaPreviewUrls
                     "
-                    :current-media-type="currentMediaType"
+                    :current-media-type="editorDataStore.currentMediaType.value"
                     :initial-video-timestamp="
                       editorDataStore.selectedPost.value.videoTimestamp
                     "

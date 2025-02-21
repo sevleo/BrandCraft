@@ -56,7 +56,7 @@ async function updatePostBundle(id: string, postData: FormData) {
   }
 }
 
-async function savePostGroup(postData: FormData, id?: string) {
+async function apiSavePostGroup(postData: FormData, id?: string) {
   try {
     const config = {
       headers: {
@@ -112,7 +112,7 @@ async function getPostsStats() {
 export {
   createPostBundle,
   updatePostBundle,
-  savePostGroup,
+  apiSavePostGroup,
   getPostGroups,
   deleteScheduledPost,
   getPostsStats,

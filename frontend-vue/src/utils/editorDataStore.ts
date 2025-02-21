@@ -12,11 +12,21 @@ type SelectedPost = {
   videoTimestamp: number;
   posts?: any[];
   platformSettings?: {
-    tiktok?: any;
+    tiktok?: TikTokSettings;
     instagram?: any;
     youtube?: any;
   };
 };
+
+interface TikTokSettings {
+  viewerSetting: any;
+  allowComments: boolean;
+  allowDuet: boolean;
+  allowStitch: boolean;
+  commercialContent: boolean;
+  brandOrganic: boolean;
+  brandedContent: boolean;
+}
 
 const defaultPost: SelectedPost = {
   _id: 'new',
@@ -34,14 +44,45 @@ const defaultPost: SelectedPost = {
 
 const selectedPost = ref<SelectedPost>(structuredClone(defaultPost));
 const selectedDateTime = ref<Date | null>(null);
+const currentMediaType = ref<'image' | 'video' | null>(null);
+const isUploading = ref<boolean>(false);
+const tiktokSettings = ref<TikTokSettings>({
+  viewerSetting: {
+    label: '',
+    val: '',
+  },
+  allowComments: false,
+  allowDuet: false,
+  allowStitch: false,
+  commercialContent: false,
+  brandOrganic: false,
+  brandedContent: false,
+});
 
 const reset = () => {
   selectedPost.value = structuredClone(defaultPost);
   selectedDateTime.value = null;
+  currentMediaType.value = null;
+  isUploading.value = false;
+  tiktokSettings.value = {
+    viewerSetting: {
+      label: '',
+      val: '',
+    },
+    allowComments: false,
+    allowDuet: false,
+    allowStitch: false,
+    commercialContent: false,
+    brandOrganic: false,
+    brandedContent: false,
+  };
 };
 
 export default {
   selectedPost,
   selectedDateTime,
+  currentMediaType,
+  isUploading,
+  tiktokSettings,
   reset,
 };

@@ -1,3 +1,7 @@
 npx tailwindcss -i ./src/assets/main.css -o ./src/assets/output.css --watch
 
 
+
+
+PRIVATE:  [ 'FOLLOWER_OF_CREATOR', 'MUTUAL_FOLLOW_FRIENDS', 'SELF_ONLY' ],
+PUBLIC:  [ 'PUBLIC_TO_EVERYONE', 'MUTUAL_FOLLOW_FRIENDS', 'SELF_ONLY' ],

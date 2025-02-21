@@ -666,10 +666,35 @@ exports.updatePostGroup = async (req, res) => {
         const platformId = platform.split("-").slice(1).join("-");
         let post = existingPosts.find((p) => p.platformId === platformId);
 
+        if (post) {
+          // Update existing post
+          post.content = content;
+          if (status) {
+            post.status = status;
+          }
+          post.videoTimestamp = videoTimestamp ? parseFloat(videoTimestamp) : 0;
+
+          post.platform = platformName;
+          post.platformId = platformId;
+        } else {
+          // Create new post for new platform
+          post = new ScheduledPost({
+            postGroupId: postGroup._id,
+            userId,
+            content,
+            platform: platformName,
+            platformId: platformId,
+            status: status,
+            videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
+          });
+        }
+
+        await post.save();
+
         // Prepare platform-specific settings
-        const platformSettings = {};
         if (platformName === "tiktok" && tiktokSettings) {
           const parsedTiktokSettings = JSON.parse(tiktokSettings);
+
           post.platformSettings = {
             tiktok: {
               viewerSetting: parsedTiktokSettings.viewerSetting,
@@ -702,36 +727,13 @@ exports.updatePostGroup = async (req, res) => {
           };
         }
 
-        if (post) {
-          // Update existing post
-          post.content = content;
-          if (status) {
-            post.status = status;
-          }
-          post.videoTimestamp = videoTimestamp ? parseFloat(videoTimestamp) : 0;
-
-          post.platform = platformName;
-          post.platformId = platformId;
-
-          await post.save();
-          return post;
-        } else {
-          // Create new post for new platform
-          post = new ScheduledPost({
-            postGroupId: postGroup._id,
-            userId,
-            content,
-            platform: platformName,
-            platformId: platformId,
-            status: status,
-            platformSettings,
-            videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
-          });
-          await post.save();
-          return post;
-        }
+        await post.save();
+        return post;
       })
     );
+
+    console.log("updated posts");
+    console.log(updatedPosts);
 
     // Step 8: Delete any posts that are no longer relevant
     const parsedPlatformIds = parsedPlatforms.map((platform) => {

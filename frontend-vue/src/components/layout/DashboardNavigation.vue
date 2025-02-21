@@ -27,7 +27,7 @@
   } from 'lucide-vue-next';
   import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';
-  import { savePostGroup } from '@/helpers/savePostGroup';
+  import { createPostGroup } from '@/helpers/savePostGroup';
   import { deleteScheduledPost } from '@/api/postApi';
 
   const themeStore = useThemeStore();
@@ -76,7 +76,6 @@
   }
 
   async function navigateToEditor(post: any) {
-    console.log('Selected post:', post._id);
     if (router.currentRoute.value.path === '/dashboard/editor') {
       // If already on editor, update the post first
       editorDataStore.selectedPost.value = post;
@@ -153,7 +152,7 @@
 
     try {
       isCreatingDraft.value = true;
-      await savePostGroup('draft');
+      await createPostGroup();
     } finally {
       isCreatingDraft.value = false;
     }
@@ -191,6 +190,7 @@
   onMounted(async () => {
     await verifyAuth();
     document.addEventListener('click', handleClickOutside);
+    await postsStore.getAllPostGroups();
   });
 
   onUnmounted(() => {

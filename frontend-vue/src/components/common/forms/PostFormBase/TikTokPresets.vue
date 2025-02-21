@@ -4,18 +4,11 @@
   import Select from 'primevue/select';
   import CustomSwitch from '@/components/common/buttons/CustomSwitch.vue';
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
+  import { getCreatorInfo } from '@/api/tiktokApi';
+  import editorDataStore from '@/utils/editorDataStore';
 
   const props = defineProps<{
     currentMediaType: 'image' | 'video' | null;
-    initialSettings?: {
-      viewerSetting: { label: string; value: string };
-      allowComments: boolean;
-      allowDuet: boolean;
-      allowStitch: boolean;
-      commercialContent: boolean;
-      brandOrganic: boolean;
-      brandedContent: boolean;
-    };
   }>();
 
   const emit = defineEmits<{
@@ -36,6 +29,19 @@
   const tiktokOptionsExpanded = ref(false);
   const tiktokViewerSetting = ref<any>('');
 
+  watch(
+    () => tiktokOptionsExpanded.value,
+    async () => {
+      await getCreatorInfo(
+        editorDataStore.selectedPost.value?.platforms?.[0]
+          .split('-')
+          .slice(1)
+          .join('-')
+      );
+      console.log(editorDataStore.tiktokSettings.value);
+    }
+  );
+
   // Mapping for values to labels
   const valueToLabelMap: Record<string, string> = {
     FOLLOWER_OF_CREATOR: 'Followers',
@@ -48,26 +54,27 @@
     const privacyOptions =
       connectionsDataStore.tiktokAccount.value?.creatorInfo
         .privacy_level_options;
+
     const isBrandedContent = tiktokBrandedContent.value;
 
     const options = [
       privacyOptions?.includes('FOLLOWER_OF_CREATOR') && {
         label: valueToLabelMap['FOLLOWER_OF_CREATOR'],
-        value: 'FOLLOWER_OF_CREATOR',
+        val: 'FOLLOWER_OF_CREATOR',
       },
       privacyOptions?.includes('PUBLIC_TO_EVERYONE') && {
         label: valueToLabelMap['PUBLIC_TO_EVERYONE'],
-        value: 'PUBLIC_TO_EVERYONE',
+        val: 'PUBLIC_TO_EVERYONE',
       },
       privacyOptions?.includes('MUTUAL_FOLLOW_FRIENDS') && {
         label: valueToLabelMap['MUTUAL_FOLLOW_FRIENDS'],
-        value: 'MUTUAL_FOLLOW_FRIENDS',
+        val: 'MUTUAL_FOLLOW_FRIENDS',
       },
       privacyOptions?.includes('SELF_ONLY') && {
         label: isBrandedContent
           ? 'Only me (Branded content visibility cannot be set to private)'
           : valueToLabelMap['SELF_ONLY'],
-        value: 'SELF_ONLY',
+        val: 'SELF_ONLY',
       },
     ];
 
@@ -147,7 +154,7 @@
   });
 
   // Populate initial settings for Edit
-  if (props.initialSettings) {
+  if (editorDataStore.tiktokSettings.value) {
     const {
       viewerSetting,
       allowComments,
@@ -156,7 +163,9 @@
       commercialContent,
       brandOrganic,
       brandedContent,
-    } = props.initialSettings;
+    } = editorDataStore.tiktokSettings.value;
+
+    console.log(editorDataStore.tiktokSettings.value);
 
     // tiktokViewerSetting.value = viewerSetting?.value || '';
     tiktokViewerSetting.value = viewerSetting?.value
@@ -207,6 +216,7 @@
         tiktokOptionsExpanded ? 'py-3 opacity-100' : 'max-h-0 opacity-0',
       ]"
     >
+      {{ editorDataStore.tiktokSettings.value }}
       <div class="space-y-4">
         <div>
           <div class="relative">
