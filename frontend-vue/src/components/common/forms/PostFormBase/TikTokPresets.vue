@@ -18,7 +18,7 @@
     set: (val: any) => {
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.viewerSetting =
-          val.val;
+          val.value;
       }
     },
   });
@@ -115,21 +115,21 @@
     const options = [
       privacyOptions?.includes('FOLLOWER_OF_CREATOR') && {
         label: valueToLabelMap['FOLLOWER_OF_CREATOR'],
-        val: 'FOLLOWER_OF_CREATOR',
+        value: 'FOLLOWER_OF_CREATOR',
       },
       privacyOptions?.includes('PUBLIC_TO_EVERYONE') && {
         label: valueToLabelMap['PUBLIC_TO_EVERYONE'],
-        val: 'PUBLIC_TO_EVERYONE',
+        value: 'PUBLIC_TO_EVERYONE',
       },
       privacyOptions?.includes('MUTUAL_FOLLOW_FRIENDS') && {
         label: valueToLabelMap['MUTUAL_FOLLOW_FRIENDS'],
-        val: 'MUTUAL_FOLLOW_FRIENDS',
+        value: 'MUTUAL_FOLLOW_FRIENDS',
       },
       privacyOptions?.includes('SELF_ONLY') && {
         label: isBrandedContent
           ? 'Only me (Branded content visibility cannot be set to private)'
           : valueToLabelMap['SELF_ONLY'],
-        val: 'SELF_ONLY',
+        value: 'SELF_ONLY',
       },
     ];
 
@@ -137,11 +137,7 @@
   });
 
   const isOptionDisabled = (option: any) => {
-    return (
-      option.value === 'SELF_ONLY' &&
-      editorDataStore.selectedPost.value?.platformSettings?.tiktok
-        ?.brandedContent
-    );
+    return option.value === 'SELF_ONLY' && tiktokBrandedContent.value;
   };
 
   const isCommentsDisabled = computed(() => {
@@ -229,7 +225,6 @@
             <Select
               v-model="tiktokViewerSetting"
               :options="viewerSettingOptions"
-              :disabled="isOptionDisabled(tiktokViewerSetting)"
               optionLabel="label"
               class="w-full"
               :placeholder="
@@ -316,10 +311,10 @@
                   type="checkbox"
                   id="tiktokBrandedContent"
                   v-model="tiktokBrandedContent"
-                  :disabled="tiktokViewerSetting.value === 'SELF_ONLY'"
+                  :disabled="tiktokViewerSetting === 'SELF_ONLY'"
                   :class="[
                     'h-4 w-4 rounded border-gray-300 focus:ring-blue-500',
-                    tiktokViewerSetting.value === 'SELF_ONLY'
+                    tiktokViewerSetting === 'SELF_ONLY'
                       ? 'cursor-not-allowed bg-gray-100 text-gray-400 opacity-50'
                       : 'bg-white text-blue-600',
                   ]"
@@ -328,7 +323,7 @@
                   for="tiktokBrandedContent"
                   :class="[
                     'text-md group relative font-bold',
-                    tiktokViewerSetting.value === 'SELF_ONLY'
+                    tiktokViewerSetting === 'SELF_ONLY'
                       ? 'cursor-not-allowed text-gray-400'
                       : 'text-gray-600',
                   ]"
@@ -336,7 +331,7 @@
                   Branded Content
 
                   <div
-                    v-if="tiktokViewerSetting.value === 'SELF_ONLY'"
+                    v-if="tiktokViewerSetting === 'SELF_ONLY'"
                     class="absolute bottom-full left-0 mb-2 hidden w-64 rounded-lg bg-gray-700 p-2 text-sm text-white group-hover:block"
                   >
                     Branded content visibility cannot be set to private
@@ -346,7 +341,7 @@
               <p
                 class="text-sm"
                 :class="
-                  tiktokViewerSetting.value === 'SELF_ONLY'
+                  tiktokViewerSetting === 'SELF_ONLY'
                     ? 'text-gray-400'
                     : 'text-gray-600'
                 "
