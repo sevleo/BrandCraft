@@ -524,6 +524,11 @@
     background: #a1a1aa; /* Darker shade on hover */
   }
 
+  .sidebar-scrollable {
+    scrollbar-width: 2px;
+    scrollbar-color: #d1d5db;
+  }
+
   .dropdown-enter-active,
   .dropdown-leave-active {
     transition:

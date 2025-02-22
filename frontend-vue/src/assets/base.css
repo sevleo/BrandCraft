@@ -109,3 +109,25 @@ body {
   max-width: 100%;
   height: auto;
 } */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* Firefox */
+/* * {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+} */

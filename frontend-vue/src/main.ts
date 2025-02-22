@@ -4,6 +4,7 @@ import router from './router/index';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import Aura from '@primevue/themes/aura';
+import './assets/main.css';
 import axios from 'axios';
 import Tooltip from 'primevue/tooltip';
 import { createPinia } from 'pinia';
