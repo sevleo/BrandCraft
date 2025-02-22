@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
-  import { updatePostBundle, createPostBundle } from '@/api/postApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import DatePicker from 'primevue/datepicker';
   import { updatePostGroup } from '@/helpers/savePostGroup';
@@ -13,7 +12,6 @@
     MoreHorizontal,
   } from 'lucide-vue-next';
   import 'emoji-picker-element';
-  import postsStore from '@/utils/postsStore';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import { uploadVideoToS3 } from '@/api/mediaApi';
   import { getCreatorInfo } from '@api/tiktokApi';
@@ -44,6 +42,7 @@
     editorDataStore.selectedPost.value.videoTimestamp = timestamp;
   };
 
+  // Watch to get creatorInfo for TikTok
   watch(
     () => editorDataStore.selectedPost.value,
     async () => {
@@ -52,10 +51,7 @@
           p.startsWith('tiktok')
         );
       if (tiktokPlatform) {
-        const creatorInfo = await getCreatorInfo(
-          tiktokPlatform.split('-').slice(1).join('-')
-        );
-        console.log(creatorInfo);
+        await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
       }
     }
   );
@@ -369,7 +365,7 @@
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: error.response?.data?.message,
+        detail: error,
         life: 3000,
       });
     } finally {
@@ -438,6 +434,66 @@
     // showEmojiPicker.value = false;
   };
 
+  let saveTimeout: NodeJS.Timeout | null = null;
+
+  // Debounced save function
+  const debouncedSave = () => {
+    // Clear any existing timeout
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+
+    console.log('saving');
+
+    // Show saving indicator immediately when typing starts
+    isSaving.value = true;
+
+    // Set new timeout
+    saveTimeout = setTimeout(async () => {
+      try {
+        await handleSave();
+      } finally {
+        isSaving.value = false;
+      }
+    }, 500); // 0.5 second delay
+  };
+
+  // Handle all input changes
+  const handleInput = (e: Event) => {
+    // Set user edit flag and trigger save
+    editorDataStore.isUserEdit.value = true;
+    debouncedSave();
+    // Update replicated value
+    replicatedValue.value = (e.target as HTMLTextAreaElement).value;
+  };
+
+  // Watch for changes in selectedPost and update editorDataStore
+  watch(
+    () => editorDataStore.selectedPost.value,
+    (newPost) => {
+      if (newPost) {
+        // Only set selectedDateTime if we're not already on the editor page
+        // or if the post explicitly has a scheduledTime
+
+        editorDataStore.selectedPost.value = newPost;
+
+        if (newPost.scheduledTime) {
+          editorDataStore.selectedDateTime.value = new Date(
+            newPost.scheduledTime
+          );
+        } else {
+          // If no scheduledTime, reset the selectedDateTime
+          editorDataStore.selectedDateTime.value = null;
+        }
+
+        status.value = newPost.status || 'draft';
+      }
+    },
+    { immediate: true }
+  );
+
+  const replicatedValue = ref('');
+
   onMounted(async () => {
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
@@ -452,45 +508,14 @@
     await nextTick(() => {
       isLoading.value = false;
     });
-  });
 
-  // Watch for changes in selectedPost
-  watch(
-    () => editorDataStore.selectedPost.value,
-    (newPost) => {
-      if (newPost) {
-        // Priority: If user clicked an existing draft, use its scheduled time
-        if (newPost.scheduledTime) {
-          editorDataStore.selectedDateTime.value = new Date(
-            newPost.scheduledTime
-          );
-        }
-        // Otherwise, if user clicked a timeslot, keep the selectedDateTime
-        else if (editorDataStore.selectedDateTime.value) {
-          // Do nothing, preserve the timeslot date
-        }
-        // If neither exists, keep it null
-        else {
-          editorDataStore.selectedDateTime.value = null;
-        }
-
-        // Sync other data
-        editorDataStore.selectedPost.value.platforms = newPost.platforms || [];
-        editorDataStore.selectedPost.value.mediaPreviewUrls =
-          newPost.mediaFiles?.map((m: any) => m.url) || [];
-        editorDataStore.selectedPost.value.initialMediaUrls =
-          newPost.mediaFiles?.map((m: any) => m.url) || [];
-        editorDataStore.currentMediaType.value =
-          newPost.mediaFiles?.[0]?.type || null;
-        editorDataStore.selectedPost.value.videoTimestamp =
-          newPost.videoTimestamp || 0;
-        status.value = newPost.status || 'draft';
+    // Clean up the timeout when component is unmounted
+    return () => {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
       }
-    },
-    { immediate: true }
-  );
-
-  const replicatedValue = ref('');
+    };
+  });
 </script>
 
 <template>
@@ -500,12 +525,13 @@
       :key="postKey"
       class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
+      <p>{{ editorDataStore.isUserEdit }}</p>
       <p>1 - {{ editorDataStore.selectedPost.value }}</p>
 
       <!-- Loading Indicator -->
       <div
         v-if="isSaving"
-        class="absolute left-4 top-4 flex items-center gap-2 text-blue-500"
+        class="saving-indicator absolute left-4 top-4 flex items-center gap-2 text-blue-500"
       >
         <Loader2 class="h-4 w-4 animate-spin stroke-blue-500" />
       </div>
@@ -580,11 +606,7 @@
                       class="w-full rounded-lg bg-white text-black dark:bg-[#1a1a1a]"
                       name="text"
                       id="text"
-                      @input="
-                        (e) =>
-                          (replicatedValue = (e.target as HTMLTextAreaElement)
-                            .value)
-                      "
+                      @input="handleInput"
                     ></textarea>
                   </div>
 

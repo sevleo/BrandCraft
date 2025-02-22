@@ -24,8 +24,8 @@ async function updatePostGroup(
   selectedMedia: File[]
 ) {
   const keptMediaUrls =
-    editorDataStore.selectedPost.value.mediaPreviewUrls.filter((url) =>
-      editorDataStore.selectedPost.value.initialMediaUrls.includes(url)
+    editorDataStore.selectedPost.value?.mediaPreviewUrls?.filter((url) =>
+      editorDataStore.selectedPost.value?.initialMediaUrls?.includes(url)
     );
 
   const formData = new FormData();

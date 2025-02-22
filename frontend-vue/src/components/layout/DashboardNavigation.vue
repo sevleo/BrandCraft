@@ -76,13 +76,23 @@
   }
 
   async function navigateToEditor(post: any) {
-    if (router.currentRoute.value.path === '/dashboard/editor') {
-      // If already on editor, update the post first
-      editorDataStore.selectedPost.value = post;
+    // Check if trying to switch to a different post while on editor
+    if (
+      router.currentRoute.value.path === '/dashboard/editor' &&
+      editorDataStore.selectedPost.value._id !== post._id
+    ) {
+      const isSaving = document.querySelector('.saving-indicator');
+      if (isSaving) {
+        return;
+      }
+      editorDataStore.selectPost(post);
+    } else if (router.currentRoute.value.path === '/dashboard/editor') {
+      // Same post or initial load on editor
+      editorDataStore.selectPost(post);
     } else {
-      // If not on editor, navigate first then update the post
+      // Not on editor, navigate first then update post
       await router.push('/dashboard/editor');
-      editorDataStore.selectedPost.value = post;
+      editorDataStore.selectPost(post);
     }
   }
 
@@ -195,7 +205,7 @@
       console.log('test');
       console.log(sortedDraftPosts.value[0]);
 
-      editorDataStore.selectedPost.value = sortedDraftPosts.value[0];
+      editorDataStore.selectPost(sortedDraftPosts.value[0]);
     }
   });
 

@@ -377,10 +377,6 @@ exports.updatePostGroup = async (req, res) => {
     const userId = req.user._id;
     const { id } = req.params;
 
-    console.log("update");
-    console.log(req.body);
-    console.log(req.body.platformSettings);
-
     // Find bundle and verify ownership
     const postGroup = await ScheduledPostGroup.findOneAndUpdate(
       {
