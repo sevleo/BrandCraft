@@ -1,37 +1,35 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref, computed } from 'vue';
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
   import Select from 'primevue/select';
+  import editorDataStore from '@/utils/editorDataStore';
 
-  const props = defineProps<{
-    initialSettings: {
-      title: string;
-      privacy: 'private' | 'public' | 'unlisted';
-    };
-  }>();
+  const youtubeOptionsExpanded = ref(false);
 
-  const emit = defineEmits<{
-    (e: 'update:settings', settings: any): void;
-  }>();
+  const youtubeTitle = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.youtube?.title ?? '',
+    set: (value: string) => {
+      editorDataStore.selectedPost.value.platformSettings.youtube!.title =
+        value;
+    },
+  });
 
-  const instagramOptionsExpanded = ref(false);
-  const youtubeTitle = ref(props.initialSettings.title);
-  const youtubePrivacy = ref<'private' | 'public' | 'unlisted'>(
-    props.initialSettings.privacy
-  );
+  const youtubePrivacy = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.youtube?.privacy ??
+      'public',
+    set: (value: 'private' | 'public' | 'unlisted') => {
+      editorDataStore.selectedPost.value.platformSettings.youtube!.privacy =
+        value;
+    },
+  });
 
   const privacyOptions = ref([
     { label: 'Private', value: 'private' },
     { label: 'Public', value: 'public' },
     { label: 'Unlisted', value: 'unlisted' },
   ]);
-
-  watch([youtubePrivacy, youtubeTitle], () => {
-    emit('update:settings', {
-      privacy: youtubePrivacy.value,
-      title: youtubeTitle.value,
-    });
-  });
 </script>
 
 <template>
@@ -40,8 +38,8 @@
   >
     <div
       class="cursor-pointer hover:bg-gray-200 dark:hover:bg-[#d9d9d9]/10"
-      :class="instagramOptionsExpanded ? 'rounded-t-[8px]' : 'rounded-[8px]'"
-      @click="instagramOptionsExpanded = !instagramOptionsExpanded"
+      :class="youtubeOptionsExpanded ? 'rounded-t-[8px]' : 'rounded-[8px]'"
+      @click="youtubeOptionsExpanded = !youtubeOptionsExpanded"
     >
       <div class="flex items-center justify-between px-4">
         <div class="flex items-center gap-2">
@@ -53,7 +51,7 @@
           class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
         >
           <component
-            :is="instagramOptionsExpanded ? ChevronUp : ChevronDown"
+            :is="youtubeOptionsExpanded ? ChevronUp : ChevronDown"
             class="h-5 w-5 text-gray-600"
           />
         </div>
@@ -61,10 +59,10 @@
     </div>
 
     <div
-      v-if="instagramOptionsExpanded"
+      v-if="youtubeOptionsExpanded"
       :class="[
         'overflow-hidden px-4 transition-all',
-        instagramOptionsExpanded ? 'py-3 opacity-100' : 'max-h-0 opacity-0',
+        youtubeOptionsExpanded ? 'py-3 opacity-100' : 'max-h-0 opacity-0',
       ]"
     >
       <div class="flex flex-col gap-2">

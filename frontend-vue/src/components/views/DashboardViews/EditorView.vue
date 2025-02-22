@@ -5,6 +5,8 @@
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import PostFormBase from '@/components/common/forms/PostFormBase/PostFormBase.vue';
   import { useThemeStore } from '@/utils/themeStore';
+  import editorDataStore from '@/utils/editorDataStore';
+  import { Loader2 } from 'lucide-vue-next';
 
   const themeStore = useThemeStore();
 
@@ -34,10 +36,16 @@
     <transition name="fade" mode="out-in">
       <!-- Post edit view -->
       <div
-        v-if="!isLoading"
+        v-if="!isLoading && editorDataStore.selectedPost.value._id !== ''"
         class="relative flex w-full flex-grow items-center justify-center pt-[30px]"
       >
         <PostFormBase />
+      </div>
+      <div v-else class="flex h-[500px] w-full items-center justify-center">
+        <Loader2
+          class="h-[40px] w-[40px] animate-spin text-gray-500"
+          :stroke-width="1"
+        />
       </div>
     </transition>
   </main>

@@ -44,18 +44,6 @@
     editorDataStore.selectedPost.value.videoTimestamp = timestamp;
   };
 
-  const instagramSettings = ref<{ videoType: 'REELS' | 'STORIES' }>({
-    videoType: 'REELS',
-  });
-
-  const youtubeSettings = ref<{
-    privacy: 'private' | 'public' | 'unlisted';
-    title: string;
-  }>({
-    privacy: 'public',
-    title: '',
-  });
-
   watch(
     () => editorDataStore.selectedPost.value,
     async () => {
@@ -69,38 +57,8 @@
         );
         console.log(creatorInfo);
       }
-      // Populate settings from InitialPosts
-      if (editorDataStore.selectedPost.value?.posts) {
-        // Populate Instagram settings from initialPosts if available
-        const instagramPost = editorDataStore.selectedPost.value.posts.find(
-          (post: any) => post.platform === 'instagram'
-        );
-        if (instagramPost?.platformSettings?.instagram) {
-          instagramSettings.value = {
-            videoType: instagramPost.platformSettings.instagram.videoType,
-          };
-        }
-
-        const youtubePost = editorDataStore.selectedPost.value.posts.find(
-          (post: any) => post.platform === 'youtube'
-        );
-        if (youtubePost?.platformSettings?.youtube) {
-          youtubeSettings.value = {
-            privacy: youtubePost.platformSettings.youtube.privacy,
-            title: youtubePost.platformSettings.youtube.title,
-          };
-        }
-      }
     }
   );
-
-  const handleInstagramSettingsUpdate = (settings: any) => {
-    instagramSettings.value = settings;
-  };
-
-  const handleYoutubeSettingsUpdate = (settings: any) => {
-    youtubeSettings.value = settings;
-  };
 
   const validationErrors = computed(() => {
     const errors = [];
@@ -168,15 +126,19 @@
       ) {
         const duration = Math.floor(videoRef.value.duration);
         const maxDuration =
-          instagramSettings.value.videoType === 'REELS' ? 900 : 60;
+          editorDataStore.selectedPost.value?.platformSettings.instagram!
+            .videoType === 'REELS'
+            ? 900
+            : 60;
         const durationText =
-          instagramSettings.value.videoType === 'REELS'
+          editorDataStore.selectedPost.value?.platformSettings.instagram!
+            .videoType === 'REELS'
             ? '15 minutes'
             : '1 minute';
 
         if (duration > maxDuration) {
           errors.push(
-            `Video duration exceeds maximum allowed length of ${durationText} for Instagram ${instagramSettings.value.videoType.toLowerCase()}`
+            `Video duration exceeds maximum allowed length of ${durationText} for Instagram ${editorDataStore.selectedPost.value?.platformSettings.instagram!.videoType.toLowerCase()}`
           );
         }
       }
@@ -203,43 +165,6 @@
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
   );
-
-  const canSavePost = computed(() => {
-    if (editorDataStore.currentMediaType.value === 'video') {
-      // In edit mode with existing video (no new upload), allow saving
-      if (
-        editorDataStore.selectedPost.value?.mediaFiles?.[0]?.type === 'video' &&
-        editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0 &&
-        editorDataStore.selectedPost.value.mediaPreviewUrls[0] ===
-          editorDataStore.selectedPost?.value.mediaFiles?.[0]?.url
-      ) {
-        return validationErrors.value.length === 0;
-      }
-      // For new video uploads (both create and edit modes), require successful upload
-      return (
-        !!videoS3Key.value &&
-        uploadProgress.value === 100 &&
-        validationErrors.value.length === 0
-      );
-    }
-    return validationErrors.value.length === 0;
-  });
-
-  // const canPublishToTikTok = computed(() => {
-  //   if (
-  //     !editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-  //       p.startsWith('tiktok')
-  //     )
-  //   )
-  //     return true;
-  //   if (
-  //     editorDataStore.tiktokSettings.value.commercialContent &&
-  //     !editorDataStore.tiktokSettings.value.brandOrganic &&
-  //     !editorDataStore.tiktokSettings.value.brandedContent
-  //   )
-  //     return false;
-  //   return true;
-  // });
 
   async function handleMediaSelect(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -576,10 +501,6 @@
       class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
       <p>1 - {{ editorDataStore.selectedPost.value }}</p>
-      <p>2 - {{ editorDataStore.selectedPost.value.platformSettings }}</p>
-      <p>
-        3 - {{ editorDataStore.selectedPost.value.platformSettings?.tiktok }}
-      </p>
 
       <!-- Loading Indicator -->
       <div
@@ -598,46 +519,6 @@
           hourFormat="12"
           class="w-[250px]"
         />
-
-        <!-- <button
-          @click="() => handlePost('update')"
-          :disabled="!canSavePost || !canPublishToTikTok"
-          :class="[
-            'rounded-lg px-4 py-2 font-medium text-white',
-            canSavePost && canPublishToTikTok
-              ? 'bg-green hover:bg-greenLight'
-              : 'cursor-not-allowed bg-blue-300',
-          ]"
-        >
-          Update
-        </button>
-
-        <button 
-          @click="() => handlePost('schedule')"
-          :disabled="validationErrors.length > 0"
-          class="group relative"
-          :class="[
-            'rounded-lg px-4 py-2 font-medium text-white',
-            validationErrors.length === 0
-              ? 'bg-green hover:bg-greenLight'
-              : 'cursor-not-allowed bg-blue-300',
-          ]"
-        >
-          Schedule
-          <div
-            v-if="validationErrors.length > 0"
-            class="absolute bottom-full left-1/2 mb-2 hidden w-[400px] -translate-x-1/2 rounded-lg border border-gray-900 bg-[white] p-2 text-sm text-gray-900 group-hover:block"
-          >
-            <div class="flex flex-col items-start justify-start gap-1">
-              <div v-for="(error, index) in validationErrors" :key="index">
-                • {{ error }}
-              </div>
-            </div>
-            <div
-              class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900"
-            ></div>
-          </div>
-        </button> -->
         <button @click="() => handleSave()">Save</button>
       </div>
       <div class="flex w-full items-start justify-start gap-4">
@@ -778,7 +659,6 @@
                         (platform: any) => platform.startsWith('tiktok')
                       )
                     "
-                    :currentMediaType="editorDataStore.currentMediaType.value"
                   />
                   <InstagramPresets
                     v-if="
@@ -786,9 +666,6 @@
                         (platform: any) => platform.startsWith('instagram')
                       )
                     "
-                    :currentMediaType="editorDataStore.currentMediaType.value"
-                    :initialSettings="instagramSettings"
-                    @update:settings="handleInstagramSettingsUpdate"
                   />
                   <YouTubePresets
                     v-if="
@@ -796,9 +673,6 @@
                         (platform: any) => platform.startsWith('youtube')
                       )
                     "
-                    :currentMediaType="editorDataStore.currentMediaType"
-                    :initialSettings="youtubeSettings"
-                    @update:settings="handleYoutubeSettingsUpdate"
                   />
                 </div>
 

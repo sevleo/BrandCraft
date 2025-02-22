@@ -1,27 +1,19 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref, computed } from 'vue';
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
-
-  const props = defineProps<{
-    currentMediaType: 'image' | 'video' | null;
-    initialSettings: {
-      videoType: 'REELS' | 'STORIES';
-    };
-  }>();
-
-  const emit = defineEmits<{
-    (e: 'update:settings', settings: any): void;
-  }>();
+  import editorDataStore from '@/utils/editorDataStore';
 
   const instagramOptionsExpanded = ref(false);
-  const instagramVideoType = ref<'REELS' | 'STORIES'>(
-    props.initialSettings.videoType
-  );
 
-  watch([instagramVideoType], () => {
-    emit('update:settings', {
-      videoType: instagramVideoType.value,
-    });
+  const instagramVideoType = computed({
+    get: () =>
+      editorDataStore.selectedPost.value.platformSettings.instagram
+        ?.videoType ?? 'REELS',
+    set: (value: 'REELS' | 'STORIES') => {
+      editorDataStore.selectedPost.value.platformSettings.instagram = {
+        videoType: value,
+      };
+    },
   });
 </script>
 
@@ -64,44 +56,46 @@
           <button
             class="rounded-md px-4 py-2 text-[black] transition-colors dark:text-[black]"
             :class="[
-              currentMediaType !== 'video'
+              editorDataStore.currentMediaType.value !== 'video'
                 ? 'cursor-not-allowed bg-gray-100'
                 : instagramVideoType === 'REELS'
                   ? 'bg-blue-500'
                   : 'bg-gray-200',
             ]"
             @click="
-              currentMediaType === 'video' && (instagramVideoType = 'REELS')
+              editorDataStore.currentMediaType.value === 'video' &&
+                (instagramVideoType = 'REELS')
             "
-            :disabled="currentMediaType !== 'video'"
+            :disabled="editorDataStore.currentMediaType.value !== 'video'"
           >
             REEL
           </button>
           <button
             class="rounded-md px-4 py-2 text-[black] transition-colors dark:text-[black]"
             :class="[
-              currentMediaType !== 'video'
+              editorDataStore.currentMediaType.value !== 'video'
                 ? 'cursor-not-allowed bg-gray-100'
                 : instagramVideoType === 'STORIES'
                   ? 'bg-blue-500'
                   : 'bg-gray-200',
             ]"
             @click="
-              currentMediaType === 'video' && (instagramVideoType = 'STORIES')
+              editorDataStore.currentMediaType.value === 'video' &&
+                (instagramVideoType = 'STORIES')
             "
-            :disabled="currentMediaType !== 'video'"
+            :disabled="editorDataStore.currentMediaType.value !== 'video'"
           >
             STORY
           </button>
         </div>
         <p
-          v-if="currentMediaType === null"
+          v-if="editorDataStore.currentMediaType.value === null"
           class="text-xs italic text-gray-500"
         >
           Please upload a video to select video type
         </p>
         <p
-          v-else-if="currentMediaType === 'image'"
+          v-else-if="editorDataStore.currentMediaType.value === 'image'"
           class="text-xs italic text-gray-500"
         >
           Video type selection is only available for video uploads

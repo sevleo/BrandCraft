@@ -6,10 +6,6 @@
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
   import editorDataStore from '@/utils/editorDataStore';
 
-  const props = defineProps<{
-    currentMediaType: 'image' | 'video' | null;
-  }>();
-
   const tiktokOptionsExpanded = ref(false);
   const tiktokViewerSetting = computed({
     get: () =>
@@ -161,19 +157,19 @@
     );
   });
 
-  watch(
-    () =>
-      editorDataStore.selectedPost.value?.platformSettings?.tiktok
-        ?.commercialContent,
-    (newValue) => {
-      if (!newValue) {
-        editorDataStore.selectedPost.value.platformSettings.tiktok!.brandOrganic =
-          false;
-        editorDataStore.selectedPost.value.platformSettings.tiktok!.brandedContent =
-          false;
-      }
-    }
-  );
+  // watch(
+  //   () =>
+  //     editorDataStore.selectedPost.value?.platformSettings?.tiktok
+  //       ?.commercialContent,
+  //   (newValue) => {
+  //     if (!newValue) {
+  //       editorDataStore.selectedPost.value.platformSettings.tiktok!.brandOrganic =
+  //         false;
+  //       editorDataStore.selectedPost.value.platformSettings.tiktok!.brandedContent =
+  //         false;
+  //     }
+  //   }
+  // );
 
   const tiktokContentLabel = computed(() => {
     const tiktokSettings =
@@ -250,7 +246,7 @@
           </div>
 
           <div
-            v-if="props.currentMediaType !== 'image'"
+            v-if="editorDataStore.currentMediaType.value !== 'image'"
             class="flex items-center justify-between"
           >
             <CustomSwitch
@@ -261,7 +257,7 @@
           </div>
 
           <div
-            v-if="props.currentMediaType !== 'image'"
+            v-if="editorDataStore.currentMediaType.value !== 'image'"
             class="flex items-center justify-between"
           >
             <CustomSwitch

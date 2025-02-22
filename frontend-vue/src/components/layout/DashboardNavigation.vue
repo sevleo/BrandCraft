@@ -191,6 +191,12 @@
     await verifyAuth();
     document.addEventListener('click', handleClickOutside);
     await postsStore.getAllPostGroups();
+    if (editorDataStore.selectedPost.value._id === '') {
+      console.log('test');
+      console.log(sortedDraftPosts.value[0]);
+
+      editorDataStore.selectedPost.value = sortedDraftPosts.value[0];
+    }
   });
 
   onUnmounted(() => {

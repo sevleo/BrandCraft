@@ -39,7 +39,7 @@ interface YoutubeSettings {
 
 // Default post template
 const defaultPost: SelectedPost = {
-  _id: 'new',
+  _id: '',
   content: '',
   platforms: [],
   status: 'draft',
@@ -58,6 +58,13 @@ const defaultPost: SelectedPost = {
       commercialContent: false,
       brandOrganic: false,
       brandedContent: false,
+    },
+    instagram: {
+      videoType: 'REELS',
+    },
+    youtube: {
+      privacy: 'public',
+      title: '',
     },
   },
 };

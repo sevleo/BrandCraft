@@ -66,40 +66,12 @@ async function updatePostGroup(
     });
   }
 
-  console.log(editorDataStore.selectedPost.value);
   if (editorDataStore.selectedPost.value?.platformSettings) {
     formData.append(
       'platformSettings',
       JSON.stringify(editorDataStore.selectedPost.value?.platformSettings)
     );
   }
-
-  //   if (
-  //     editorDataStore.selectedPost.value?.platforms.some((p) =>
-  //       p.startsWith('instagram')
-  //     )
-  //   ) {
-  //     formData.append(
-  //       'instagramSettings',
-  //       JSON.stringify({
-  //         videoType: instagramSettings.value.videoType,
-  //       })
-  //     );
-  //   }
-
-  //   if (
-  //     editorDataStore.selectedPost.value?.platforms.some((p) =>
-  //       p.startsWith('youtube')
-  //     )
-  //   ) {
-  //     formData.append(
-  //       'youtubeSettings',
-  //       JSON.stringify({
-  //         privacy: youtubeSettings.value.privacy,
-  //         title: youtubeSettings.value.title,
-  //       })
-  //     );
-  //   }
 
   if (editorDataStore.selectedPost.value?.videoTimestamp) {
     formData.append(
