@@ -31,12 +31,10 @@ async function updatePostGroup(
   const formData = new FormData();
 
   // Add common post details
-  if (editorDataStore.selectedPost.value?.content) {
-    formData.append(
-      'content',
-      editorDataStore.selectedPost.value?.content || ''
-    );
-  }
+  formData.append(
+    'content',
+    editorDataStore.selectedPost.value?.content || ''
+  );
 
   if (editorDataStore.selectedDateTime.value) {
     formData.append(

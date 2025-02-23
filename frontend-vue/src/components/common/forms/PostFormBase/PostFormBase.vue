@@ -400,7 +400,8 @@
       const end = textarea.selectionEnd;
       const text = editorDataStore.selectedPost.value?.content;
 
-      const newContent = text?.substring(0, start) + emoji + text?.substring(end);
+      const newContent =
+        text?.substring(0, start) + emoji + text?.substring(end);
       editorDataStore.selectedPost.value!.content = newContent;
 
       debouncedSave();
@@ -452,6 +453,14 @@
     { immediate: true }
   );
 
+  // Watch for content changes when post is switched
+  watch(
+    () => editorDataStore.selectedPost.value?.content,
+    (newContent) => {
+      replicatedValue.value = newContent || '';
+    }
+  );
+
   async function handleSave() {
     try {
       isSaving.value = true;
@@ -501,6 +510,9 @@
   onMounted(async () => {
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
+
+    // Initialize replicatedValue with current content
+    replicatedValue.value = editorDataStore.selectedPost.value?.content || '';
 
     if (
       editorDataStore.selectedPost.value?.platforms?.some((p: any) =>
