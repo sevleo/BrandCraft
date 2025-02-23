@@ -2044,6 +2044,14 @@ video {
   stroke: #ef4444;
 }
 
+.stroke-\[\#ff1d5e\] {
+  stroke: #ff1d5e;
+}
+
+.stroke-\[green\] {
+  stroke: green;
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;

@@ -29,6 +29,8 @@
     () => editorDataStore.selectedPost?.value._id || 'new'
   );
 
+  const replicatedValue = ref('');
+
   const selectedMedia = ref<File[]>([]);
   const uploadProgress = ref(0);
   const videoS3Key = ref<string | null>(null);
@@ -349,30 +351,6 @@
     }
   };
 
-  async function handleSave() {
-    try {
-      isSaving.value = true;
-
-      await updatePostGroup(videoS3Key.value, selectedMedia.value);
-
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Post group saved successfully',
-        life: 3000,
-      });
-    } catch (error: any) {
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: error,
-        life: 3000,
-      });
-    } finally {
-      isSaving.value = false;
-    }
-  }
-
   const showEmojiPicker = ref(false);
   const emojiPickerRef = ref<HTMLDivElement | null>(null);
   const emojiButtonRef = ref<HTMLButtonElement | null>(null);
@@ -416,12 +394,17 @@
     const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
 
     if (textarea) {
+      editorDataStore.isUserEdit.value = true;
+
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const text = editorDataStore.selectedPost.value?.content;
 
-      editorDataStore.selectedPost.value!.content =
-        text?.substring(0, start) + emoji + text?.substring(end);
+      const newContent = text?.substring(0, start) + emoji + text?.substring(end);
+      editorDataStore.selectedPost.value!.content = newContent;
+
+      debouncedSave();
+      replicatedValue.value = newContent;
 
       // Move cursor after the inserted emoji
       setTimeout(() => {
@@ -436,34 +419,11 @@
 
   let saveTimeout: NodeJS.Timeout | null = null;
 
-  // Debounced save function
-  const debouncedSave = () => {
-    // Clear any existing timeout
-    if (saveTimeout) {
-      clearTimeout(saveTimeout);
-    }
-
-    console.log('saving');
-
-    // Show saving indicator immediately when typing starts
-    isSaving.value = true;
-
-    // Set new timeout
-    saveTimeout = setTimeout(async () => {
-      try {
-        await handleSave();
-      } finally {
-        isSaving.value = false;
-      }
-    }, 500); // 0.5 second delay
-  };
-
   // Handle all input changes
   const handleInput = (e: Event) => {
-    // Set user edit flag and trigger save
     editorDataStore.isUserEdit.value = true;
     debouncedSave();
-    // Update replicated value
+    // Update replicated value (for automatic text-area extension)
     replicatedValue.value = (e.target as HTMLTextAreaElement).value;
   };
 
@@ -492,7 +452,51 @@
     { immediate: true }
   );
 
-  const replicatedValue = ref('');
+  async function handleSave() {
+    try {
+      isSaving.value = true;
+
+      await updatePostGroup(videoS3Key.value, selectedMedia.value);
+
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Post group saved successfully',
+        life: 3000,
+      });
+    } catch (error: any) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error,
+        life: 3000,
+      });
+    } finally {
+      isSaving.value = false;
+    }
+  }
+
+  // Debounced save function
+  const debouncedSave = () => {
+    // Clear any existing timeout
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+
+    console.log('saving');
+
+    // Show saving indicator immediately when typing starts
+    isSaving.value = true;
+
+    // Set new timeout
+    saveTimeout = setTimeout(async () => {
+      try {
+        await handleSave();
+      } finally {
+        isSaving.value = false;
+      }
+    }, 500); // 0.5 second delay
+  };
 
   onMounted(async () => {
     isLoading.value = false;
@@ -533,7 +537,12 @@
         v-if="isSaving"
         class="saving-indicator absolute left-4 top-4 flex items-center gap-2 text-blue-500"
       >
-        <Loader2 class="h-4 w-4 animate-spin stroke-blue-500" />
+        <Loader2 class="h-4 w-4 animate-spin stroke-[green]" />
+        <!-- <LoopingRhombusesSpinner
+          :animation-duration="1500"
+          :rhombus-size="8"
+          color="#ff1d5e"
+        /> -->
       </div>
 
       <div class="flex w-full items-center justify-end p-2">

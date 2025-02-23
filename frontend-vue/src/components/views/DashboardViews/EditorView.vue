@@ -42,10 +42,7 @@
         <PostFormBase />
       </div>
       <div v-else class="flex h-[500px] w-full items-center justify-center">
-        <Loader2
-          class="h-[40px] w-[40px] animate-spin text-gray-500"
-          :stroke-width="1"
-        />
+        <Loader2 class="h-8 w-8 animate-spin stroke-[green]" />
       </div>
     </transition>
   </main>

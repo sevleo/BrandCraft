@@ -2,6 +2,8 @@ Backlog:
 Built by Creator, for Creators
 
 
+- when deleting a post, change to the most recent one
+
 
 - on change of content/platforms, trigger save
 - on change of schedule, trigger save
