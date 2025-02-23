@@ -319,6 +319,8 @@
   };
 
   const togglePlatform = async (account: any) => {
+    editorDataStore.isUserEdit.value = true;
+
     const accountId = (() => {
       switch (account.platform) {
         case 'twitter':
@@ -339,6 +341,7 @@
           return account.platform;
       }
     })();
+
     const index =
       editorDataStore.selectedPost.value?.platforms.indexOf(accountId);
     if (index === -1) {
@@ -346,9 +349,12 @@
     } else {
       editorDataStore.selectedPost.value?.platforms.splice(index, 1);
     }
+
     if (account.platform === 'tiktok') {
       await getCreatorInfo(account.id);
     }
+
+    debouncedSave();
   };
 
   const showEmojiPicker = ref(false);
@@ -504,7 +510,7 @@
       } finally {
         isSaving.value = false;
       }
-    }, 500); // 0.5 second delay
+    }, 1000); // 0.5 second delay
   };
 
   onMounted(async () => {
