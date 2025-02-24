@@ -66,10 +66,8 @@ const fetchArticle = async () => {
   try {
     loading.value = true;
     error.value = null;
-    console.log("Fetching article with id:", route.params.id);
 
     const response = await client.getArticle(route.params.id as string);
-    console.log("Article response:", response);
 
     if (!response) {
       throw new Error("Article not found");
