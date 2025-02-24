@@ -1,10 +1,19 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
+  import { ref, computed, defineProps } from 'vue';
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
   import Select from 'primevue/select';
   import editorDataStore from '@/utils/editorDataStore';
 
+  const props = defineProps<{
+    debounceSave: () => void;
+  }>();
+
   const youtubeOptionsExpanded = ref(false);
+
+  const handleSettingChange = () => {
+    editorDataStore.isUserEdit.value = true;
+    props.debounceSave();
+  };
 
   const youtubeTitle = computed({
     get: () =>
@@ -12,6 +21,7 @@
     set: (value: string) => {
       editorDataStore.selectedPost.value.platformSettings.youtube!.title =
         value;
+      handleSettingChange();
     },
   });
 
@@ -22,6 +32,7 @@
     set: (value: 'private' | 'public' | 'unlisted') => {
       editorDataStore.selectedPost.value.platformSettings.youtube!.privacy =
         value;
+      handleSettingChange();
     },
   });
 

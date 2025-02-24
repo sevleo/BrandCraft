@@ -3,7 +3,16 @@
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
   import editorDataStore from '@/utils/editorDataStore';
 
+  const props = defineProps<{
+    debounceSave: () => void;
+  }>();
+
   const instagramOptionsExpanded = ref(false);
+
+  const handleSettingChange = () => {
+    editorDataStore.isUserEdit.value = true;
+    props.debounceSave();
+  };
 
   const instagramVideoType = computed({
     get: () =>
@@ -13,6 +22,7 @@
       editorDataStore.selectedPost.value.platformSettings.instagram = {
         videoType: value,
       };
+      handleSettingChange();
     },
   });
 </script>

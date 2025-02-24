@@ -363,11 +363,10 @@
       editorDataStore.selectedPost.value?.platforms.splice(index, 1);
     }
 
+    debouncedSave();
     if (account.platform === 'tiktok') {
       await getCreatorInfo(account.id);
     }
-
-    debouncedSave();
   };
 
   const showEmojiPicker = ref(false);
@@ -484,7 +483,7 @@
         detail: 'Post saved successfully',
         life: 3000,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Save error:', error);
       toast.add({
         severity: 'error',
@@ -518,20 +517,6 @@
       }
     }, 1000); // 0.5 second delay
   };
-
-  watch(
-    () => editorDataStore.selectedPost.value,
-    async () => {
-      console.log('selecting post');
-      const tiktokPlatform =
-        editorDataStore.selectedPost.value?.platforms?.find((p: any) =>
-          p.startsWith('tiktok')
-        );
-      if (tiktokPlatform) {
-        await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
-      }
-    }
-  );
 
   onMounted(async () => {
     isLoading.value = false;
