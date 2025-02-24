@@ -1,9 +1,9 @@
-import { useRuntimeConfig } from "#imports";
 import { BlogClient } from "seobot";
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig();
-  const client = new BlogClient(config.SEOBOT_KEY as string);
+  const seobotKey: any = process.env.SEOBOT_KEY;
+
+  const client = new BlogClient(seobotKey);
 
   // Get article ID from route params
   const { id } = event.context.params as { id: string };

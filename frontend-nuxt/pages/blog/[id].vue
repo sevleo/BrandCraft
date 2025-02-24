@@ -3,7 +3,6 @@ import { computed } from "vue";
 
 import HomeNavigation from "@/components/HomeNavigation.vue";
 import FooterSection from "@/components/FooterSection.vue";
-import { redirectToBlog, redirectToBlogArticle } from "@/utils/redirects";
 import { useAsyncData } from "nuxt/app";
 
 interface IArticle {
@@ -66,14 +65,6 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const handleBackToBlog = () => {
-  redirectToBlog();
-};
-
-const handleRelatedArticleClick = (articleId: string) => {
-  redirectToBlogArticle(articleId);
-};
-
 // SEO Meta Tags
 useHead({
   title: computed(() =>
@@ -109,10 +100,10 @@ useHead({
       <div class="error-content">
         <h1>{{ error }}</h1>
         <p>Please try again later or return to the blog homepage.</p>
-        <button @click="handleBackToBlog" class="back-button">
+        <NuxtLink to="/blog" class="back-button">
           <span class="back-arrow">←</span>
           <span>Back to Blog</span>
-        </button>
+        </NuxtLink>
       </div>
     </div>
 
@@ -151,15 +142,15 @@ useHead({
         <div v-if="data.article.relatedPosts?.length > 0" class="related-posts">
           <h2>Related Articles</h2>
           <div class="related-posts-grid">
-            <button
+            <NuxtLink
               v-for="post in data.article.relatedPosts"
               :key="post.id"
-              @click="handleRelatedArticleClick(post.slug)"
+              :to="`/blog/${post.slug}`"
               class="related-post-card"
             >
               <h3>{{ post.headline }}</h3>
               <span class="read-more">Read more →</span>
-            </button>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -169,10 +160,10 @@ useHead({
       <div class="error-content">
         <h1>Article not found</h1>
         <p>The article you're looking for doesn't exist or has been removed.</p>
-        <button @click="handleBackToBlog" class="back-button">
+        <NuxtLink to="/blog" class="back-button">
           <span class="back-arrow">←</span>
           <span>Back to Blog</span>
-        </button>
+        </NuxtLink>
       </div>
     </div>
   </main>
