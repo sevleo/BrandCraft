@@ -1,10 +1,14 @@
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue';
+  import { ref, computed, watch, defineProps } from 'vue';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import Select from 'primevue/select';
   import CustomSwitch from '@/components/common/buttons/CustomSwitch.vue';
   import { ChevronDown, ChevronUp } from 'lucide-vue-next';
   import editorDataStore from '@/utils/editorDataStore';
+
+  const props = defineProps<{
+    debounceSave: () => void;
+  }>();
 
   const tiktokOptionsExpanded = ref(false);
   const tiktokViewerSetting = computed({
@@ -181,6 +185,15 @@
       return 'Your photo/video will be labeled as "Promotional content"';
     return '';
   });
+
+  // Watch for changes in TikTok settings and trigger save
+  watch(
+    () => editorDataStore.selectedPost.value.platformSettings.tiktok,
+    () => {
+      props.debounceSave();
+    },
+    { deep: true }
+  );
 </script>
 
 <template>

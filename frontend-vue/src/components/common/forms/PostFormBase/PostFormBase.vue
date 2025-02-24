@@ -48,6 +48,7 @@
   watch(
     () => editorDataStore.selectedPost.value,
     async () => {
+      console.log('selecting post');
       const tiktokPlatform =
         editorDataStore.selectedPost.value?.platforms?.find((p: any) =>
           p.startsWith('tiktok')
@@ -518,6 +519,20 @@
     }, 1000); // 0.5 second delay
   };
 
+  watch(
+    () => editorDataStore.selectedPost.value,
+    async () => {
+      console.log('selecting post');
+      const tiktokPlatform =
+        editorDataStore.selectedPost.value?.platforms?.find((p: any) =>
+          p.startsWith('tiktok')
+        );
+      if (tiktokPlatform) {
+        await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
+      }
+    }
+  );
+
   onMounted(async () => {
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
@@ -525,11 +540,11 @@
     // Initialize replicatedValue with current content
     replicatedValue.value = editorDataStore.selectedPost.value?.content || '';
 
-    if (
-      editorDataStore.selectedPost.value?.platforms?.some((p: any) =>
-        p.startsWith('tiktok')
-      )
-    ) {
+    const tiktokPlatform = editorDataStore.selectedPost.value?.platforms?.find(
+      (p: any) => p.startsWith('tiktok')
+    );
+    if (tiktokPlatform) {
+      await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
     }
 
     await nextTick(() => {
@@ -711,23 +726,26 @@
                   <TikTokPresets
                     v-if="
                       editorDataStore.selectedPost.value?.platforms.some(
-                        (platform: any) => platform.startsWith('tiktok')
+                        (p: any) => p.startsWith('tiktok')
                       )
                     "
+                    :debounceSave="debouncedSave"
                   />
                   <InstagramPresets
                     v-if="
                       editorDataStore.selectedPost.value?.platforms.some(
-                        (platform: any) => platform.startsWith('instagram')
+                        (p: any) => p.startsWith('instagram')
                       )
                     "
+                    :debounceSave="debouncedSave"
                   />
                   <YouTubePresets
                     v-if="
                       editorDataStore.selectedPost.value?.platforms.some(
-                        (platform: any) => platform.startsWith('youtube')
+                        (p: any) => p.startsWith('youtube')
                       )
                     "
+                    :debounceSave="debouncedSave"
                   />
                 </div>
 
