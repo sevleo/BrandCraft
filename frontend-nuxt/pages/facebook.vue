@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "Facebook Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "Facebook Management Platform | Page & Content Management | BrandCraft",
+  title: "Facebook Management Platform | Schedule & Analyze Posts | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Optimize your Facebook presence with BrandCraft. Schedule posts, manage pages, track engagement, and grow your audience with our comprehensive Facebook management tools.",
+        "Streamline your Facebook content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Facebook management tools.",
     },
     {
       name: "keywords",
       content:
-        "facebook management, facebook scheduler, facebook analytics, social media management, facebook marketing, page management, facebook business",
+        "facebook management, facebook scheduler, facebook analytics, social media management, facebook marketing, content planning, meta platforms",
     },
     {
       property: "og:title",
-      content: "Facebook Management Platform | Page & Content Management | BrandCraft",
+      content: "Facebook Management Platform | Schedule & Analyze Posts | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Optimize your Facebook presence with BrandCraft. Schedule posts, manage pages, track engagement, and grow your audience with our comprehensive Facebook management tools.",
+        "Streamline your Facebook content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Facebook management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/facebook",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - Facebook Management Platform',
+          description: 'Professional Facebook management platform for scheduling posts, analyzing performance, and growing your audience.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

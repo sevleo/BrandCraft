@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "Threads Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "Threads Management Platform | Content & Engagement Tools | BrandCraft",
+  title: "Threads Management Platform | Schedule & Analyze Posts | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Take control of your Threads presence with BrandCraft. Create engaging content, manage conversations, track growth, and build your community with our Threads management tools.",
+        "Streamline your Threads content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Threads management tools.",
     },
     {
       name: "keywords",
       content:
-        "threads management, threads content, meta platforms, social media management, threads marketing, community engagement, threads growth",
+        "threads management, threads scheduler, threads analytics, social media management, threads marketing, content planning",
     },
     {
       property: "og:title",
-      content: "Threads Management Platform | Content & Engagement Tools | BrandCraft",
+      content: "Threads Management Platform | Schedule & Analyze Posts | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Take control of your Threads presence with BrandCraft. Create engaging content, manage conversations, track growth, and build your community with our Threads management tools.",
+        "Streamline your Threads content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Threads management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/threads",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - Threads Management Platform',
+          description: 'Professional Threads management platform for scheduling posts, analyzing performance, and growing your audience.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

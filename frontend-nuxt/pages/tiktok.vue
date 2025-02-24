@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from "@/config/features";
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "TikTok Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "TikTok Content Management | Schedule & Track Videos | BrandCraft",
+  title: "TikTok Management Platform | Schedule & Analyze Videos | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Elevate your TikTok presence with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our TikTok management tools.",
+        "Streamline your TikTok content management with BrandCraft. Plan content, schedule videos, analyze performance, and grow your following with our TikTok management tools.",
     },
     {
       name: "keywords",
       content:
-        "tiktok management, tiktok scheduler, tiktok analytics, social media management, tiktok marketing, video content, tiktok growth",
+        "tiktok management, tiktok scheduler, tiktok analytics, social media management, tiktok marketing, content planning, video marketing",
     },
     {
       property: "og:title",
-      content: "TikTok Content Management | Schedule & Track Videos | BrandCraft",
+      content: "TikTok Management Platform | Schedule & Analyze Videos | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Elevate your TikTok presence with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our TikTok management tools.",
+        "Streamline your TikTok content management with BrandCraft. Plan content, schedule videos, analyze performance, and grow your following with our TikTok management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/tiktok",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - TikTok Management Platform',
+          description: 'Professional TikTok management platform for scheduling videos, analyzing performance, and growing your audience.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication,VideoApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

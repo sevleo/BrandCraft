@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "X (Twitter) Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "X (Twitter) Management Platform | Schedule & Track Posts | BrandCraft",
+  title: "X (Twitter) Management Platform | Schedule & Analyze Posts | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Master your X (Twitter) strategy with BrandCraft. Schedule tweets, analyze engagement, track metrics, and grow your following with our powerful X management tools.",
+        "Streamline your X (Twitter) content management with BrandCraft. Plan content, schedule tweets, analyze performance, and grow your following with our X management tools.",
     },
     {
       name: "keywords",
       content:
-        "X management, Twitter management, tweet scheduler, Twitter analytics, social media management, Twitter marketing, engagement tracking",
+        "twitter management, x management, tweet scheduler, twitter analytics, social media management, twitter marketing, content planning",
     },
     {
       property: "og:title",
-      content: "X (Twitter) Management Platform | Schedule & Track Posts | BrandCraft",
+      content: "X (Twitter) Management Platform | Schedule & Analyze Posts | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Master your X (Twitter) strategy with BrandCraft. Schedule tweets, analyze engagement, track metrics, and grow your following with our powerful X management tools.",
+        "Streamline your X (Twitter) content management with BrandCraft. Plan content, schedule tweets, analyze performance, and grow your following with our X management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/x",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - X (Twitter) Management Platform',
+          description: 'Professional X (Twitter) management platform for scheduling tweets, analyzing performance, and growing your audience.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

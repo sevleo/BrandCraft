@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "Mastodon Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "Mastodon Management Platform | Federated Social Tools | BrandCraft",
+  title: "Mastodon Management Platform | Schedule & Analyze Posts | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Streamline your Mastodon presence with BrandCraft. Schedule toots, manage multiple instances, track engagement, and grow your following with our Mastodon management tools.",
+        "Streamline your Mastodon content management with BrandCraft. Plan content, schedule toots, analyze performance, and grow your following with our Mastodon management tools.",
     },
     {
       name: "keywords",
       content:
-        "mastodon management, fediverse, mastodon scheduler, instance management, social media management, decentralized social, mastodon marketing",
+        "mastodon management, mastodon scheduler, mastodon analytics, social media management, mastodon marketing, content planning, fediverse",
     },
     {
       property: "og:title",
-      content: "Mastodon Management Platform | Federated Social Tools | BrandCraft",
+      content: "Mastodon Management Platform | Schedule & Analyze Posts | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Streamline your Mastodon presence with BrandCraft. Schedule toots, manage multiple instances, track engagement, and grow your following with our Mastodon management tools.",
+        "Streamline your Mastodon content management with BrandCraft. Plan content, schedule toots, analyze performance, and grow your following with our Mastodon management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/mastodon",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - Mastodon Management Platform',
+          description: 'Professional Mastodon management platform for scheduling toots, analyzing performance, and growing your following in the Fediverse.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

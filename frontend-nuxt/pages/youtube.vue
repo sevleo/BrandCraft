@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "YouTube Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "YouTube Channel Management | Content Strategy & Analytics | BrandCraft",
+  title: "YouTube Management Platform | Schedule & Analyze Videos | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Optimize your YouTube channel with BrandCraft. Plan video content, schedule uploads, track analytics, and grow your subscriber base with our YouTube management tools.",
+        "Streamline your YouTube content management with BrandCraft. Plan content, schedule videos, analyze performance, and grow your channel with our YouTube management tools.",
     },
     {
       name: "keywords",
       content:
-        "youtube management, youtube scheduler, youtube analytics, video content management, youtube marketing, channel growth, video SEO",
+        "youtube management, youtube scheduler, youtube analytics, video management, youtube marketing, content planning, video optimization",
     },
     {
       property: "og:title",
-      content: "YouTube Channel Management | Content Strategy & Analytics | BrandCraft",
+      content: "YouTube Management Platform | Schedule & Analyze Videos | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Optimize your YouTube channel with BrandCraft. Plan video content, schedule uploads, track analytics, and grow your subscriber base with our YouTube management tools.",
+        "Streamline your YouTube content management with BrandCraft. Plan content, schedule videos, analyze performance, and grow your channel with our YouTube management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/youtube",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - YouTube Management Platform',
+          description: 'Professional YouTube management platform for scheduling videos, analyzing performance, and growing your channel.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication,VideoApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

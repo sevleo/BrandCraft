@@ -4,6 +4,7 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "Bluesky Management - BrandCraft",
@@ -12,26 +13,26 @@ definePageMeta({
 });
 
 useHead({
-  title: "Bluesky Management Platform | AT Protocol Tools | BrandCraft",
+  title: "Bluesky Management Platform | Schedule & Analyze Posts | BrandCraft",
   meta: [
     {
       name: "description",
       content:
-        "Master your Bluesky presence with BrandCraft. Schedule posts, manage your feed, track engagement, and grow your following in the decentralized social network.",
+        "Streamline your Bluesky content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Bluesky management tools.",
     },
     {
       name: "keywords",
       content:
-        "bluesky management, AT protocol, decentralized social, bluesky scheduler, social media management, bluesky marketing, feed curation",
+        "bluesky management, bluesky scheduler, bluesky analytics, social media management, bluesky marketing, content planning, decentralized social",
     },
     {
       property: "og:title",
-      content: "Bluesky Management Platform | AT Protocol Tools | BrandCraft",
+      content: "Bluesky Management Platform | Schedule & Analyze Posts | BrandCraft",
     },
     {
       property: "og:description",
       content:
-        "Master your Bluesky presence with BrandCraft. Schedule posts, manage your feed, track engagement, and grow your following in the decentralized social network.",
+        "Streamline your Bluesky content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Bluesky management tools.",
     },
     {
       property: "og:url",
@@ -46,6 +47,20 @@ useHead({
       href: "https://brandcraft.art/bluesky",
     },
   ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - Bluesky Management Platform',
+          description: 'Professional Bluesky management platform for scheduling posts, analyzing performance, and growing your following.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 
