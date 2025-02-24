@@ -5,17 +5,15 @@ Built by Creator, for Creators
 - when deleting a post, change to the most recent one
 
 
-- on change of content/platforms, trigger save
-- on change of schedule, trigger save
+- on change of media, trigger save
+  - identify when should we trigger save
+  - if user leaves the page before save, it's okay. but we shluld show file upload progress
 - on change of cover images, trigger save
-- on change of platform settings, click change
+
 
 
 - to trigger status change, add Schedule button
   - validations should be on schedule button
-- on change of media, trigger save
-  - identify when should we trigger save
-  - if user leaves the page before save, it's okay. but we shluld show file upload progress
 
 
 - simplify media upload

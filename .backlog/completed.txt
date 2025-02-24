@@ -303,3 +303,26 @@ Fri Feb 14 DAY 88
 
 Sat Feb 15 DAY 89
 - SSR for landing page
+
+Sun Feb 16 DAY 90
+
+Mon Feb 17 DAY 91
+
+Tue Feb 18 DAY 92
+
+Wed Feb 19 DAY 93
+
+Thur Feb 20 DAY 94
+
+Fri Feb 21 DAY 95
+
+Sat Feb 22 DAY 96
+
+Sun Feb 23 DAY 97
+
+Mon Feb 24 DAY 98
+- on change of content/platforms, trigger save
+- on change of schedule, trigger save
+- on change of platform settings, click change
+
+Tue Feb 25 DAY 99

@@ -79,6 +79,16 @@ const testimonials = ref([
     ],
     platform: "Facebook",
   },
+  {
+    name: "tom lai",
+    handle: "@tomlai19852004",
+    avatar: "/testimonials/tomlai.jpg",
+    tweetUrl: "https://x.com/tomlai19852004/status/1893967146335510610",
+    content: [
+      `Would like to give a shoutout to @sev_tinker for building Brandcraft. Very good scheduling tool for my X post.`,
+    ],
+    platform: "X",
+  },
 ]);
 </script>
 
