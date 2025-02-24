@@ -31,17 +31,13 @@ async function updatePostGroup(
   const formData = new FormData();
 
   // Add common post details
-  formData.append(
-    'content',
-    editorDataStore.selectedPost.value?.content || ''
-  );
+  formData.append('content', editorDataStore.selectedPost.value?.content || '');
 
-  if (editorDataStore.selectedDateTime.value) {
-    formData.append(
-      'scheduledTime',
-      editorDataStore.selectedDateTime.value?.toISOString() || ''
-    );
-  }
+  // Always send scheduledTime, even if null
+  formData.append(
+    'scheduledTime',
+    editorDataStore.selectedPost.value?.scheduledTime || ''
+  );
 
   if (editorDataStore.selectedPost.value?.platforms) {
     formData.append(

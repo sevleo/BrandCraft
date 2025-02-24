@@ -4,11 +4,63 @@ import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
 import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
+import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
 
 definePageMeta({
   title: "Instagram Management - BrandCraft",
   description:
     "Manage your Instagram content and grow your audience with BrandCraft",
+});
+
+useHead({
+  title: "Instagram Management Platform | Schedule & Analyze Posts | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Streamline your Instagram content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Instagram management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "instagram management, instagram scheduler, instagram analytics, social media management, instagram marketing, content planning",
+    },
+    {
+      property: "og:title",
+      content: "Instagram Management Platform | Schedule & Analyze Posts | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Streamline your Instagram content management with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our Instagram management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/instagram",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/instagram",
+    },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      children: JSON.stringify([
+        generateOrganizationLD(defaultOrganization),
+        generateSoftwareApplicationLD({
+          ...defaultSoftwareApplication,
+          name: 'BrandCraft - Instagram Management Platform',
+          description: 'Professional Instagram management platform for scheduling posts, analyzing performance, and growing your audience.',
+          applicationCategory: 'SocialNetworkingApplication,BusinessApplication'
+        })
+      ])
+    }
+  ]
 });
 </script>
 

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /users/
+Disallow: /api/
+Disallow: /_nuxt/
+
+# Sitemap
+Sitemap: https://brandcraft.art/api/sitemap.xml

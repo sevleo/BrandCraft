@@ -6,9 +6,46 @@ import { commonFeatures } from '@/config/features';
 import { redirectToSignup } from "@/utils/redirects";
 
 definePageMeta({
-  title: "X Management - BrandCraft",
+  title: "X (Twitter) Management - BrandCraft",
   description:
-    "Manage your X (formerly Twitter) presence with BrandCraft's comprehensive tools",
+    "Manage your X (Twitter) content and grow your audience with BrandCraft",
+});
+
+useHead({
+  title: "X (Twitter) Management Platform | Schedule & Track Posts | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Master your X (Twitter) strategy with BrandCraft. Schedule tweets, analyze engagement, track metrics, and grow your following with our powerful X management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "X management, Twitter management, tweet scheduler, Twitter analytics, social media management, Twitter marketing, engagement tracking",
+    },
+    {
+      property: "og:title",
+      content: "X (Twitter) Management Platform | Schedule & Track Posts | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Master your X (Twitter) strategy with BrandCraft. Schedule tweets, analyze engagement, track metrics, and grow your following with our powerful X management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/x",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/x",
+    },
+  ],
 });
 </script>
 

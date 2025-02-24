@@ -26,6 +26,46 @@ useHead({
       content:
         "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
     },
+    {
+      name: "keywords",
+      content:
+        "social media management, content scheduling, analytics, automation, Instagram, Twitter, Facebook, LinkedIn, social media marketing, social media tools",
+    },
+    {
+      property: "og:title",
+      content: "BrandCraft - The Ultimate Social Media Management Platform",
+    },
+    {
+      property: "og:description",
+      content:
+        "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
+    },
+
+    {
+      property: "og:url",
+      content: "https://brandcraft.art",
+    },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    {
+      name: "twitter:title",
+      content: "BrandCraft - The Ultimate Social Media Management Platform",
+    },
+    {
+      name: "twitter:description",
+      content:
+        "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
+    },
+
+    { name: "robots", content: "index, follow" },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
+    { name: "format-detection", content: "telephone=no" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art",
+    },
   ],
 });
 

@@ -8,7 +8,44 @@ import { redirectToSignup } from "@/utils/redirects";
 definePageMeta({
   title: "Threads Management - BrandCraft",
   description:
-    "Manage your Threads content and engage with your community using BrandCraft",
+    "Manage your Threads content and grow your audience with BrandCraft",
+});
+
+useHead({
+  title: "Threads Management Platform | Content & Engagement Tools | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Take control of your Threads presence with BrandCraft. Create engaging content, manage conversations, track growth, and build your community with our Threads management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "threads management, threads content, meta platforms, social media management, threads marketing, community engagement, threads growth",
+    },
+    {
+      property: "og:title",
+      content: "Threads Management Platform | Content & Engagement Tools | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Take control of your Threads presence with BrandCraft. Create engaging content, manage conversations, track growth, and build your community with our Threads management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/threads",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/threads",
+    },
+  ],
 });
 </script>
 

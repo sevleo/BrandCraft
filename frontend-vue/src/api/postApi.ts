@@ -64,6 +64,11 @@ async function apiSavePostGroup(postData: FormData, id?: string) {
       },
     };
 
+    console.log('FormData contents:');
+    for (const [key, value] of postData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
     let response;
     if (id) {
       response = await axiosInstance.put(`/update/${id}`, postData, config);
@@ -73,7 +78,7 @@ async function apiSavePostGroup(postData: FormData, id?: string) {
 
     return response.data.postGroup;
   } catch (error) {
-    console.error('Failed to update scheduled post:', error);
+    console.error('API Error:', error?.response?.data || error);
     throw error;
   }
 }

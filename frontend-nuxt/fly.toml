@@ -13,6 +13,7 @@ primary_region = 'sin'
     NUXT_PUBLIC_BACKEND_URL = 'https://brandcraft-backend.fly.dev'
     NUXT_PUBLIC_FRONTEND_URL = 'https://app.brandcraft.art'
     NUXT_PUBLIC_FRONTEND_DASHBOARD_URL = 'https://app.brandcraft.art/dashboard'
+    
 
 [http_service]
   internal_port = 3001

@@ -10,6 +10,43 @@ definePageMeta({
   description:
     "Manage your Mastodon presence and engage with the federated social network",
 });
+
+useHead({
+  title: "Mastodon Management Platform | Federated Social Tools | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Streamline your Mastodon presence with BrandCraft. Schedule toots, manage multiple instances, track engagement, and grow your following with our Mastodon management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "mastodon management, fediverse, mastodon scheduler, instance management, social media management, decentralized social, mastodon marketing",
+    },
+    {
+      property: "og:title",
+      content: "Mastodon Management Platform | Federated Social Tools | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Streamline your Mastodon presence with BrandCraft. Schedule toots, manage multiple instances, track engagement, and grow your following with our Mastodon management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/mastodon",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/mastodon",
+    },
+  ],
+});
 </script>
 
 <template>

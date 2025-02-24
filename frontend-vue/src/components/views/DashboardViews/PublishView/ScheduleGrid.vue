@@ -345,7 +345,8 @@
       targetDate.setHours(hours, minutes, 0, 0);
     }
     editorDataStore.reset();
-    editorDataStore.selectedDateTime.value = targetDate;
+    editorDataStore.selectedPost.value.scheduledTime = targetDate.toISOString();
+    editorDataStore.isUserEdit.value = true;
     await nextTick();
     router.push('/dashboard/editor');
   }

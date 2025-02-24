@@ -10,6 +10,43 @@ definePageMeta({
   description:
     "Create and schedule viral TikTok content with BrandCraft's advanced tools",
 });
+
+useHead({
+  title: "TikTok Content Management | Schedule & Track Videos | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Elevate your TikTok presence with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our TikTok management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "tiktok management, tiktok scheduler, tiktok analytics, social media management, tiktok marketing, video content, tiktok growth",
+    },
+    {
+      property: "og:title",
+      content: "TikTok Content Management | Schedule & Track Videos | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Elevate your TikTok presence with BrandCraft. Plan content, schedule posts, analyze performance, and grow your following with our TikTok management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/tiktok",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/tiktok",
+    },
+  ],
+});
 </script>
 
 <template>

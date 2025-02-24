@@ -10,6 +10,43 @@ definePageMeta({
   description:
     "Manage your Facebook pages and content with BrandCraft's comprehensive tools",
 });
+
+useHead({
+  title: "Facebook Management Platform | Page & Content Management | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Optimize your Facebook presence with BrandCraft. Schedule posts, manage pages, track engagement, and grow your audience with our comprehensive Facebook management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "facebook management, facebook scheduler, facebook analytics, social media management, facebook marketing, page management, facebook business",
+    },
+    {
+      property: "og:title",
+      content: "Facebook Management Platform | Page & Content Management | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Optimize your Facebook presence with BrandCraft. Schedule posts, manage pages, track engagement, and grow your audience with our comprehensive Facebook management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/facebook",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/facebook",
+    },
+  ],
+});
 </script>
 
 <template>

@@ -9,6 +9,16 @@ export default defineNuxtConfig({
 
   css: ["@/assets/css/main.css"],
 
+  // Enable pages directory
+  pages: true,
+
+  // Add router options
+  router: {
+    options: {
+      strict: false,
+    },
+  },
+
   // ✅ Ensure correct Nitro preset for Fly.io
   nitro: {
     preset: "node-server", // Use "node-server" instead of "node"
@@ -23,6 +33,10 @@ export default defineNuxtConfig({
 
   app: {
     baseURL: "/",
+    head: {
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+    },
   },
 
   runtimeConfig: {
@@ -31,6 +45,7 @@ export default defineNuxtConfig({
       NUXT_PUBLIC_FRONTEND_URL: process.env.NUXT_PUBLIC_FRONTEND_URL,
       NUXT_PUBLIC_FRONTEND_DASHBOARD_URL:
         process.env.NUXT_PUBLIC_FRONTEND_DASHBOARD_URL,
+      NUXT_PUBLIC_SEOBOT_KEY: process.env.NUXT_PUBLIC_SEOBOT_KEY,
     },
   },
 

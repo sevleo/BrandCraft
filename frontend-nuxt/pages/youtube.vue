@@ -10,6 +10,43 @@ definePageMeta({
   description:
     "Manage your YouTube content and grow your channel with BrandCraft's powerful tools",
 });
+
+useHead({
+  title: "YouTube Channel Management | Content Strategy & Analytics | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Optimize your YouTube channel with BrandCraft. Plan video content, schedule uploads, track analytics, and grow your subscriber base with our YouTube management tools.",
+    },
+    {
+      name: "keywords",
+      content:
+        "youtube management, youtube scheduler, youtube analytics, video content management, youtube marketing, channel growth, video SEO",
+    },
+    {
+      property: "og:title",
+      content: "YouTube Channel Management | Content Strategy & Analytics | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Optimize your YouTube channel with BrandCraft. Plan video content, schedule uploads, track analytics, and grow your subscriber base with our YouTube management tools.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/youtube",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/youtube",
+    },
+  ],
+});
 </script>
 
 <template>

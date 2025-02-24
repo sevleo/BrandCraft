@@ -164,6 +164,18 @@
     editorDataStore.selectedPost.value?.status || 'draft'
   );
 
+  const getScheduledDate = computed({
+    get: () => {
+      return editorDataStore.selectedPost.value.scheduledTime
+        ? new Date(editorDataStore.selectedPost.value.scheduledTime)
+        : null;
+    },
+    set: (date: Date | null) => {
+      editorDataStore.selectedPost.value.scheduledTime =
+        date?.toISOString() || null;
+    },
+  });
+
   async function handleMediaSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
@@ -434,25 +446,19 @@
     replicatedValue.value = (e.target as HTMLTextAreaElement).value;
   };
 
+  const handleDateChange = () => {
+    editorDataStore.isUserEdit.value = true;
+    debouncedSave();
+  };
+
   // Watch for changes in selectedPost and update editorDataStore
   watch(
     () => editorDataStore.selectedPost.value,
     (newPost) => {
       if (newPost) {
-        // Only set selectedDateTime if we're not already on the editor page
-        // or if the post explicitly has a scheduledTime
-
         editorDataStore.selectedPost.value = newPost;
 
-        if (newPost.scheduledTime) {
-          editorDataStore.selectedDateTime.value = new Date(
-            newPost.scheduledTime
-          );
-        } else {
-          // If no scheduledTime, reset the selectedDateTime
-          editorDataStore.selectedDateTime.value = null;
-        }
-
+        // No need to convert back and forth since we already have the ISO string
         status.value = newPost.status || 'draft';
       }
     },
@@ -470,20 +476,19 @@
   async function handleSave() {
     try {
       isSaving.value = true;
-
       await updatePostGroup(videoS3Key.value, selectedMedia.value);
-
       toast.add({
         severity: 'success',
         summary: 'Success',
-        detail: 'Post group saved successfully',
+        detail: 'Post saved successfully',
         life: 3000,
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.error('Save error:', error);
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: error,
+        detail: error?.response?.data?.message || 'Failed to save post',
         life: 3000,
       });
     } finally {
@@ -565,7 +570,8 @@
 
       <div class="flex w-full items-center justify-end p-2">
         <DatePicker
-          v-model="editorDataStore.selectedDateTime.value"
+          v-model="getScheduledDate"
+          @hide="handleDateChange"
           showTime
           showIcon
           :showSeconds="false"

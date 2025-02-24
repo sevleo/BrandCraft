@@ -1,53 +1,19 @@
 {
-  "_id": "67b9bbb01903770a0530161a",
-  "content": "",
-  "platforms": [],
-  "status": "draft",
-  "scheduledTime": null,
-  "mediaFiles": [],
-  "mediaPreviewUrls": [],
-  "initialMediaUrls": [],
-  "videoTimestamp": 0,
-  "posts": [],
-  "platformSettings": {
-    "tiktok": {
-      "viewerSetting": "",
-      "allowComments": true,
-      "allowDuet": false,
-      "allowStitch": false,
-      "commercialContent": false,
-      "brandOrganic": false,
-      "brandedContent": false
-    },
-    "instagram": { "videoType": "REELS" },
-    "youtube": { "privacy": "public", "title": "" }
-  }
-}
-
-
-{
-  "_id": "67b9bbb01903770a0530161a",
-  "content": "",
-  "platforms": [],
-  "status": "draft",
-  "sameContent": true,
-  "videoTimestamp": 0,
-  "mediaFiles": [],
-  "posts": [],
-  "updatedAt": "2025-02-22T11:57:36.189Z",
-  "mediaPreviewUrls": [],
-  "initialMediaUrls": [],
-  "platformSettings": {
-    "tiktok": {
-      "viewerSetting": "",
-      "allowComments": true,
-      "allowDuet": false,
-      "allowStitch": false,
-      "commercialContent": false,
-      "brandOrganic": false,
-      "brandedContent": false
-    },
-    "instagram": { "videoType": "REELS" },
-    "youtube": { "privacy": "public", "title": "" }
+  "id": "67bb7fc4e5225d66b708f6e6",
+  "slug": "7-time-saving-social-media-scheduling-tips-for-small-business",
+  "headline": "7 Time-Saving Social Media Scheduling Tips for Small Business",
+  "metaDescription": "Save hours each week with effective social media scheduling tips that boost engagement, traffic, and ROI for small businesses.",
+  "image": "https://assets.seobotai.com/brandcraft.art/67bb7fc4e5225d66b708f6e6-1740344438580.jpg",
+  "readingTime": 12,
+  "createdAt": "2025-02-23T20:06:28.854Z",
+  "updatedAt": "2025-02-23T21:00:38.580Z",
+  "category": {
+    "title": "Social Media Management",
+    "slug": "social-media-management"
   },
+  "tags": [
+    { "title": "Automation", "slug": "automation" },
+    { "title": "ContentCreation", "slug": "contentcreation" },
+    { "title": "SocialMedia", "slug": "socialmedia" }
+  ]
 }

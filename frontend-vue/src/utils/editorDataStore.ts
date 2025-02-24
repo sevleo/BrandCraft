@@ -71,7 +71,6 @@ const defaultPost: SelectedPost = {
 
 // Reactive references
 const selectedPost = ref<SelectedPost>(structuredClone(defaultPost));
-const selectedDateTime = ref<Date | null>(null);
 const currentMediaType = ref<'image' | 'video' | null>(null);
 const isUploading = ref<boolean>(false);
 const isUserEdit = ref<boolean>(false);
@@ -79,7 +78,6 @@ const isUserEdit = ref<boolean>(false);
 // ✅ Simple reset
 const reset = () => {
   selectedPost.value = structuredClone(defaultPost);
-  selectedDateTime.value = null;
   currentMediaType.value = null;
   isUploading.value = false;
   isUserEdit.value = false;
@@ -87,13 +85,12 @@ const reset = () => {
 
 // Select a post without triggering auto-save
 const selectPost = (post: any) => {
-  isUserEdit.value = false;  // Ensure no auto-save triggers
+  isUserEdit.value = false; // Ensure no auto-save triggers
   selectedPost.value = post;
 };
 
 export default {
   selectedPost,
-  selectedDateTime,
   currentMediaType,
   isUploading,
   isUserEdit,

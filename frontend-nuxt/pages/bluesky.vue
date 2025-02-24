@@ -10,6 +10,43 @@ definePageMeta({
   description:
     "Manage your Bluesky presence and engage with the decentralized social network",
 });
+
+useHead({
+  title: "Bluesky Management Platform | AT Protocol Tools | BrandCraft",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Master your Bluesky presence with BrandCraft. Schedule posts, manage your feed, track engagement, and grow your following in the decentralized social network.",
+    },
+    {
+      name: "keywords",
+      content:
+        "bluesky management, AT protocol, decentralized social, bluesky scheduler, social media management, bluesky marketing, feed curation",
+    },
+    {
+      property: "og:title",
+      content: "Bluesky Management Platform | AT Protocol Tools | BrandCraft",
+    },
+    {
+      property: "og:description",
+      content:
+        "Master your Bluesky presence with BrandCraft. Schedule posts, manage your feed, track engagement, and grow your following in the decentralized social network.",
+    },
+    {
+      property: "og:url",
+      content: "https://brandcraft.art/bluesky",
+    },
+    { property: "og:type", content: "website" },
+    { name: "robots", content: "index, follow" },
+  ],
+  link: [
+    {
+      rel: "canonical",
+      href: "https://brandcraft.art/bluesky",
+    },
+  ],
+});
 </script>
 
 <template>
