@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   let articles: Article[] = [];
 
   try {
-    const client = new BlogClient("config.public.NUXT_PUBLIC_SEOBOT_KEY");
+    const client = new BlogClient(config.public.NUXT_PUBLIC_SEOBOT_KEY);
     const response = await client.getArticles(0, 100); // Get up to 100 articles
     articles = response.articles || [];
   } catch (error) {
