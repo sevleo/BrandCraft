@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import HomeNavigation from "~/components/HomeNavigation.vue";
 import FooterSection from "~/components/FooterSection.vue";
-import { BlogClient } from "seobot";
-import { useRuntimeConfig } from "nuxt/app";
+import { useAsyncData } from "nuxt/app";
 
 useHead({
   title: "Blog - Social Media Management Tips & Strategies | BrandCraft",
@@ -70,33 +69,22 @@ interface IRelatedPost {
   slug: string;
 }
 
-const config = useRuntimeConfig();
-
-const client = new BlogClient(config.public.NUXT_PUBLIC_SEOBOT_KEY);
-
+// Pagination state
 const currentPage = ref(0);
 const itemsPerPage = 9;
-const articles = ref<IArticle[]>([]);
-const loading = ref(true);
 
-const fetchArticles = async () => {
-  try {
-    loading.value = true;
-    console.log("before response");
+// ✅ Fetch articles using server API proxy
+const {
+  data,
+  pending: loading,
+  error,
+} = await useAsyncData<{ articles: IArticle[] }>("articles", () =>
+  $fetch("/api/articles", {
+    params: { page: currentPage.value, limit: itemsPerPage },
+  })
+);
 
-    const response: any = await client.getArticles(
-      currentPage.value,
-      itemsPerPage
-    );
-    console.log(response);
-    articles.value = response.articles;
-  } catch (error) {
-    console.error("Error fetching articles:", error);
-  } finally {
-    loading.value = false;
-  }
-};
-
+// ✅ Format date utility
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("en-US", {
     year: "numeric",
@@ -104,11 +92,6 @@ const formatDate = (dateString: string) => {
     day: "numeric",
   });
 };
-
-onMounted(async () => {
-  console.log("blog onMounted");
-  const response = await fetchArticles();
-});
 </script>
 
 <template>
@@ -137,9 +120,12 @@ onMounted(async () => {
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"
         ></div>
       </div>
-      <div v-else class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-else-if="data && data.articles && data.articles.length"
+        class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+      >
         <NuxtLink
-          v-for="article in articles"
+          v-for="article in data.articles"
           :key="article.id"
           :to="`/blog/${article.slug}`"
           class="article-card no-underline"
@@ -154,7 +140,7 @@ onMounted(async () => {
                 class="h-48 w-full object-cover"
               />
             </div>
-            <div class="flex flex-1 flex-col justify-between bg-white p-6">
+            <div class="flex-1 flex-col justify-between bg-white p-6">
               <div class="flex-1">
                 <p class="text-sm font-medium text-primary-600">
                   {{ article.category.title }}
@@ -171,9 +157,8 @@ onMounted(async () => {
                       v-for="tag in article.tags"
                       :key="tag.id"
                       class="hashtag"
+                      >#{{ tag.title }}</span
                     >
-                      #{{ tag.title }}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -190,30 +175,7 @@ onMounted(async () => {
           </article>
         </NuxtLink>
       </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="flex justify-center pb-12">
-      <button
-        @click="
-          currentPage--;
-          fetchArticles();
-        "
-        :disabled="currentPage === 0"
-        class="mr-2 px-4 py-2 border rounded-md disabled:opacity-50"
-      >
-        Previous
-      </button>
-      <button
-        @click="
-          currentPage++;
-          fetchArticles();
-        "
-        :disabled="articles.length < itemsPerPage"
-        class="px-4 py-2 border rounded-md disabled:opacity-50"
-      >
-        Next
-      </button>
+      <div v-else class="text-center text-gray-500">No articles found.</div>
     </div>
   </div>
   <FooterSection />

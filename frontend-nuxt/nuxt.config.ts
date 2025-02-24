@@ -45,12 +45,13 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    SEOBOT_KEY: process.env.SEOBOT_KEY,
     public: {
       NUXT_PUBLIC_BACKEND_URL: process.env.NUXT_PUBLIC_BACKEND_URL,
       NUXT_PUBLIC_FRONTEND_URL: process.env.NUXT_PUBLIC_FRONTEND_URL,
       NUXT_PUBLIC_FRONTEND_DASHBOARD_URL:
         process.env.NUXT_PUBLIC_FRONTEND_DASHBOARD_URL,
-      NUXT_PUBLIC_SEOBOT_KEY: process.env.NUXT_PUBLIC_SEOBOT_KEY,
+      // NUXT_PUBLIC_SEOBOT_KEY: process.env.NUXT_PUBLIC_SEOBOT_KEY,
     },
   },
 

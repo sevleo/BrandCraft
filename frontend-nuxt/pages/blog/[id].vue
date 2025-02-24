@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { computed } from "vue";
 
-import { BlogClient } from "seobot";
 import HomeNavigation from "@/components/HomeNavigation.vue";
 import FooterSection from "@/components/FooterSection.vue";
 import { redirectToBlog, redirectToBlogArticle } from "@/utils/redirects";
-import { useRuntimeConfig } from "nuxt/app";
+import { useAsyncData } from "nuxt/app";
 
 interface IArticle {
   id: string;
@@ -48,11 +47,16 @@ interface IRelatedPost {
 const config = useRuntimeConfig();
 
 const route = useRoute();
-const router = useRouter();
-const client = new BlogClient(config.public.NUXT_PUBLIC_SEOBOT_KEY);
-const article = ref<IArticle | null>(null);
-const loading = ref(true);
-const error = ref<string | null>(null);
+const articleId = route.params.id as string;
+
+// ✅ Fetch the article using useAsyncData
+const {
+  data,
+  pending: loading,
+  error,
+} = await useAsyncData<{ article: IArticle }>(`article-${articleId}`, () =>
+  $fetch(`/api/article/${articleId}`)
+);
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -60,31 +64,6 @@ const formatDate = (dateString: string) => {
     month: "long",
     day: "numeric",
   });
-};
-
-const fetchArticle = async () => {
-  try {
-    loading.value = true;
-    error.value = null;
-
-    const response = await client.getArticle(route.params.id as string);
-
-    if (!response) {
-      throw new Error("Article not found");
-    }
-
-    if (!response.id || !response.headline || !response.html) {
-      throw new Error("Invalid article data received");
-    }
-
-    article.value = response;
-  } catch (err) {
-    console.error("Error fetching article:", err);
-    error.value = err instanceof Error ? err.message : "Failed to load article";
-    article.value = null;
-  } finally {
-    loading.value = false;
-  }
 };
 
 const handleBackToBlog = () => {
@@ -95,24 +74,23 @@ const handleRelatedArticleClick = (articleId: string) => {
   redirectToBlogArticle(articleId);
 };
 
-// Fetch article when component is created
-await fetchArticle();
-
 // SEO Meta Tags
 useHead({
   title: computed(() =>
-    article.value ? `${article.value.headline} - Blog` : "Article Not Found"
+    data.value?.article.headline
+      ? `${data.value.article.headline} - Blog`
+      : "Article Not Found"
   ),
   meta: [
     {
       name: "description",
       content: computed(
-        () => article.value?.metaDescription || "Article not found"
+        () => data.value?.article.metaDescription || "Article not found"
       ),
     },
     {
       name: "keywords",
-      content: computed(() => article.value?.metaKeywords || ""),
+      content: computed(() => data.value?.article.metaKeywords || ""),
     },
   ],
 });
@@ -138,10 +116,10 @@ useHead({
       </div>
     </div>
 
-    <article v-else-if="article" class="article-container">
+    <article v-else-if="data" class="article-container">
       <!-- Hero Image -->
       <div class="hero-image">
-        <img :src="article.image" :alt="article.headline" />
+        <img :src="data.article.image" :alt="data.article.headline" />
       </div>
 
       <!-- Article Content -->
@@ -149,32 +127,32 @@ useHead({
         <!-- Article Header -->
         <header class="article-header">
           <div class="article-meta">
-            <time :datetime="article.publishedAt">{{
-              formatDate(article.publishedAt)
+            <time :datetime="data.article.publishedAt">{{
+              formatDate(data.article.publishedAt)
             }}</time>
             <span class="meta-separator">•</span>
-            <span>{{ article.readingTime }} min read</span>
+            <span>{{ data.article.readingTime }} min read</span>
           </div>
         </header>
 
         <!-- Main Content -->
-        <div class="article-body" v-html="article.html"></div>
+        <div class="article-body" v-html="data.article.html"></div>
 
         <!-- Tags -->
         <div class="tags-section">
           <div class="tags-container">
-            <span v-for="tag in article.tags" :key="tag.id" class="tag">
+            <span v-for="tag in data.article.tags" :key="tag.id" class="tag">
               {{ tag.title }}
             </span>
           </div>
         </div>
 
         <!-- Related Posts -->
-        <div v-if="article.relatedPosts?.length > 0" class="related-posts">
+        <div v-if="data.article.relatedPosts?.length > 0" class="related-posts">
           <h2>Related Articles</h2>
           <div class="related-posts-grid">
             <button
-              v-for="post in article.relatedPosts"
+              v-for="post in data.article.relatedPosts"
               :key="post.id"
               @click="handleRelatedArticleClick(post.slug)"
               class="related-post-card"

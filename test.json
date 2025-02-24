@@ -1,19 +1,61 @@
 {
-  "id": "67bb7fc4e5225d66b708f6e6",
-  "slug": "7-time-saving-social-media-scheduling-tips-for-small-business",
-  "headline": "7 Time-Saving Social Media Scheduling Tips for Small Business",
-  "metaDescription": "Save hours each week with effective social media scheduling tips that boost engagement, traffic, and ROI for small businesses.",
-  "image": "https://assets.seobotai.com/brandcraft.art/67bb7fc4e5225d66b708f6e6-1740344438580.jpg",
-  "readingTime": 12,
-  "createdAt": "2025-02-23T20:06:28.854Z",
-  "updatedAt": "2025-02-23T21:00:38.580Z",
-  "category": {
-    "title": "Social Media Management",
-    "slug": "social-media-management"
-  },
-  "tags": [
-    { "title": "Automation", "slug": "automation" },
-    { "title": "ContentCreation", "slug": "contentcreation" },
-    { "title": "SocialMedia", "slug": "socialmedia" }
+  "articles": [
+    {
+      "id": "67bc0dade5225d66b7097fd7",
+      "slug": "how-to-schedule-posts-across-multiple-social-platforms",
+      "headline": "How to Schedule Posts Across Multiple Social Platforms",
+      "metaDescription": "Learn effective strategies for scheduling social media posts to boost engagement and streamline your content management across platforms.",
+      "image": "https://images.unsplash.com/photo-1611926653670-e18689373857?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "readingTime": 9,
+      "createdAt": "2025-02-24T06:11:57.214Z",
+      "updatedAt": "2025-02-24T12:04:31.291Z",
+      "category": {
+        "title": "Social Media Management",
+        "slug": "social-media-management"
+      },
+      "tags": [
+        { "title": "Automation", "slug": "automation" },
+        { "title": "ContentCreation", "slug": "contentcreation" },
+        { "title": "SocialMedia", "slug": "socialmedia" }
+      ]
+    },
+    {
+      "id": "67bb7fc4e5225d66b708f6e6",
+      "slug": "7-time-saving-social-media-scheduling-tips-for-small-business",
+      "headline": "7 Time-Saving Social Media Scheduling Tips for Small Business",
+      "metaDescription": "Save hours each week with effective social media scheduling tips that boost engagement, traffic, and ROI for small businesses.",
+      "image": "https://images.unsplash.com/photo-1529651737248-dad5e287768e?q=80&w=1530&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "readingTime": 12,
+      "createdAt": "2025-02-23T20:06:28.854Z",
+      "updatedAt": "2025-02-23T21:00:38.580Z",
+      "category": {
+        "title": "Social Media Management",
+        "slug": "social-media-management"
+      },
+      "tags": [
+        { "title": "Automation", "slug": "automation" },
+        { "title": "ContentCreation", "slug": "contentcreation" },
+        { "title": "SocialMedia", "slug": "socialmedia" }
+      ]
+    },
+    {
+      "id": "67bb7fc4e5225d66b708f6dc",
+      "slug": "5-ways-to-streamline-your-social-media-workflow",
+      "headline": "5 Ways to Streamline Your Social Media Workflow",
+      "metaDescription": "Learn how to simplify your social media management with effective strategies for scheduling, automation, content creation, and performance tracking.",
+      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1630&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "readingTime": 9,
+      "createdAt": "2025-02-23T20:06:28.250Z",
+      "updatedAt": "2025-02-23T22:13:06.928Z",
+      "category": {
+        "title": "Social Media Management",
+        "slug": "social-media-management"
+      },
+      "tags": [
+        { "title": "Automation", "slug": "automation" },
+        { "title": "ContentCreation", "slug": "contentcreation" },
+        { "title": "SocialMedia", "slug": "socialmedia" }
+      ]
+    }
   ]
 }
