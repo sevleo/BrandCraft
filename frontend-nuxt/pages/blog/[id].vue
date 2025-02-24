@@ -315,7 +315,7 @@ useHead({
   color: #1f2937;
 }
 
-.article-body ::v-deep h1 {
+.article-body :deep(h1) {
   font-size: 2.5rem;
   font-weight: 800;
   color: #1f2937;
@@ -323,7 +323,7 @@ useHead({
   margin-bottom: 1rem;
 }
 
-.article-body ::v-deep h2 {
+.article-body :deep(h2) {
   font-size: 1.875rem;
   font-weight: 700;
   margin: 2rem 0 1rem;
@@ -331,7 +331,7 @@ useHead({
   line-height: 1.3;
 }
 
-.article-body ::v-deep h3 {
+.article-body :deep(h3) {
   font-size: 1.5rem;
   font-weight: 600;
   margin: 2rem 0 1rem;
@@ -339,34 +339,34 @@ useHead({
   line-height: 1.3;
 }
 
-.article-body ::v-deep p {
+.article-body :deep(p) {
   margin-bottom: 1.5rem;
 }
 
-.article-body ::v-deep ul,
-.article-body ::v-deep ol {
+.article-body :deep(ul),
+.article-body :deep(ol) {
   margin-bottom: 1.5rem;
   padding-left: 3.5rem;
   list-style-type: decimal;
 }
 
-.article-body ::v-deep li {
+.article-body :deep(li) {
   margin-bottom: 0.5rem;
 }
 
-.article-body ::v-deep a {
+.article-body :deep(a) {
   color: var(--primary-color);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s;
 }
 
-.article-body ::v-deep a:hover {
+.article-body :deep(a:hover) {
   border-color: var(--primary-color);
 }
 
 /* Table Styles */
-.article-body ::v-deep table {
+.article-body :deep(table) {
   width: 100%;
   margin: 2rem 0;
   border-collapse: collapse;
@@ -376,12 +376,12 @@ useHead({
   background-color: white;
 }
 
-.article-body ::v-deep table thead {
+.article-body :deep(thead) {
   background-color: #f8fafc;
   border-bottom: 2px solid #e2e8f0;
 }
 
-.article-body ::v-deep table th {
+.article-body :deep(th) {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
@@ -391,22 +391,22 @@ useHead({
   letter-spacing: 0.05em;
 }
 
-.article-body ::v-deep table td {
+.article-body :deep(table) td {
   padding: 1rem;
   border-bottom: 1px solid #e2e8f0;
   color: #1f2937;
   vertical-align: middle;
 }
 
-.article-body ::v-deep table tr:last-child td {
+.article-body :deep(table) tr:last-child td {
   border-bottom: none;
 }
 
-.article-body ::v-deep table tr:hover {
+.article-body :deep(table) tr:hover {
   background-color: #f8fafc;
 }
 
-.article-body ::v-deep blockquote {
+.article-body :deep(blockquote) {
   margin: 2rem 0;
   padding: 1rem 2rem;
   border-left: 4px solid #e2e8f0;
@@ -416,7 +416,7 @@ useHead({
   font-style: italic;
 }
 
-.article-body ::v-deep blockquote p:last-child {
+.article-body :deep(blockquote) p:last-child {
   margin-bottom: 0;
 }
 
@@ -427,22 +427,22 @@ useHead({
     -webkit-overflow-scrolling: touch;
   }
 
-  .article-body ::v-deep table {
+  .article-body :deep(table) {
     min-width: 640px; /* Ensure table doesn't get too cramped */
   }
 
-  .article-body ::v-deep table th,
-  .article-body ::v-deep table td {
+  .article-body :deep(table) th,
+  .article-body :deep(table) td {
     white-space: nowrap; /* Prevent text wrapping in small screens */
   }
 }
 
 /* Zebra striping for better readability */
-.article-body ::v-deep table tbody tr:nth-child(even) {
+.article-body :deep(table) tbody tr:nth-child(even) {
   background-color: #f8fafc;
 }
 
-.article-body ::v-deep table tbody tr:nth-child(even):hover {
+.article-body :deep(table) tbody tr:nth-child(even):hover {
   background-color: #f1f5f9;
 }
 
@@ -510,7 +510,7 @@ useHead({
   transform: translateY(-2px);
 }
 
-.related-post-card ::v-deep h3 {
+.related-post-card :deep(h3) {
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
