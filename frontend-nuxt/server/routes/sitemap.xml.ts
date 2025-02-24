@@ -1,8 +1,5 @@
 import { defineEventHandler } from "h3";
 import { BlogClient } from "seobot";
-import { useRuntimeConfig } from "#imports";
-
-const config = useRuntimeConfig();
 
 interface Article {
   slug: string;
@@ -13,7 +10,9 @@ export default defineEventHandler(async (event) => {
   let articles: Article[] = [];
 
   try {
-    const client = new BlogClient(config.SEOBOT_KEY as string);
+    const seobotKey: any = process.env.SEOBOT_KEY;
+
+    const client = new BlogClient(seobotKey);
     const response = await client.getArticles(0, 100); // Get up to 100 articles
     articles = response.articles || [];
   } catch (error) {
