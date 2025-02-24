@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -743,10 +743,6 @@ video {
   top: 100%;
 }
 
-.right-4 {
-  right: 1rem;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -1085,10 +1081,6 @@ video {
   height: 100vh;
 }
 
-.h-\[200px\] {
-  height: 200px;
-}
-
 .max-h-0 {
   max-height: 0px;
 }
@@ -1208,10 +1200,6 @@ video {
 
 .w-\[3px\] {
   width: 3px;
-}
-
-.w-\[40px\] {
-  width: 40px;
 }
 
 .w-\[50px\] {
@@ -2023,9 +2011,8 @@ video {
   background-color: rgb(161 98 7 / var(--tw-bg-opacity, 1));
 }
 
-.bg-gray-800 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
+.stroke-\[green\] {
+  stroke: green;
 }
 
 .stroke-blue-500 {
@@ -2042,14 +2029,6 @@ video {
 
 .stroke-red-500 {
   stroke: #ef4444;
-}
-
-.stroke-\[\#ff1d5e\] {
-  stroke: #ff1d5e;
-}
-
-.stroke-\[green\] {
-  stroke: green;
 }
 
 .object-contain {

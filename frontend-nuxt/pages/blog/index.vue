@@ -2,7 +2,7 @@
 import HomeNavigation from "~/components/HomeNavigation.vue";
 import FooterSection from "~/components/FooterSection.vue";
 import { BlogClient } from "seobot";
-import { useRuntimeConfig } from "#app";
+import { useRuntimeConfig } from "nuxt/app";
 
 useHead({
   title: "Blog - Social Media Management Tips & Strategies | BrandCraft",

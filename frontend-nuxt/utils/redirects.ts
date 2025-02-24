@@ -1,4 +1,4 @@
-import { useRuntimeConfig } from "#app";
+import { useRuntimeConfig } from "nuxt/app";
 
 export function redirectToLogin() {
   const config = useRuntimeConfig();

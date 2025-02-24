@@ -1,4 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
+import path from "path";
+import { defineNuxtConfig } from "nuxt/config";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -21,8 +23,11 @@ export default defineNuxtConfig({
 
   // ✅ Ensure correct Nitro preset for Fly.io
   nitro: {
-    preset: "node-server", // Use "node-server" instead of "node"
+    preset: "node-server",
     serveStatic: true,
+    externals: {
+      inline: ["#build/nuxt.config.mjs"],
+    },
   },
 
   // ✅ Set the correct port and host
@@ -54,15 +59,17 @@ export default defineNuxtConfig({
     "@assets": "./assets",
     "@components": "./components",
     "@api": "./api",
+    "@utils": "./utils",
   },
 
   // ✅ Ensure compatibility with Vite's alias handling
   vite: {
     resolve: {
       alias: {
-        "@assets": new URL("./assets", import.meta.url).pathname,
-        "@components": new URL("./components", import.meta.url).pathname,
-        "@api": new URL("./api", import.meta.url).pathname,
+        "@assets": path.resolve(__dirname, "./assets"),
+        "@components": path.resolve(__dirname, "./components"),
+        "@api": path.resolve(__dirname, "./api"),
+        "@utils": path.resolve(__dirname, "./utils"),
       },
     },
     plugins: [tailwindcss()],

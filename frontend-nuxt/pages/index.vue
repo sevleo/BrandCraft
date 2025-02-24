@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 import { Check } from "lucide-vue-next";
-import { useHead, definePageMeta, useRuntimeConfig } from "#imports";
-import { verifyAuth } from "@/api/authApi";
+import { useHead } from "@unhead/vue";
+import { verifyAuth } from "~/api/authApi";
 import click1 from "@/assets/LandingPageIcons/click1.png";
 import click2 from "@/assets/LandingPageIcons/click2.png";
 import click3 from "@/assets/LandingPageIcons/click3.png";

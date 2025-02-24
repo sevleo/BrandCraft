@@ -2,10 +2,10 @@
 import { ref, computed } from "vue";
 
 import { BlogClient } from "seobot";
-import HomeNavigation from "~/components/HomeNavigation.vue";
-import FooterSection from "~/components/FooterSection.vue";
-import { redirectToBlog, redirectToBlogArticle } from "~/utils/redirects";
-import { useRuntimeConfig } from "#app";
+import HomeNavigation from "@/components/HomeNavigation.vue";
+import FooterSection from "@/components/FooterSection.vue";
+import { redirectToBlog, redirectToBlogArticle } from "@/utils/redirects";
+import { useRuntimeConfig } from "nuxt/app";
 
 interface IArticle {
   id: string;
