@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, watch, defineProps } from 'vue';
+  import { ref, computed, defineProps } from 'vue';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import Select from 'primevue/select';
   import CustomSwitch from '@/components/common/buttons/CustomSwitch.vue';
@@ -11,6 +11,12 @@
   }>();
 
   const tiktokOptionsExpanded = ref(false);
+
+  const handleSettingChange = () => {
+    editorDataStore.isUserEdit.value = true;
+    props.debounceSave();
+  };
+
   const tiktokViewerSetting = computed({
     get: () =>
       editorDataStore.selectedPost.value.platformSettings.tiktok
@@ -19,6 +25,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.viewerSetting =
           val.value;
+        handleSettingChange();
       }
     },
   });
@@ -31,6 +38,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.allowComments =
           val;
+        handleSettingChange();
       }
     },
   });
@@ -43,6 +51,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.allowDuet =
           val;
+        handleSettingChange();
       }
     },
   });
@@ -55,6 +64,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.allowStitch =
           val;
+        handleSettingChange();
       }
     },
   });
@@ -67,6 +77,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.commercialContent =
           val;
+        handleSettingChange();
       }
     },
   });
@@ -79,6 +90,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.brandOrganic =
           val;
+        handleSettingChange();
       }
     },
   });
@@ -91,6 +103,7 @@
       if (editorDataStore.selectedPost.value.platformSettings.tiktok) {
         editorDataStore.selectedPost.value.platformSettings.tiktok.brandedContent =
           val;
+        handleSettingChange();
       }
     },
   });
@@ -161,20 +174,6 @@
     );
   });
 
-  // watch(
-  //   () =>
-  //     editorDataStore.selectedPost.value?.platformSettings?.tiktok
-  //       ?.commercialContent,
-  //   (newValue) => {
-  //     if (!newValue) {
-  //       editorDataStore.selectedPost.value.platformSettings.tiktok!.brandOrganic =
-  //         false;
-  //       editorDataStore.selectedPost.value.platformSettings.tiktok!.brandedContent =
-  //         false;
-  //     }
-  //   }
-  // );
-
   const tiktokContentLabel = computed(() => {
     const tiktokSettings =
       editorDataStore.selectedPost.value.platformSettings.tiktok;
@@ -185,15 +184,6 @@
       return 'Your photo/video will be labeled as "Promotional content"';
     return '';
   });
-
-  // Watch for changes in TikTok settings and trigger save
-  watch(
-    () => editorDataStore.selectedPost.value.platformSettings.tiktok,
-    () => {
-      props.debounceSave();
-    },
-    { deep: true }
-  );
 </script>
 
 <template>
