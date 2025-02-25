@@ -30,7 +30,6 @@
   );
 
   const replicatedValue = ref('');
-  const videoS3Key = ref<string | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
 
   const handleVideoRefUpdate = (ref: HTMLVideoElement | null) => {
@@ -197,11 +196,13 @@
           // Start upload to S3
           editorDataStore.uploadProgress.value = 0;
           editorDataStore.isUploading.value = true;
-          videoS3Key.value = await uploadVideoToS3(videoFile, (progress) => {
-            editorDataStore.uploadProgress.value = progress;
-          });
-
-          console.log('success: ', videoS3Key.value);
+          await uploadVideoToS3(
+            videoFile,
+            (progress) => {
+              editorDataStore.uploadProgress.value = progress;
+            },
+            isSaving
+          );
 
           toast.add({
             severity: 'success',
@@ -437,10 +438,7 @@
   async function handleSave() {
     try {
       isSaving.value = true;
-      await updatePostGroup(
-        videoS3Key.value,
-        editorDataStore.selectedMedia.value
-      );
+      await updatePostGroup(editorDataStore.selectedMedia.value);
       toast.add({
         severity: 'success',
         summary: 'Success',

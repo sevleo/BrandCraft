@@ -77,6 +77,7 @@ const isUploading = ref<boolean>(false);
 const isUserEdit = ref<boolean>(false);
 const selectedMedia = ref<File[]>([]); // this is newly selected media
 const uploadProgress = ref<number>(0);
+const processingProgress = ref<number>(0);
 
 // ✅ Simple reset
 const reset = () => {
@@ -86,6 +87,7 @@ const reset = () => {
   isUserEdit.value = false;
   selectedMedia.value = [];
   uploadProgress.value = 0;
+  processingProgress.value = 0;
 };
 
 // Select a post without triggering auto-save
@@ -131,6 +133,7 @@ export default {
   isUserEdit,
   selectedMedia,
   uploadProgress,
+  processingProgress,
   reset,
   selectPost,
 };

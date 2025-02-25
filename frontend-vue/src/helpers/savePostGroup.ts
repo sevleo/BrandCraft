@@ -19,10 +19,7 @@ async function createPostGroup() {
   console.log(editorDataStore.selectedPost.value);
 }
 
-async function updatePostGroup(
-  videoS3Key: string | null,
-  selectedMedia: File[]
-) {
+async function updatePostGroup(selectedMedia: File[]) {
   const keptMediaUrls =
     editorDataStore.selectedPost.value?.mediaPreviewUrls?.filter((url) =>
       editorDataStore.selectedPost.value?.initialMediaUrls?.includes(url)
@@ -48,10 +45,6 @@ async function updatePostGroup(
 
   if (keptMediaUrls) {
     formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
-  }
-
-  if (editorDataStore.currentMediaType.value === 'video' && videoS3Key) {
-    formData.append('videoS3Key', videoS3Key);
   }
 
   if (editorDataStore.currentMediaType.value === 'image') {

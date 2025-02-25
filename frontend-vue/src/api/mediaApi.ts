@@ -1,4 +1,7 @@
 import axios from 'axios';
+import editorDataStore from '@/utils/editorDataStore';
+import { updatePostGroup } from '@/helpers/savePostGroup';
+import postsStore from '@/utils/postsStore';
 
 const axiosInstance = axios.create({
   baseURL: `${import.meta.env.VITE_BACKEND_URL}`,
@@ -18,13 +21,19 @@ axiosInstance.interceptors.request.use((config) => {
 
 export async function uploadVideoToS3(
   file: File,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  isSaving?: any
 ): Promise<string> {
-  // Check if the file is a MOV video
+  console.log('try upload');
+  editorDataStore.uploadProgress.value = 0;
+  editorDataStore.processingProgress.value = 0;
 
-  // For MOV files, send to backend for processing
   const formData = new FormData();
   formData.append('video', file);
+  formData.append('postGroupId', editorDataStore.selectedPost.value?._id);
+
+  isSaving.value = true;
+  await postsStore.getAllPostGroups();
 
   const response = await axiosInstance.post(
     `${import.meta.env.VITE_BACKEND_URL}/media/process-video`,
@@ -34,33 +43,63 @@ export async function uploadVideoToS3(
         'Content-Type': 'multipart/form-data',
       },
       onUploadProgress: (progressEvent) => {
-        if (progressEvent.total && onProgress) {
+        if (progressEvent.total) {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
-          onProgress(progress);
+          editorDataStore.uploadProgress.value = progress;
+          console.log(progress);
+          if (onProgress) {
+            onProgress(progress);
+          }
         }
-        console.log(progressEvent);
       },
     }
   );
 
-  return response.data.key;
+  const { sessionId } = response.data;
+  isSaving.value = false;
 
-  // For non-MOV files, proceed with direct S3 upload
-  // const { uploadUrl, key } = await getVideoUploadUrl(file.name, file.type);
+  console.log('sessionId: ', sessionId);
 
-  // await axios.put(uploadUrl, file, {
-  //   headers: {
-  //     'Content-Type': file.type,
-  //   },
-  //   onUploadProgress: (progressEvent) => {
-  //     if (progressEvent.total && onProgress) {
-  //       const progress = (progressEvent.loaded / progressEvent.total) * 100;
-  //       onProgress(progress);
-  //     }
-  //   },
-  // });
+  // Step 2: Connect to SSE for processing progress
+  return new Promise((resolve, reject) => {
+    const eventSource = new EventSource(
+      `${import.meta.env.VITE_BACKEND_URL}/media/processing-progress/${sessionId}`
+    );
 
-  // return key;
+    eventSource.onmessage = async (event) => {
+      const data = JSON.parse(event.data);
+      if (data.percent !== undefined) {
+        editorDataStore.processingProgress.value = data.percent;
+        console.log(data.percent);
+      }
+
+      if (data.completed) {
+        editorDataStore.uploadProgress.value = 100;
+        editorDataStore.processingProgress.value = 100;
+        eventSource.close();
+        await postsStore.getAllPostGroups();
+        // Refresh the selected post in editor store with updated data
+        const updatedPost = postsStore.postGroups.value.find(
+          post => post._id === editorDataStore.selectedPost.value?._id
+        );
+        if (updatedPost) {
+          await editorDataStore.selectPost(updatedPost);
+        }
+        resolve(sessionId);
+      }
+
+      if (data.error) {
+        eventSource.close();
+        reject(new Error(data.error));
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error('SSE Error:', err);
+      eventSource.close();
+      reject(new Error('Processing connection failed'));
+    };
+  });
 }
 
 interface UploadUrlResponse {

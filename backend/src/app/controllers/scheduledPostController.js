@@ -33,7 +33,6 @@ exports.updatePostGroup = async (req, res) => {
       sameContent,
       status,
       keptMediaUrls,
-      videoS3Key,
       videoTimestamp,
       platformSettings,
     } = req.body;
@@ -68,7 +67,6 @@ exports.updatePostGroup = async (req, res) => {
       !platforms &&
       !scheduledTime &&
       !keptMediaUrls &&
-      !videoS3Key &&
       !videoTimestamp &&
       !platformSettings &&
       !req.files?.media
@@ -95,6 +93,10 @@ exports.updatePostGroup = async (req, res) => {
         try {
           await deleteFileFromS3(media.url); // Delete from S3
           await media.deleteOne(); // Remove from DB
+          await ScheduledPostGroup.updateOne(
+            { _id: postGroup._id },
+            { $pull: { mediaFiles: media._id } }
+          );
         } catch (error) {
           console.error("Error deleting media:", error);
         }
@@ -109,21 +111,8 @@ exports.updatePostGroup = async (req, res) => {
 
     let newMediaFiles = [];
 
-    if (videoS3Key) {
-      const existingVideo = await MediaFile.findOne({
-        userId: userId,
-        fileName: videoS3Key,
-      });
-
-      if (existingVideo) {
-        existingVideo.postGroupId = postGroup._id;
-        await existingVideo.save();
-        newMediaFiles.push(existingVideo._id);
-      }
-    }
-
     // Handle image uploads
-    if (!videoS3Key && req.files?.media?.length > 0) {
+    if (req.files?.media?.length > 0) {
       const uploadedFiles = [];
       const imageFiles = await handleImageUpload(req.files, userId);
       uploadedFiles.push(...imageFiles);
@@ -384,19 +373,6 @@ exports.getAllScheduledPostsStats = async (req, res) => {
     res.status(500).json({ error: "Failed to get scheduled posts stats" });
   }
 };
-
-// Helper functions
-async function handleVideoUpload(videoS3Key) {
-  if (!videoS3Key) return null;
-  return {
-    // url: `https://brandcraft-media.s3.amazonaws.com/${videoS3Key}`,
-    url: `https://media.brandcraft.art/${videoS3Key}`,
-    filename: videoS3Key,
-    mimetype: "video/mp4",
-    type: "video",
-    size: 0,
-  };
-}
 
 async function handleImageUpload(files, userId) {
   const uploadedFiles = [];

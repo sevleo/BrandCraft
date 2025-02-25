@@ -97,6 +97,7 @@
     if (!videoRef.value) return;
 
     if (videoRef.value.paused) {
+      console.log(videoRef.value);
       videoRef.value.play();
       isVideoPlaying.value = true;
     } else {
@@ -241,6 +242,15 @@
     },
     { deep: true }
   );
+  watch(
+    () => props.mediaPreviewUrls[0],
+    (newUrl) => {
+      if (videoRef.value && newUrl) {
+        videoRef.value.src = newUrl;
+        videoRef.value.load(); // Ensure the video is properly loaded
+      }
+    }
+  );
 </script>
 
 <template>
@@ -248,10 +258,13 @@
     id="preview-panel"
     class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
   >
+    {{ props.mediaPreviewUrls[0] }}
+
     <div class="flex w-full flex-col items-center justify-start">
       <div class="preview-container flex w-full flex-col">
         <div class="relative h-fit overflow-hidden rounded-lg bg-black">
           <!-- Video Preview -->
+
           <template v-if="props.currentMediaType === 'video'">
             <div
               class="relative h-full w-full"
@@ -260,6 +273,7 @@
             >
               <video
                 ref="videoRef"
+                :key="`${props.mediaPreviewUrls[0]}`"
                 :src="props.mediaPreviewUrls[0]"
                 @timeupdate="updateVideoProgress"
                 class="h-full w-full"
@@ -267,20 +281,10 @@
                   'object-cover': isVideoVertical,
                   'object-contain': !isVideoVertical,
                 }"
+                controls
                 @click="toggleVideo"
                 @loadedmetadata="handleVideoLoad"
               ></video>
-              <div
-                @click="toggleVideo"
-                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-black/30 p-4 backdrop-blur-sm transition-opacity duration-200"
-                :class="{
-                  'opacity-100': !isVideoPlaying || isHoveringVideo,
-                  'opacity-0': isVideoPlaying && !isHoveringVideo,
-                }"
-              >
-                <Play v-if="!isVideoPlaying" :size="40" color="white" />
-                <Pause v-else :size="40" color="white" />
-              </div>
               <!-- Remove Button -->
               <button
                 @click="removeMedia(0)"
