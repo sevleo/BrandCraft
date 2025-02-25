@@ -13,7 +13,6 @@
   const isLoading = ref(true);
 
   onMounted(async () => {
-    isLoading.value = false;
     themeStore.initializeTheme();
 
     try {
@@ -23,6 +22,8 @@
       ]);
     } catch (error) {
       console.error('Error during initialization:', error);
+    } finally {
+      isLoading.value = false;
     }
   });
 </script>
@@ -34,9 +35,27 @@
     <DashboardNavigation />
 
     <transition name="fade" mode="out-in">
+      <!-- Loading state -->
+
+      <!-- No post selected state -->
+      <div
+        v-if="
+          !isLoading &&
+          postsStore.draftPosts.value.length === 0 &&
+          editorDataStore.selectedPost.value._id === ''
+        "
+        class="flex h-[500px] w-full items-center justify-center"
+      >
+        <p>No draft post selected.</p>
+      </div>
+
       <!-- Post edit view -->
       <div
-        v-if="!isLoading && editorDataStore.selectedPost.value._id !== ''"
+        v-else-if="
+          !isLoading &&
+          postsStore.draftPosts.value.length > 0 &&
+          editorDataStore.selectedPost.value._id !== ''
+        "
         class="relative flex w-full flex-grow items-center justify-center pt-[30px]"
       >
         <PostFormBase />
