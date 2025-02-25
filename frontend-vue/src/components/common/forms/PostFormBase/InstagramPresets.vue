@@ -4,14 +4,14 @@
   import editorDataStore from '@/utils/editorDataStore';
 
   const props = defineProps<{
-    debounceSave: () => void;
+    debouncedSave: () => void;
   }>();
 
   const instagramOptionsExpanded = ref(false);
 
   const handleSettingChange = () => {
     editorDataStore.isUserEdit.value = true;
-    props.debounceSave();
+    props.debouncedSave();
   };
 
   const instagramVideoType = computed({
@@ -74,7 +74,7 @@
             ]"
             @click="
               editorDataStore.currentMediaType.value === 'video' &&
-                (instagramVideoType = 'REELS')
+              (instagramVideoType = 'REELS')
             "
             :disabled="editorDataStore.currentMediaType.value !== 'video'"
           >
@@ -91,7 +91,7 @@
             ]"
             @click="
               editorDataStore.currentMediaType.value === 'video' &&
-                (instagramVideoType = 'STORIES')
+              (instagramVideoType = 'STORIES')
             "
             :disabled="editorDataStore.currentMediaType.value !== 'video'"
           >

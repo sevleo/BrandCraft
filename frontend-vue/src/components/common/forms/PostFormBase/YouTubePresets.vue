@@ -5,14 +5,14 @@
   import editorDataStore from '@/utils/editorDataStore';
 
   const props = defineProps<{
-    debounceSave: () => void;
+    debouncedSave: () => void;
   }>();
 
   const youtubeOptionsExpanded = ref(false);
 
   const handleSettingChange = () => {
     editorDataStore.isUserEdit.value = true;
-    props.debounceSave();
+    props.debouncedSave();
   };
 
   const youtubeTitle = computed({

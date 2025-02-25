@@ -9,6 +9,7 @@
     Video,
   } from 'lucide-vue-next';
   import { ref, watch } from 'vue';
+  import editorDataStore from '@/utils/editorDataStore';
 
   const isHoveringVideo = ref(false);
   const isVideoPlaying = ref(false);
@@ -35,12 +36,12 @@
     mediaPreviewUrls: string[];
     currentMediaType: 'image' | 'video' | null;
     initialVideoTimestamp?: number;
+    debouncedSave: () => void;
   }>();
 
   const emit = defineEmits<{
     (e: 'update:videoRef', videoRef: HTMLVideoElement | null): void;
     (e: 'update:timestamp', timestamp: number): void;
-    (e: 'removeMedia', index: number): void;
   }>();
 
   // Emit the videoRef when it changes
@@ -208,9 +209,29 @@
     }
   };
 
-  const removeMedia = (index: number) => {
-    emit('removeMedia', index);
-  };
+  function removeMedia(index: number) {
+    const urlToRemove =
+      editorDataStore.selectedPost.value.mediaPreviewUrls[index];
+    const isInitialMedia =
+      editorDataStore.selectedPost.value.initialMediaUrls.includes(urlToRemove);
+
+    // Remove URL from preview
+    URL.revokeObjectURL(
+      editorDataStore.selectedPost.value.mediaPreviewUrls[index]
+    );
+    editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
+
+    // Only remove from selectedMedia if it's not an initial media
+    if (!isInitialMedia) {
+      editorDataStore.selectedMedia.value.splice(index, 1);
+    }
+
+    // Reset currentMediaType if no media left
+    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+      editorDataStore.currentMediaType.value = null;
+    }
+    props.debouncedSave();
+  }
 
   watch(sliderValue, updateVideoFrame);
   watch(

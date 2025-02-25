@@ -12,6 +12,11 @@ Built by Creator, for Creators
 
 
 
+
+
+
+
+
 - to trigger status change, add Schedule button
   - validations should be on schedule button
 
@@ -26,13 +31,6 @@ Built by Creator, for Creators
 - integrate Unsplash
 
 - Tweet-to-Reel feature (hypefury.com)
-
-
-- Change UI
-
-- DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
-- DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
-- DO MARKETING EMAIL TO INVITE PEOPLE TO PARTICIPATE IN FREE BETA
 
 
 - in scheduler-service, add token/image url refresh mechanism
@@ -172,6 +170,7 @@ Bugs/enhancements:
 
 
 Techn debt:
+- Refactor media upload code and storage file to make it cleaner
 - Refactor groupStatus, make it so it works independently and sets the group status based on the status of all individual posts.
     make sure it doesn't break how posts work. they shouldnt depend on status of parent group anyway.
 - Refactor error management flow in threadsController (standardize error handling for all platforms)

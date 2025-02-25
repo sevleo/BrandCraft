@@ -30,9 +30,6 @@
   );
 
   const replicatedValue = ref('');
-
-  const selectedMedia = ref<File[]>([]);
-  const uploadProgress = ref(0);
   const videoS3Key = ref<string | null>(null);
   const videoRef = ref<HTMLVideoElement | null>(null);
 
@@ -43,21 +40,6 @@
   const handleTimestampUpdate = (timestamp: number) => {
     editorDataStore.selectedPost.value.videoTimestamp = timestamp;
   };
-
-  // Watch to get creatorInfo for TikTok
-  watch(
-    () => editorDataStore.selectedPost.value,
-    async () => {
-      console.log('selecting post');
-      const tiktokPlatform =
-        editorDataStore.selectedPost.value?.platforms?.find((p: any) =>
-          p.startsWith('tiktok')
-        );
-      if (tiktokPlatform) {
-        await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
-      }
-    }
-  );
 
   const validationErrors = computed(() => {
     const errors = [];
@@ -148,7 +130,7 @@
 
   const isVideoDurationValid = computed(() => {
     if (
-      uploadProgress.value < 100 ||
+      editorDataStore.uploadProgress.value < 100 ||
       !videoRef.value ||
       editorDataStore.currentMediaType.value !== 'video'
     ) {
@@ -208,15 +190,15 @@
 
         const url = URL.createObjectURL(videoFile);
         editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
-        selectedMedia.value = [videoFile];
+        editorDataStore.selectedMedia.value = [videoFile];
         editorDataStore.currentMediaType.value = 'video';
 
         try {
           // Start upload to S3
-          uploadProgress.value = 0;
+          editorDataStore.uploadProgress.value = 0;
           editorDataStore.isUploading.value = true;
           videoS3Key.value = await uploadVideoToS3(videoFile, (progress) => {
-            uploadProgress.value = progress;
+            editorDataStore.uploadProgress.value = progress;
           });
 
           console.log('success: ', videoS3Key.value);
@@ -259,7 +241,7 @@
       }
 
       const newFiles = files.slice(0, remainingSlots);
-      selectedMedia.value.push(...newFiles);
+      editorDataStore.selectedMedia.value.push(...newFiles);
       editorDataStore.currentMediaType.value = 'image';
 
       // Create preview URLs
@@ -267,29 +249,8 @@
         const url = URL.createObjectURL(file);
         editorDataStore.selectedPost.value.mediaPreviewUrls.push(url);
       });
-    }
-  }
 
-  function removeMedia(index: number) {
-    const urlToRemove =
-      editorDataStore.selectedPost.value.mediaPreviewUrls[index];
-    const isInitialMedia =
-      editorDataStore.selectedPost.value.initialMediaUrls.includes(urlToRemove);
-
-    // Remove URL from preview
-    URL.revokeObjectURL(
-      editorDataStore.selectedPost.value.mediaPreviewUrls[index]
-    );
-    editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
-
-    // Only remove from selectedMedia if it's not an initial media
-    if (!isInitialMedia) {
-      selectedMedia.value.splice(index, 1);
-    }
-
-    // Reset currentMediaType if no media left
-    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
-      editorDataStore.currentMediaType.value = null;
+      debouncedSave();
     }
   }
 
@@ -476,7 +437,10 @@
   async function handleSave() {
     try {
       isSaving.value = true;
-      await updatePostGroup(videoS3Key.value, selectedMedia.value);
+      await updatePostGroup(
+        videoS3Key.value,
+        editorDataStore.selectedMedia.value
+      );
       toast.add({
         severity: 'success',
         summary: 'Success',
@@ -499,6 +463,7 @@
   // Debounced save function
   const debouncedSave = () => {
     // Clear any existing timeout
+    editorDataStore.isUserEdit.value = true;
     if (saveTimeout) {
       clearTimeout(saveTimeout);
     }
@@ -609,7 +574,7 @@
           />
         </div>
 
-        <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
+        <div class="divider w-[1px] self-stretch bg-layoutSoft"></div>
         <!-- Left Component (Scheduling Form) -->
         <div
           class="scheduling-form border-greenBG flex h-fit max-w-[800px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
@@ -693,15 +658,10 @@
 
                 <!-- Upload progress -->
                 <div
-                  v-if="uploadProgress > 0 && uploadProgress < 100"
-                  class="h-5 bg-[red]"
+                  v-if="editorDataStore.uploadProgress.value > 0"
+                  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white"
                 >
-                  <div
-                    class="h-full bg-blue-500 transition-all duration-300"
-                    :style="{ width: uploadProgress + '%' }"
-                  >
-                    {{ uploadProgress }}%
-                  </div>
+                  {{ editorDataStore.uploadProgress.value }}%
                 </div>
 
                 <div class="mb-4"></div>
@@ -714,7 +674,7 @@
                         (p: any) => p.startsWith('tiktok')
                       )
                     "
-                    :debounceSave="debouncedSave"
+                    :debouncedSave="debouncedSave"
                   />
                   <InstagramPresets
                     v-if="
@@ -722,7 +682,7 @@
                         (p: any) => p.startsWith('instagram')
                       )
                     "
-                    :debounceSave="debouncedSave"
+                    :debouncedSave="debouncedSave"
                   />
                   <YouTubePresets
                     v-if="
@@ -730,7 +690,7 @@
                         (p: any) => p.startsWith('youtube')
                       )
                     "
-                    :debounceSave="debouncedSave"
+                    :debouncedSave="debouncedSave"
                   />
                 </div>
 
@@ -748,7 +708,7 @@
                     "
                     @update:videoRef="handleVideoRefUpdate"
                     @update:timestamp="handleTimestampUpdate"
-                    @removeMedia="removeMedia"
+                    :debouncedSave="debouncedSave"
                   />
                 </div>
               </div>
@@ -773,9 +733,15 @@
                 editorDataStore.selectedPost.value.initialMediaUrls
               }}
             </p>
+            <p>
+              {{
+                'currentMediaType: ' + editorDataStore.currentMediaType.value
+              }}
+            </p>
+            <p>{{ 'selectedMedia:' + editorDataStore.selectedMedia.value }}</p>
           </div>
         </div>
-        <div class="divider bg-layoutSoft w-[1px] self-stretch"></div>
+        <div class="divider w-[1px] self-stretch bg-layoutSoft"></div>
         <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">test</div>
 
         <!-- Right Component (Preview) -->
@@ -783,151 +749,6 @@
     </div>
   </transition>
 </template>
-
-<style>
-  .p-datepicker-input {
-    background: white !important;
-    box-shadow: none !important;
-    border: 1px solid #e5e7eb !important;
-    width: 220px !important;
-  }
-
-  .dark .p-datepicker-input {
-    background: #121212 !important;
-    box-shadow: none !important;
-    border: 1px solid #313131 !important;
-  }
-
-  .p-datepicker-input:focus {
-    border: 1px solid #a9a9a9 !important;
-  }
-
-  .dark .p-datepicker-input:focus {
-    border: 1px solid #a9a9a9 !important;
-  }
-
-  .p-datepicker-input:active {
-    border: 1px solid black !important;
-  }
-
-  .p-datepicker-dropdown {
-    background: white !important;
-    border-right: 1px solid #e5e7eb !important;
-    border-bottom: 1px solid #e5e7eb !important;
-    border-top: 1px solid #e5e7eb !important;
-  }
-
-  .dark .p-datepicker-dropdown {
-    background: white !important;
-    border-right: 1px solid #313131 !important;
-    border-bottom: 1px solid #313131 !important;
-    border-top: 1px solid #313131 !important;
-  }
-
-  .dark .p-datepicker-dropdown {
-    background: #121212 !important;
-  }
-
-  .p-datepicker-dropdown:hover {
-    background-color: rgb(170, 170, 170) !important;
-  }
-
-  .dark .p-datepicker-dropdown:hover {
-    background-color: rgb(64, 64, 64) !important;
-  }
-
-  .p-datepicker-panel {
-    background-color: white !important;
-  }
-
-  .dark .p-datepicker-panel {
-    background-color: #121212 !important;
-  }
-
-  .p-datepicker-panel span {
-    color: black !important;
-  }
-
-  .dark .p-datepicker-panel span {
-    color: #d9d9d9 !important;
-  }
-
-  .p-datepicker-header {
-    background-color: white !important;
-  }
-
-  .dark .p-datepicker-header {
-    background-color: #121212 !important;
-  }
-
-  .p-datepicker-header button {
-    color: black !important;
-  }
-
-  .dark .p-datepicker-header button {
-    color: #d9d9d9 !important;
-  }
-
-  .p-inputtext {
-    color: black !important;
-  }
-
-  .dark .p-inputtext {
-    color: #d9d9d9 !important;
-  }
-
-  .dark .p-datepicker-day-selected {
-    background-color: green !important;
-  }
-
-  .p-select {
-    background-color: white !important;
-    border: 1px solid black !important;
-  }
-
-  .dark .p-select {
-    background-color: #121212 !important;
-    border: 1px solid #d9d9d9 !important;
-  }
-
-  .p-select-label {
-    color: black !important;
-  }
-
-  .dark .p-select-label {
-    color: #d9d9d9 !important;
-  }
-
-  .p-select-overlay {
-    background: white !important;
-  }
-
-  .dark .p-select-overlay {
-    background: #121212 !important;
-  }
-
-  .p-select-option:hover {
-    background: rgb(170, 170, 170) !important;
-  }
-
-  #tiktokMusicConsent {
-    background-color: white !important;
-    background: white !important;
-    border: 1px solid black !important;
-  }
-
-  textarea {
-    outline: none; /* Prevent default outline */
-    border: none; /* Initial border */
-    transition: border-color 0.3s ease; /* Smooth transition for any changes */
-  }
-
-  textarea:focus,
-  textarea:active {
-    outline: none; /* Prevent default outline */
-    border: none; /* Ensure consistent border styling */
-  }
-</style>
 
 <style scoped>
   /* Left component transition */
@@ -940,9 +761,7 @@
     overflow: hidden;
     transition: all 0.3s ease-in-out;
   }
-</style>
 
-<style scoped>
   .grow-wrap {
     display: grid;
   }
