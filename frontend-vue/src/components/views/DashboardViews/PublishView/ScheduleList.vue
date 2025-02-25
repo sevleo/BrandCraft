@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import postsStore from '@/utils/postsStore';
-  import { deleteScheduledPost, updatePostBundle } from '@/api/postApi';
+  import { deleteScheduledPost } from '@/api/postApi';
   import { useToast } from 'primevue';
   import DatePicker from 'primevue/datepicker';
   import { ref, computed, onMounted, watch } from 'vue';
@@ -294,7 +294,6 @@
       const keptMediaUrls = post.mediaFiles.map((m: any) => m.url);
       formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
 
-      await updatePostBundle(post._id, formData);
       await postsStore.getAllPostGroups();
 
       toast.add({

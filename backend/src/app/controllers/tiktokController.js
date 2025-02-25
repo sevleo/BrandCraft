@@ -157,8 +157,6 @@ const getCreatorInfo = async (req, res) => {
       }
     );
 
-    console.log(response);
-
     res.json({ creatorInfo: response });
   } catch (error) {
     console.error("Error getting creator info:", error);

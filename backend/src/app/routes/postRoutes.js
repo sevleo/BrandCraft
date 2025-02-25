@@ -25,20 +25,6 @@ const upload = multer({
 });
 
 router.post(
-  "/scheduled-posts",
-  authenticateWithRefresh,
-  upload.fields([{ name: "media", maxCount: 4 }]),
-  scheduledPostController.createScheduledPost
-);
-
-router.put(
-  "/scheduled-posts/:id",
-  authenticateWithRefresh,
-  upload.fields([{ name: "media", maxCount: 4 }]),
-  scheduledPostController.updateScheduledPost
-);
-
-router.post(
   "/create",
   authenticateWithRefresh,
   upload.fields([{ name: "media", maxCount: 4 }]),

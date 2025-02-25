@@ -10,8 +10,6 @@
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import postsStore from '@/utils/postsStore';
 
-  import { createPostBundle, updatePostBundle } from '@/api/postApi';
-
   const isLoading = ref(true);
 
   const toast = useToast();
@@ -368,7 +366,6 @@
           JSON.stringify(post.removedMediaUrls)
         );
 
-        response = await updatePostBundle(post.id, formData);
         toast.add({
           severity: 'success',
           summary: 'Success',
@@ -377,7 +374,6 @@
         });
       } else {
         // If no ID, it's a new post
-        response = await createPostBundle(formData);
         toast.add({
           severity: 'success',
           summary: 'Success',

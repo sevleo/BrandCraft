@@ -16,46 +16,6 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-async function createPostBundle(postData: FormData) {
-  try {
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-
-    const response = await axiosInstance.post(
-      '/scheduled-posts',
-      postData,
-      config
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Failed to create scheduled post:', error);
-    throw error;
-  }
-}
-
-async function updatePostBundle(id: string, postData: FormData) {
-  try {
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-    const response = await axiosInstance.put(
-      `/scheduled-posts/${id}`,
-      postData,
-      config
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Failed to update scheduled post:', error);
-    throw error;
-  }
-}
-
 async function apiSavePostGroup(postData: FormData, id?: string) {
   try {
     const config = {
@@ -114,11 +74,4 @@ async function getPostsStats() {
   }
 }
 
-export {
-  createPostBundle,
-  updatePostBundle,
-  apiSavePostGroup,
-  getPostGroups,
-  deleteScheduledPost,
-  getPostsStats,
-};
+export { apiSavePostGroup, getPostGroups, deleteScheduledPost, getPostsStats };

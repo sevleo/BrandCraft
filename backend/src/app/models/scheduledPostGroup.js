@@ -8,7 +8,7 @@ const ScheduledPostGroupSchema = new mongoose.Schema(
       ref: "User",
     },
     scheduledTime: {
-      type: Date,
+      type: String,
     },
     platforms: [
       {
