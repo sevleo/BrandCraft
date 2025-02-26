@@ -80,11 +80,11 @@
           postsStore.draftPosts.value.length > 0 &&
           editorDataStore.selectedPost.value._id !== ''
         "
-        class="relative flex w-full flex-grow items-center justify-center pt-[30px]"
+        class="relative flex w-full flex-grow items-center justify-center"
       >
         <div
           v-if="!isLoading"
-          class="relative flex min-h-[100vh] w-full flex-grow items-start justify-center"
+          class="relative flex min-h-[100vh] w-full flex-grow items-start justify-center pt-[30px]"
         >
           <div
             v-if="showProgress"

@@ -328,3 +328,8 @@ Mon Feb 24 DAY 98
 Tue Feb 25 DAY 99
 
 Wed Feb 26 DAY 100
+- on change of media, trigger save
+  - identify when should we trigger save
+  - if user leaves the page before save, it's okay. but we shluld show file upload progress
+- on change of cover images, trigger save
+- when deleting a post, change to the most recent one

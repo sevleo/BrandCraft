@@ -182,6 +182,27 @@
         deletingPosts.value.add(postId);
         await deleteScheduledPost(postId);
         await postsStore.getAllPostGroups();
+
+        // After deletion, handle editor state
+        if (editorDataStore.selectedPost.value?._id === postId) {
+          // Find the most recent post based on the active view
+          let recentPost;
+          if (activeView.value === 'drafts') {
+            recentPost = sortedDraftPosts.value[0];
+          } else if (activeView.value === 'scheduled') {
+            recentPost = sortedScheduledPosts.value[0];
+          } else if (activeView.value === 'published') {
+            recentPost = sortedPublishedPosts.value[0];
+          } else if (activeView.value === 'failed') {
+            recentPost = sortedFailedPosts.value[0];
+          }
+
+          if (recentPost) {
+            editorDataStore.selectPost(recentPost);
+          } else {
+            editorDataStore.reset();
+          }
+        }
       } catch (error) {
         console.error('Error deleting post:', error);
       } finally {
@@ -216,9 +237,9 @@
 
 <template>
   <nav
-    class="border-layoutSoft fixed bottom-0 left-0 top-0 h-screen w-[270px] border-r bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
+    class="fixed bottom-0 left-0 top-0 h-screen w-[270px] border-r border-layoutSoft bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
   >
-    <div class="bg-lightWhite flex h-full flex-col">
+    <div class="flex h-full flex-col bg-lightWhite">
       <!-- User Profile Section -->
       <div class="mb-[10px] p-4">
         <div class="relative" ref="dropdownRef">
@@ -334,7 +355,7 @@
         </div>
         <div
           @click="handleCreateDraft"
-          class="border-layoutSoft group flex h-[80px] cursor-pointer items-start border-b border-t bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
+          class="group flex h-[80px] cursor-pointer items-start border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
         >
           <div class="flex items-center">
             <component
@@ -370,7 +391,7 @@
                   : sortedPublishedPosts"
               :key="post.id"
               @click="navigateToEditor(post)"
-              class="border-layoutSoft group flex cursor-pointer flex-col gap-2 border-b bg-[#f5f5f5]"
+              class="group flex cursor-pointer flex-col gap-2 border-b border-layoutSoft bg-[#f5f5f5]"
               :class="{
                 'bg-white dark:bg-[#d9d9d9]/10': post._id === selectedPostId,
               }"
@@ -457,7 +478,7 @@
       </div>
     </div>
     <div
-      class="navigation-box bg-lightWhite border-layoutSoft sticky bottom-0 z-[1] h-[250px] w-full border-t pl-2"
+      class="navigation-box sticky bottom-0 z-[1] h-[250px] w-full border-t border-layoutSoft bg-lightWhite pl-2"
     >
       <div class="flex flex-col gap-[5px] pt-4">
         <router-link

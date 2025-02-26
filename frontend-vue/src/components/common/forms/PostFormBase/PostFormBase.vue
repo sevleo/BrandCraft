@@ -505,7 +505,7 @@
     <div
       v-if="!isLoading"
       :key="postKey"
-      class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
+      class="transition-container flex w-full max-w-[1100px] flex-col items-start justify-start gap-4"
     >
       <!-- Loading Indicator -->
       <div
@@ -530,7 +530,6 @@
           hourFormat="12"
           class="w-[250px]"
         />
-        <button @click="() => handleSave()">Save</button>
       </div>
       <div class="flex w-full items-start justify-start gap-4">
         <!-- Left Component -->
@@ -562,7 +561,7 @@
           />
         </div>
 
-        <div class="divider w-[1px] self-stretch bg-layoutSoft"></div>
+        <div class="divider w-[0px] self-stretch bg-layoutSoft"></div>
         <!-- Middle Component -->
         <div
           class="scheduling-form border-greenBG flex h-fit max-w-[800px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
@@ -582,21 +581,22 @@
                   class="relative flex w-full flex-col rounded-[8px] dark:bg-[#1a1a1a]"
                 >
                   <div
-                    class="grow-wrap"
+                    class="grow-wrap rounded-lg border border-[#ededed] bg-[#fafafa] p-2"
                     :data-replicated-value="replicatedValue"
                   >
                     <textarea
                       placeholder="Write your post here..."
                       ref="textareaRef"
                       v-model="editorDataStore.selectedPost.value.content"
-                      class="w-full rounded-lg bg-white text-black dark:bg-[#1a1a1a]"
+                      class="w-full rounded-lg bg-[#fafafa] text-black dark:bg-[#1a1a1a]"
                       name="text"
                       id="text"
                       @input="handleInput"
+                      @keydown.enter.shift.prevent
                     ></textarea>
                   </div>
 
-                  <div class="flex items-center justify-end gap-1">
+                  <div class="mt-[10px] flex items-center justify-end gap-1">
                     <button
                       ref="emojiButtonRef"
                       @click="toggleEmojiPicker"
@@ -606,7 +606,7 @@
                       }"
                     >
                       <Smile
-                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                        class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       />
                     </button>
                     <button
@@ -614,7 +614,7 @@
                       class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
                     >
                       <ImageIcon
-                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                        class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       />
                     </button>
                     <button
@@ -622,14 +622,14 @@
                       class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
                     >
                       <Video
-                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                        class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       ></Video>
                     </button>
                     <button
                       class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
                     >
                       <MoreHorizontal
-                        class="h-4 w-4 stroke-gray-500 group-hover:stroke-black"
+                        class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       />
                     </button>
 
@@ -739,7 +739,7 @@
             </div> -->
           </div>
         </div>
-        <div class="divider w-[1px] self-stretch bg-layoutSoft"></div>
+        <div class="divider w-[0px] self-stretch bg-layoutSoft"></div>
         <!-- Right Component -->
         <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">test</div>
       </div>
