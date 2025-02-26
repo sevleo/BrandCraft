@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import postsStore from '@/utils/postsStore';
   import connectionsDataStore from '@/utils/connectionsDataStore';
@@ -11,6 +11,30 @@
   const themeStore = useThemeStore();
 
   const isLoading = ref(true);
+  const showProgress = ref(false);
+
+  // Watch for progress completion
+  watch(
+    [
+      () => editorDataStore.uploadProgress.value,
+      () => editorDataStore.processingProgress.value,
+    ],
+    ([uploadProgress, processingProgress]) => {
+      if (uploadProgress > 0 || processingProgress > 0) {
+        showProgress.value = true;
+      }
+
+      if (uploadProgress === 100 && processingProgress === 100) {
+        // Hide the progress after 1 second
+        setTimeout(() => {
+          showProgress.value = false;
+          // Reset progress in store
+          editorDataStore.uploadProgress.value = 0;
+          editorDataStore.processingProgress.value = 0;
+        }, 1000);
+      }
+    }
+  );
 
   onMounted(async () => {
     themeStore.initializeTheme();
@@ -63,10 +87,7 @@
           class="relative flex min-h-[100vh] w-full flex-grow items-start justify-center"
         >
           <div
-            v-if="
-              editorDataStore.uploadProgress.value > 0 ||
-              editorDataStore.processingProgress.value > 0
-            "
+            v-if="showProgress"
             class="absolute left-1/2 top-0 z-50 w-[400px] -translate-x-1/2 transform space-y-3 rounded-lg bg-white p-4 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/5"
           >
             <!-- Upload Progress -->
