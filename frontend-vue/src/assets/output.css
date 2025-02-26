@@ -1105,6 +1105,10 @@ video {
   height: 640px;
 }
 
+.h-7 {
+  height: 1.75rem;
+}
+
 .max-h-0 {
   max-height: 0px;
 }
@@ -1260,6 +1264,10 @@ video {
 
 .w-\[360px\] {
   width: 360px;
+}
+
+.w-7 {
+  width: 1.75rem;
 }
 
 .min-w-\[45px\] {
@@ -2063,6 +2071,24 @@ video {
   background-color: rgb(161 98 7 / var(--tw-bg-opacity, 1));
 }
 
+.bg-white\/90 {
+  background-color: rgb(255 255 255 / 0.9);
+}
+
+.bg-white\/80 {
+  background-color: rgb(255 255 255 / 0.8);
+}
+
+.bg-\[\#929292\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(146 146 146 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#c5c5c5\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(197 197 197 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -2099,6 +2125,14 @@ video {
 
 .stroke-\[red\] {
   stroke: red;
+}
+
+.stroke-gray-700 {
+  stroke: #374151;
+}
+
+.stroke-black {
+  stroke: #000;
 }
 
 .object-contain {
@@ -2161,6 +2195,10 @@ video {
 
 .p-\[5px\] {
   padding: 5px;
+}
+
+.p-0\.5 {
+  padding: 0.125rem;
 }
 
 .px-1 {
@@ -2573,6 +2611,11 @@ video {
   color: rgb(133 77 14 / var(--tw-text-opacity, 1));
 }
 
+.text-gray-300 {
+  --tw-text-opacity: 1;
+  color: rgb(209 213 219 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -2973,6 +3016,11 @@ body {
   background-color: rgb(255 255 255 / 0.5);
 }
 
+.hover\:bg-red-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:bg-opacity-90:hover {
   --tw-bg-opacity: 0.9;
 }
@@ -3260,6 +3308,18 @@ body {
   background-color: rgb(161 98 7 / var(--tw-bg-opacity, 1));
 }
 
+.dark\:bg-gray-800\/90:is(.dark *) {
+  background-color: rgb(31 41 55 / 0.9);
+}
+
+.dark\:bg-gray-800\/80:is(.dark *) {
+  background-color: rgb(31 41 55 / 0.8);
+}
+
+.dark\:stroke-gray-300:is(.dark *) {
+  stroke: #d1d5db;
+}
+
 .dark\:text-\[black\]:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity, 1));
@@ -3338,6 +3398,15 @@ body {
 .dark\:hover\:bg-red-800:hover:is(.dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(153 27 27 / var(--tw-bg-opacity, 1));
+}
+
+.dark\:hover\:bg-gray-800:hover:is(.dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
+}
+
+.dark\:hover\:stroke-white:hover:is(.dark *) {
+  stroke: #fff;
 }
 
 .group:hover .dark\:group-hover\:border-\[\#ffffff4d\]:is(.dark *) {

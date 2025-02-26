@@ -32,10 +32,6 @@
 
   const replicatedValue = ref('');
 
-  const handleTimestampUpdate = (timestamp: number) => {
-    editorDataStore.selectedPost.value.videoTimestamp = timestamp;
-  };
-
   // const validationErrors = computed(() => {
   //   const errors = [];
 
@@ -708,7 +704,6 @@
                     :initial-video-timestamp="
                       editorDataStore.selectedPost.value.videoTimestamp
                     "
-                    @update:timestamp="handleTimestampUpdate"
                     :debouncedSave="debouncedSave"
                   />
                 </div>

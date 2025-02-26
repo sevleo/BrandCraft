@@ -4,6 +4,8 @@
     ChevronLeft,
     ChevronRight,
     X,
+    Trash2,
+    Check,
   } from 'lucide-vue-next';
   import { ref, watch, onMounted, onUnmounted } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
@@ -21,6 +23,7 @@
   const videoProgress = ref(0);
   const videoCurrentTime = ref(0);
   const currentImageIndex = ref(0);
+  const deletingMediaIndex = ref<number | null>(null);
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -33,10 +36,6 @@
     currentMediaType: 'image' | 'video' | null;
     initialVideoTimestamp?: number;
     debouncedSave: () => void;
-  }>();
-
-  const emit = defineEmits<{
-    (e: 'update:timestamp', timestamp: number): void;
   }>();
 
   const videoRef = ref<HTMLVideoElement | null>(null);
@@ -147,14 +146,6 @@
       (videoRef?.value.currentTime / videoRef?.value.duration) * 100;
   };
 
-  const onVideoProgressChange = () => {
-    if (!videoRef?.value) return;
-    const newTime = (videoProgress.value / 100) * videoRef.value.duration;
-    videoRef.value.currentTime = newTime;
-    videoCurrentTime.value = newTime;
-    emit('update:timestamp', newTime);
-  };
-
   const nextImage = () => {
     if (currentImageIndex.value < props.mediaPreviewUrls.length - 1) {
       currentImageIndex.value++;
@@ -168,25 +159,32 @@
   };
 
   function removeMedia(index: number) {
-    const urlToRemove =
-      editorDataStore.selectedPost.value.mediaPreviewUrls[index];
-    const isInitialMedia =
-      editorDataStore.selectedPost.value.initialMediaUrls.includes(urlToRemove);
+    if (deletingMediaIndex.value === index) {
+      // Remove URL from preview
+      URL.revokeObjectURL(
+        editorDataStore.selectedPost.value.mediaPreviewUrls[index]
+      );
+      editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
+      editorDataStore.selectedPost.value.mediaFiles.splice(index, 1);
+      editorDataStore.selectedMedia.value.splice(index, 1);
 
-    // Remove URL from preview
-    URL.revokeObjectURL(
-      editorDataStore.selectedPost.value.mediaPreviewUrls[index]
-    );
-    editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
-    editorDataStore.selectedPost.value.mediaFiles.splice(index, 1);
-    editorDataStore.selectedMedia.value.splice(index, 1);
-
-    // Reset currentMediaType if no media left
-    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
-      editorDataStore.currentMediaType.value = null;
+      // Reset currentMediaType if no media left
+      if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+        editorDataStore.currentMediaType.value = null;
+        editorDataStore.selectedPost.value.videoTimestamp = 0;
+      }
+      deletingMediaIndex.value = null;
+      props.debouncedSave();
+    } else {
+      // First click - show confirmation
+      deletingMediaIndex.value = index;
     }
-    props.debouncedSave();
   }
+
+  // Reset deletion state when mouse leaves
+  const handleMouseLeave = () => {
+    deletingMediaIndex.value = null;
+  };
 
   watch(sliderValue, updateVideoFrame);
   watch(
@@ -269,9 +267,18 @@
               <!-- Remove Button -->
               <button
                 @click="removeMedia(0)"
-                class="absolute right-2 top-2 z-10 rounded-full bg-black/50 p-1.5 text-white hover:bg-black/70"
+                @mouseleave="handleMouseLeave"
+                class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
               >
-                <X :size="20" color="white" />
+                <component
+                  :is="deletingMediaIndex === 0 ? Check : Trash2"
+                  class="h-7 w-7 rounded-full p-1 transition-all duration-200"
+                  :class="[
+                    deletingMediaIndex === 0
+                      ? 'bg-red-100 stroke-red-500'
+                      : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                  ]"
+                />
               </button>
             </div>
           </template>
@@ -282,9 +289,20 @@
               <!-- Remove Button -->
               <button
                 @click="removeMedia(currentImageIndex)"
-                class="absolute right-2 top-2 z-10 rounded-full bg-black/50 p-1.5 text-white hover:bg-black/70"
+                @mouseleave="handleMouseLeave"
+                class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
               >
-                <X :size="20" color="white" />
+                <component
+                  :is="
+                    deletingMediaIndex === currentImageIndex ? Check : Trash2
+                  "
+                  class="h-7 w-7 rounded-full p-1 transition-all duration-200"
+                  :class="[
+                    deletingMediaIndex === currentImageIndex
+                      ? 'bg-red-100 stroke-red-500'
+                      : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                  ]"
+                />
               </button>
               <img
                 :src="props.mediaPreviewUrls[currentImageIndex]"
