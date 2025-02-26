@@ -8,7 +8,7 @@
     X,
     Video,
   } from 'lucide-vue-next';
-  import { ref, watch, onMounted } from 'vue';
+  import { ref, watch, onMounted, onUnmounted } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
 
   const isHoveringVideo = ref(false);
@@ -46,15 +46,9 @@
 
   // Handle video load
   const handleVideoLoad = () => {
+    console.log('Video loaded');
     if (!videoRef?.value) return;
     console.log('Video loaded:', videoRef.value);
-
-    // Set initial timestamp if provided
-    if (props.initialVideoTimestamp !== undefined && videoRef?.value.duration) {
-      videoRef.value.currentTime = props.initialVideoTimestamp;
-      sliderValue.value =
-        (props.initialVideoTimestamp / videoRef.value.duration) * 100;
-    }
 
     // Start progress tracking
     const video = videoRef.value;
@@ -225,13 +219,43 @@
     { deep: true }
   );
 
+  const componentKey = ref(Date.now()); // Unique key for forcing re-render
+  const retryInterval = ref<ReturnType<typeof setInterval> | null>(null);
+
+  // Function to check if video is playable
+  const checkVideoAvailability = () => {
+    const videoElement = videoRef.value;
+    if (videoElement && videoElement.readyState >= 2) {
+      console.log('Video is now playable');
+      clearInterval(retryInterval.value!); // Stop retrying
+      retryInterval.value = null;
+      // componentKey.value = Date.now();
+    } else {
+      console.log('Video not ready, retrying...');
+      componentKey.value = Date.now();
+    }
+  };
+
   onMounted(() => {
-    console.log(videoRef.value);
+    console.log('Component mounted');
+
+    if (videoRef.value) {
+      // Retry loading every 3 seconds
+      retryInterval.value = setInterval(checkVideoAvailability, 2000);
+    }
+  });
+
+  // Cleanup interval when unmounted
+  onUnmounted(() => {
+    if (retryInterval.value) {
+      clearInterval(retryInterval.value);
+    }
   });
 </script>
 
 <template>
   <div
+    :key="componentKey"
     id="preview-panel"
     class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
   >
@@ -240,7 +264,11 @@
         <div class="relative h-fit overflow-hidden rounded-lg bg-black">
           <!-- Video Preview -->
 
-          <template v-if="props.currentMediaType === 'video'">
+          <template
+            v-if="
+              props.currentMediaType === 'video' && props.mediaPreviewUrls[0]
+            "
+          >
             <div
               class="relative h-full w-full"
               @mouseenter="isHoveringVideo = true"
@@ -256,7 +284,7 @@
                   'object-contain': !isVideoVertical,
                 }"
                 controls
-                @loadedmetadata="handleVideoLoad"
+                @loadeddata="handleVideoLoad"
               ></video>
               <!-- Remove Button -->
               <button

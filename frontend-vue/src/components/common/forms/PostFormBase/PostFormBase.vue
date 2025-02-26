@@ -692,7 +692,15 @@
                   class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] bg-[white] dark:bg-[#313131]"
                 >
                   <PreviewComponent
-                    v-show="editorDataStore.currentMediaType.value"
+                    :key="
+                      editorDataStore.selectedPost.value.mediaPreviewUrls.join(
+                        ''
+                      )
+                    "
+                    v-if="
+                      editorDataStore.selectedPost.value.mediaPreviewUrls
+                        .length > 0
+                    "
                     :media-preview-urls="
                       editorDataStore.selectedPost.value.mediaPreviewUrls
                     "
