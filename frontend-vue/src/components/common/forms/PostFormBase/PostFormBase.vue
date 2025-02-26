@@ -505,7 +505,7 @@
     <div
       v-if="!isLoading"
       :key="postKey"
-      class="transition-container flex w-full max-w-[1100px] flex-col items-start justify-start gap-4"
+      class="transition-container flex w-full max-w-[1100px] flex-col items-start justify-start gap-4 px-[30px]"
     >
       <!-- Loading Indicator -->
       <div

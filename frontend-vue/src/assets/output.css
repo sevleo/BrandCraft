@@ -2265,6 +2265,11 @@ video {
   padding-bottom: 2rem;
 }
 
+.px-\[30px\] {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -3036,6 +3041,11 @@ body {
 .hover\:text-greenLight:hover {
   --tw-text-opacity: 1;
   color: rgb(168 240 194 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-red-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {

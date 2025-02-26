@@ -457,12 +457,12 @@
         </div>
         <div
           @click="handleCreateDraft"
-          class="group flex h-[50px] cursor-pointer items-center border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
+          class="group flex h-[50px] cursor-pointer items-center border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-200 hover:bg-white"
         >
           <div class="flex items-center">
             <component
               :is="isCreatingDraft ? Loader2 : PencilLine"
-              class="mr-[5px] h-4 w-4 transition-all duration-100"
+              class="mr-[5px] h-4 w-4 transition-all duration-200"
               :class="
                 isCreatingDraft
                   ? 'animate-spin stroke-blue-500'
@@ -470,7 +470,7 @@
               "
             />
             <p
-              class="italic transition-all duration-100"
+              class="italic transition-all duration-200"
               :class="
                 isCreatingDraft
                   ? 'text-blue-500'
@@ -484,16 +484,16 @@
 
         <!-- Posts List -->
         <div class="sidebar-scrollable mb-[250px] overflow-auto">
-          <div class="">
+          <transition-group name="post-list" tag="div">
             <div
               v-for="post in activeView === 'drafts'
                 ? sortedDraftPosts
                 : activeView === 'scheduled'
                   ? sortedScheduledPosts
                   : sortedPublishedPosts"
-              :key="post.id"
+              :key="post._id"
               @click="navigateToEditor(post)"
-              class="group flex cursor-pointer flex-col gap-2 border-b border-layoutSoft bg-[#f5f5f5]"
+              class="group cursor-pointer border-b border-layoutSoft bg-[#f5f5f5] transition-all duration-200"
               :class="{
                 'bg-white dark:bg-[#d9d9d9]/10': post._id === selectedPostId,
               }"
@@ -603,7 +603,7 @@
                 </button>
               </div>
             </div>
-          </div>
+          </transition-group>
         </div>
       </div>
     </div>
@@ -766,14 +766,35 @@
 
   .dropdown-enter-active,
   .dropdown-leave-active {
-    transition:
-      opacity 0.2s,
-      transform 0.2s;
+    transition: all 0.2s ease;
   }
 
   .dropdown-enter-from,
   .dropdown-leave-to {
     opacity: 0;
     transform: translateY(-8px);
+  }
+
+  .post-list-enter-active,
+  .post-list-leave-active {
+    transition: all 0.5s ease;
+    max-height: 200px; /* Approximate max height of a post */
+    overflow: hidden;
+  }
+
+  .post-list-enter-from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-20px);
+  }
+
+  .post-list-leave-to {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(20px);
+  }
+
+  .post-list-move {
+    transition: transform 0.2s ease;
   }
 </style>
