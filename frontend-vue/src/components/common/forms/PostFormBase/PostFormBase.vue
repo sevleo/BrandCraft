@@ -502,14 +502,6 @@
     // First click - show confirmation
     if (scheduleButtonState.value === 'initial') {
       scheduleButtonState.value = 'confirm';
-
-      // Auto-reset after 5 seconds if not confirmed
-      setTimeout(() => {
-        if (scheduleButtonState.value === 'confirm') {
-          scheduleButtonState.value = 'initial';
-        }
-      }, 5000);
-
       return;
     }
 
@@ -543,6 +535,13 @@
           life: 3000,
         });
       }
+    }
+  };
+
+  // Reset confirmation state when mouse leaves the button
+  const handleScheduleButtonMouseLeave = () => {
+    if (scheduleButtonState.value === 'confirm') {
+      scheduleButtonState.value = 'initial';
     }
   };
 
@@ -696,12 +695,13 @@
         <button
           v-else
           @click="handleSchedule"
+          @mouseleave="handleScheduleButtonMouseLeave"
           :disabled="scheduleButtonState === 'processing'"
           :class="{
             'ml-2 flex h-[38px] items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all': true,
             'border-[#e9e9e9] text-gray-700 hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#121212] dark:text-gray-300 dark:hover:bg-[#d9d9d9]/10':
               scheduleButtonState === 'initial',
-            'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/30':
+            'bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 border-green-200 dark:border-green-800':
               scheduleButtonState === 'confirm',
             'border-[#e9e9e9] bg-[#f0f0f0] text-gray-400 dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-500':
               scheduleButtonState === 'processing',
@@ -712,8 +712,8 @@
             <SendHorizonal class="h-4 w-4" />
           </template>
           <template v-else-if="scheduleButtonState === 'confirm'">
-            Confirm Schedule
-            <AlertCircle class="h-4 w-4" />
+            Confirm
+            <Check class="h-4 w-4" />
           </template>
           <template v-else-if="scheduleButtonState === 'processing'">
             Scheduling...
@@ -867,36 +867,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div>
-              <p>
-                {{ '_id: ' + editorDataStore.selectedPost.value._id }}
-              </p>
-              <p>
-                {{
-                  'mediaFiles: ' + editorDataStore.selectedPost.value.mediaFiles
-                }}
-              </p>
-              <p>
-                {{
-                  'mediaPreviewUrls: ' +
-                  editorDataStore.selectedPost.value.mediaPreviewUrls
-                }}
-              </p>
-              <p>
-                {{
-                  'initialMediaUrls: ' +
-                  editorDataStore.selectedPost.value.initialMediaUrls
-                }}
-              </p>
-              <p>
-                {{
-                  'currentMediaType: ' + editorDataStore.currentMediaType.value
-                }}
-              </p>
-              <p>
-                {{ 'selectedMedia:' + editorDataStore.selectedMedia.value }}
-              </p>
-            </div> -->
           </div>
         </div>
         <div class="divider w-[0px] self-stretch bg-layoutSoft"></div>
