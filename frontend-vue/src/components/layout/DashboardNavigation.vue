@@ -531,10 +531,10 @@
                 </div>
 
                 <!-- Post Details -->
-                <div class="flex items-center justify-between text-xs">
+                <div class="flex items-end justify-between text-xs">
                   <!-- Scheduled Time -->
                   <div
-                    class="flex items-center text-gray-500 dark:text-gray-400"
+                    class="flex items-center text-[11px] text-gray-500 dark:text-gray-400"
                   >
                     {{ post.scheduledTime && formatDate(post.scheduledTime) }}
                   </div>

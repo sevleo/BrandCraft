@@ -78,6 +78,7 @@ const isUserEdit = ref<boolean>(false);
 const selectedMedia = ref<File[]>([]); // this is newly selected media
 const uploadProgress = ref<number>(0);
 const processingProgress = ref<number>(0);
+const isPanelVisible = ref<boolean>(true); // Track right panel visibility
 
 // ✅ Simple reset
 const reset = () => {
@@ -88,6 +89,7 @@ const reset = () => {
   selectedMedia.value = [];
   uploadProgress.value = 0;
   processingProgress.value = 0;
+  isPanelVisible.value = true;
 };
 
 // Select a post without triggering auto-save
@@ -136,6 +138,7 @@ export default {
   selectedMedia,
   uploadProgress,
   processingProgress,
+  isPanelVisible,
   reset,
   selectPost,
 };

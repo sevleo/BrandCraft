@@ -2,23 +2,26 @@
   import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
   import connectionsDataStore from '@/utils/connectionsDataStore';
+  import editorDataStore from '@/utils/editorDataStore';
   import DatePicker from 'primevue/datepicker';
-  import { updatePostGroup } from '@/helpers/savePostGroup';
   import {
-    Image as ImageIcon,
-    Video,
-    Smile,
+    FileEdit,
+    SendHorizonal,
+    Check,
     Loader2,
+    PanelRight,
+    PanelRightClose,
+    Smile,
     MoreHorizontal,
     Minimize2,
     Maximize2,
     Calendar,
     Send,
-    SendHorizonal,
-    Check,
     AlertCircle,
-    FileEdit,
+    Image as ImageIcon,
+    Video,
   } from 'lucide-vue-next';
+  import { updatePostGroup } from '@/helpers/savePostGroup';
   import 'emoji-picker-element';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import ToggleSlider from '@/components/common/buttons/ToggleSlider.vue';
@@ -28,7 +31,6 @@
   import InstagramPresets from '@/components/common/forms/PostFormBase/InstagramPresets.vue';
   import PreviewComponent from '@/components/common/forms/PostFormBase/PreviewComponent.vue';
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
-  import editorDataStore from '@/utils/editorDataStore';
 
   const toast = useToast();
   // const videoRef = ref<HTMLVideoElement | null>(null);
@@ -497,6 +499,12 @@
     'initial' | 'confirm' | 'processing' | 'scheduled'
   >('initial');
 
+  // Toggle panel visibility function
+  const togglePanelVisibility = () => {
+    editorDataStore.isPanelVisible.value =
+      !editorDataStore.isPanelVisible.value;
+  };
+
   // Handle scheduling the post
   const handleSchedule = async () => {
     // First click - show confirmation
@@ -630,8 +638,9 @@
         /> -->
       </div>
       <!-- View mode toggle -->
-      <div class="flex w-full items-center justify-between p-2 pt-[20px]">
-        <div class="flex items-center self-end">
+      <div class="flex w-full items-start justify-between p-2">
+        <div class="flex w-full flex-col items-start justify-start gap-2">
+          <!-- Platform buttons container with conditional flex-wrap -->
           <ToggleSlider
             v-model="viewMode"
             leftOption="Compact"
@@ -640,61 +649,9 @@
             rightValue="full"
           />
         </div>
-        <div class="ml-auto flex h-[38px] items-start justify-start">
-          <DatePicker
-            v-model="getScheduledDate"
-            @hide="handleDateChange"
-            showTime
-            showIcon
-            :showSeconds="false"
-            hourFormat="12"
-            class=""
-          />
-        </div>
-        <button
-          v-if="scheduleButtonState === 'scheduled'"
-          @click="handleChangeToDraft"
-          class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] bg-[#f0f0f0] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#e9e9e9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
-        >
-          Change to Draft
-          <FileEdit class="h-4 w-4" />
-        </button>
-        <button
-          v-else
-          @click="handleSchedule"
-          @mouseleave="handleScheduleButtonMouseLeave"
-          :disabled="scheduleButtonState === 'processing'"
-          :class="{
-            'ml-2 flex h-[38px] items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all': true,
-            'border-[#e9e9e9] text-gray-700 hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#121212] dark:text-gray-300 dark:hover:bg-[#d9d9d9]/10':
-              scheduleButtonState === 'initial',
-            'bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 border-green-200 dark:border-green-800':
-              scheduleButtonState === 'confirm',
-            'border-[#e9e9e9] bg-[#f0f0f0] text-gray-400 dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-500':
-              scheduleButtonState === 'processing',
-          }"
-        >
-          <template v-if="scheduleButtonState === 'initial'">
-            Schedule
-            <SendHorizonal class="h-4 w-4" />
-          </template>
-          <template v-else-if="scheduleButtonState === 'confirm'">
-            Confirm
-            <Check class="h-4 w-4" />
-          </template>
-          <template v-else-if="scheduleButtonState === 'processing'">
-            Scheduling...
-            <Loader2 class="h-4 w-4 animate-spin" />
-          </template>
-        </button>
       </div>
-
-      <div
-        class="mb-[30px] flex w-full max-w-[800px] items-start justify-between p-2"
-      >
-        <div
-          class="mr-[30px] flex w-full flex-col items-start justify-start gap-2"
-        >
+      <div class="mb-[30px] flex w-full items-start justify-between p-2">
+        <div class="flex items-center self-end">
           <!-- Platform buttons container with conditional flex-wrap -->
           <div class="flex flex-wrap gap-2">
             <PlatformButton
@@ -725,11 +682,70 @@
             />
           </div>
         </div>
+        <div class="ml-auto flex h-[38px] items-start justify-start">
+          <DatePicker
+            v-model="getScheduledDate"
+            @hide="handleDateChange"
+            showTime
+            showIcon
+            :showSeconds="false"
+            hourFormat="12"
+            class=""
+          />
+        </div>
+        <button
+          v-if="scheduleButtonState === 'scheduled'"
+          @click="handleChangeToDraft"
+          class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] bg-[#f0f0f0] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#e9e9e9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
+        >
+          Change to Draft
+          <FileEdit class="h-4 w-4" />
+        </button>
+        <button
+          v-else
+          @click="handleSchedule"
+          @mouseleave="handleScheduleButtonMouseLeave"
+          :disabled="scheduleButtonState === 'processing'"
+          :class="{
+            'ml-2 flex h-[38px] items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all': true,
+            'border-[#e9e9e9] text-gray-700 hover:bg-[#f9f9f9] dark:border-[#313131]':
+              scheduleButtonState === 'initial',
+            'bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 border-green-200 dark:border-green-800':
+              scheduleButtonState === 'confirm',
+            'border-[#e9e9e9] bg-[#f0f0f0] text-gray-400 dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-500':
+              scheduleButtonState === 'processing',
+          }"
+        >
+          <template v-if="scheduleButtonState === 'initial'">
+            Schedule
+            <SendHorizonal class="h-4 w-4" />
+          </template>
+          <template v-else-if="scheduleButtonState === 'confirm'">
+            Confirm
+            <Check class="h-4 w-4" />
+          </template>
+          <template v-else-if="scheduleButtonState === 'processing'">
+            Scheduling...
+            <Loader2 class="h-4 w-4 animate-spin" />
+          </template>
+        </button>
+        <button
+          @click="togglePanelVisibility"
+          class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
+        >
+          <template v-if="editorDataStore.isPanelVisible.value">
+            <PanelRightClose class="h-4 w-4" />
+          </template>
+          <template v-else>
+            <PanelRight class="h-4 w-4" />
+          </template>
+        </button>
       </div>
-      <div class="flex w-full items-start justify-start gap-4">
+
+      <div class="flex w-full items-start justify-center gap-4">
         <!-- Middle Component -->
         <div
-          class="scheduling-form border-greenBG flex h-fit max-w-[800px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
+          class="scheduling-form border-greenBG flex h-fit max-w-[600px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
         >
           <div class="flex h-auto w-full flex-col gap-2 p-2">
             <!-- <div>{{ currentMediaType }}</div>

@@ -54,7 +54,12 @@
 
 <template>
   <main
-    class="ml-[260px] mr-[260px] flex h-auto items-center justify-start bg-[white] dark:bg-[#121212]"
+    class="transition-all duration-300"
+    :class="{
+      'ml-[260px] flex h-auto items-center justify-start bg-[white] dark:bg-[#121212]': true,
+      'mr-[260px]': editorDataStore.isPanelVisible.value,
+      'mr-0': !editorDataStore.isPanelVisible.value,
+    }"
   >
     <DashboardNavigation />
 
@@ -144,6 +149,11 @@
         <Loader2 class="h-8 w-8 animate-spin stroke-[green]" />
       </div>
     </transition>
-    <div class="fixed bottom-0 right-0 top-0 w-[260px] bg-[red]">test</div>
+    <div
+      :class="editorDataStore.isPanelVisible.value ? 'w-[260px]' : 'w-0'"
+      class="fixed bottom-0 right-0 top-0 bg-[red] transition-all duration-300 ease-in-out"
+    >
+      test
+    </div>
   </main>
 </template>
