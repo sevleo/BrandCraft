@@ -134,6 +134,14 @@
   //   return Math.floor(videoRef.value.duration) <= maxDuration;
   // });
 
+  // Platform buttons view mode (compact or full)
+  const viewMode = ref('compact'); // Default to compact view
+
+  // Toggle between compact and full view for platform buttons
+  const toggleViewMode = () => {
+    viewMode.value = viewMode.value === 'compact' ? 'full' : 'compact';
+  };
+
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
   );
@@ -521,32 +529,66 @@
       </div>
 
       <div class="flex w-full items-center justify-between p-2">
-        <div class="flex flex-shrink-0 gap-2">
-          <PlatformButton
-            v-for="account in connectionsDataStore.connectedAccounts.value"
-            :key="account.id"
-            :account="account"
-            :is-selected="
-              editorDataStore.selectedPost.value?.platforms.includes(
-                account.platform === 'twitter'
-                  ? `twitter-${account.id}`
-                  : account.platform === 'threads'
-                    ? `threads-${account.id}`
-                    : account.platform === 'bluesky'
-                      ? `bluesky-${account.id}`
-                      : account.platform === 'mastodon'
-                        ? `mastodon-${account.id}`
-                        : account.platform === 'tiktok'
-                          ? `tiktok-${account.id}`
-                          : account.platform === 'instagram'
-                            ? `instagram-${account.id}`
-                            : account.platform === 'youtube'
-                              ? `youtube-${account.id}`
-                              : account.platform
-              )
-            "
-            :onClick="() => togglePlatform(account)"
-          />
+        <div class="flex w-full flex-col gap-2">
+          <!-- View mode toggle -->
+          <div class="mb-2 flex items-center justify-between">
+            <div class="text-sm text-gray-500">Platform Selection</div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500">View:</span>
+              <button
+                @click="toggleViewMode"
+                class="rounded-md px-2 py-1 text-xs transition-colors"
+                :class="
+                  viewMode === 'compact'
+                    ? 'bg-gray-200 text-gray-800'
+                    : 'bg-transparent text-gray-500 hover:bg-gray-100'
+                "
+              >
+                Compact
+              </button>
+              <button
+                @click="toggleViewMode"
+                class="rounded-md px-2 py-1 text-xs transition-colors"
+                :class="
+                  viewMode === 'full'
+                    ? 'bg-gray-200 text-gray-800'
+                    : 'bg-transparent text-gray-500 hover:bg-gray-100'
+                "
+              >
+                Full
+              </button>
+            </div>
+          </div>
+
+          <!-- Platform buttons container with conditional flex-wrap -->
+          <div class="flex gap-2" :class="{ 'flex-wrap': viewMode === 'full' }">
+            <PlatformButton
+              v-for="account in connectionsDataStore.connectedAccounts.value"
+              :key="account.id"
+              :account="account"
+              :show-username="viewMode === 'full'"
+              :is-selected="
+                editorDataStore.selectedPost.value?.platforms.includes(
+                  account.platform === 'twitter'
+                    ? `twitter-${account.id}`
+                    : account.platform === 'threads'
+                      ? `threads-${account.id}`
+                      : account.platform === 'bluesky'
+                        ? `bluesky-${account.id}`
+                        : account.platform === 'mastodon'
+                          ? `mastodon-${account.id}`
+                          : account.platform === 'tiktok'
+                            ? `tiktok-${account.id}`
+                            : account.platform === 'instagram'
+                              ? `instagram-${account.id}`
+                              : account.platform === 'youtube'
+                                ? `youtube-${account.id}`
+                                : account.platform
+                )
+              "
+              :onClick="() => togglePlatform(account)"
+            />
+          </div>
         </div>
         <DatePicker
           v-model="getScheduledDate"
