@@ -12,6 +12,12 @@
     MoreHorizontal,
     Minimize2,
     Maximize2,
+    Calendar,
+    Send,
+    SendHorizonal,
+    Check,
+    AlertCircle,
+    FileEdit,
   } from 'lucide-vue-next';
   import 'emoji-picker-element';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
@@ -444,12 +450,12 @@
     try {
       isSaving.value = true;
       await updatePostGroup(editorDataStore.selectedMedia.value);
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Post saved successfully',
-        life: 3000,
-      });
+      // toast.add({
+      //   severity: 'success',
+      //   summary: 'Success',
+      //   detail: 'Post saved successfully',
+      //   life: 3000,
+      // });
     } catch (error: any) {
       console.error('Save error:', error);
       toast.add({
@@ -486,9 +492,101 @@
     }, 700); // 0.3 second delay
   };
 
+  // Schedule button state
+  const scheduleButtonState = ref<
+    'initial' | 'confirm' | 'processing' | 'scheduled'
+  >('initial');
+
+  // Handle scheduling the post
+  const handleSchedule = async () => {
+    // First click - show confirmation
+    if (scheduleButtonState.value === 'initial') {
+      scheduleButtonState.value = 'confirm';
+
+      // Auto-reset after 5 seconds if not confirmed
+      setTimeout(() => {
+        if (scheduleButtonState.value === 'confirm') {
+          scheduleButtonState.value = 'initial';
+        }
+      }, 5000);
+
+      return;
+    }
+
+    // Second click - process scheduling
+    if (scheduleButtonState.value === 'confirm') {
+      try {
+        scheduleButtonState.value = 'processing';
+
+        // Update status to scheduled
+        editorDataStore.selectedPost.value.status = 'scheduled';
+
+        // Save the post with the scheduled status
+        await handleSave();
+
+        scheduleButtonState.value = 'scheduled';
+
+        toast.add({
+          severity: 'success',
+          summary: 'Scheduled',
+          detail: 'Post has been scheduled successfully',
+          life: 3000,
+        });
+      } catch (error: any) {
+        console.error('Scheduling error:', error);
+        scheduleButtonState.value = 'initial';
+
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to schedule post',
+          life: 3000,
+        });
+      }
+    }
+  };
+
+  // Change post back to draft
+  const handleChangeToDraft = async () => {
+    try {
+      scheduleButtonState.value = 'processing';
+
+      // Update status to draft
+      editorDataStore.selectedPost.value.status = 'draft';
+
+      // Save the post with the draft status
+      await handleSave();
+
+      scheduleButtonState.value = 'initial';
+
+      toast.add({
+        severity: 'success',
+        summary: 'Changed to Draft',
+        detail: 'Post has been changed to draft',
+        life: 3000,
+      });
+    } catch (error: any) {
+      console.error('Change to draft error:', error);
+      scheduleButtonState.value = 'scheduled';
+
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: error.message || 'Failed to change post to draft',
+        life: 3000,
+      });
+    }
+  };
+
+  // Set initial button state based on post status
   onMounted(async () => {
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
+
+    // Set schedule button state based on post status
+    if (editorDataStore.selectedPost.value?.status === 'scheduled') {
+      scheduleButtonState.value = 'scheduled';
+    }
 
     // Initialize replicatedValue with current content
     replicatedValue.value = editorDataStore.selectedPost.value?.content || '';
@@ -518,7 +616,7 @@
     <div
       v-if="!isLoading"
       :key="postKey"
-      class="transition-container flex w-full max-w-[1100px] flex-col items-start justify-start gap-4 px-[30px]"
+      class="transition-container flex w-full max-w-[1100px] flex-col items-start justify-start px-[30px]"
     >
       <!-- Loading Indicator -->
       <div
@@ -532,21 +630,20 @@
           color="#ff1d5e"
         /> -->
       </div>
-
+      <!-- View mode toggle -->
+      <div class="flex w-full items-center justify-between p-2">
+        <div class="flex items-center">
+          <ToggleSlider
+            v-model="viewMode"
+            leftOption="Compact"
+            rightOption="Full"
+            leftValue="compact"
+            rightValue="full"
+          />
+        </div>
+      </div>
       <div class="mb-[30px] flex w-full items-start justify-between p-2">
         <div class="flex w-full flex-col items-start justify-start gap-2">
-          <!-- View mode toggle -->
-          <div class="mb-2 flex w-full items-center justify-between">
-            <div class="flex items-center">
-              <ToggleSlider
-                v-model="viewMode"
-                leftOption="Compact"
-                rightOption="Full"
-                leftValue="compact"
-                rightValue="full"
-              />
-            </div>
-          </div>
           <!-- Platform buttons container with conditional flex-wrap -->
           <div class="flex gap-2" :class="{ 'flex-wrap': viewMode === 'full' }">
             <PlatformButton
@@ -577,7 +674,7 @@
             />
           </div>
         </div>
-        <div class="flex h-auto flex-1 items-start justify-start">
+        <div class="flex h-[38px] items-start justify-start">
           <DatePicker
             v-model="getScheduledDate"
             @hide="handleDateChange"
@@ -585,9 +682,44 @@
             showIcon
             :showSeconds="false"
             hourFormat="12"
-            class="w-[250px]"
+            class=""
           />
         </div>
+        <button
+          v-if="scheduleButtonState === 'scheduled'"
+          @click="handleChangeToDraft"
+          class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] bg-[#f0f0f0] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#e9e9e9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
+        >
+          Change to Draft
+          <FileEdit class="h-4 w-4" />
+        </button>
+        <button
+          v-else
+          @click="handleSchedule"
+          :disabled="scheduleButtonState === 'processing'"
+          :class="{
+            'ml-2 flex h-[38px] items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all': true,
+            'border-[#e9e9e9] text-gray-700 hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#121212] dark:text-gray-300 dark:hover:bg-[#d9d9d9]/10':
+              scheduleButtonState === 'initial',
+            'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/30':
+              scheduleButtonState === 'confirm',
+            'border-[#e9e9e9] bg-[#f0f0f0] text-gray-400 dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-500':
+              scheduleButtonState === 'processing',
+          }"
+        >
+          <template v-if="scheduleButtonState === 'initial'">
+            Schedule
+            <SendHorizonal class="h-4 w-4" />
+          </template>
+          <template v-else-if="scheduleButtonState === 'confirm'">
+            Confirm Schedule
+            <AlertCircle class="h-4 w-4" />
+          </template>
+          <template v-else-if="scheduleButtonState === 'processing'">
+            Scheduling...
+            <Loader2 class="h-4 w-4 animate-spin" />
+          </template>
+        </button>
       </div>
       <div class="flex w-full items-start justify-start gap-4">
         <!-- Middle Component -->

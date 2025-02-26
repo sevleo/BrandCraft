@@ -13,7 +13,7 @@
 
 <template>
   <div
-    class="group flex cursor-pointer items-center rounded-full transition-all duration-100"
+    class="group flex cursor-pointer items-center rounded-full border-[1px] border-[#e6e6e6] transition-all duration-100 dark:border-white/20"
     :class="isSelected ? 'bg-gray-100' : ''"
     @click="onClick"
   >

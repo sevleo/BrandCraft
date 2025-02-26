@@ -265,8 +265,7 @@
   // Platform popup state
   const showPlatformPopup = ref(false);
   const activePopupPlatforms = ref<string[]>([]);
-  const popupPosition = ref({ bottom: '0px', left: '0px' });
-  const arrowPosition = ref({ left: '50%' });
+  const popupPosition = ref({ top: '', bottom: '', left: '0px' });
 
   // Show platform popup
   function showPopup(event: MouseEvent, platforms: string[]) {
@@ -275,41 +274,57 @@
 
     nextTick(() => {
       const targetRect = target.getBoundingClientRect();
+      const POPUP_MARGIN = 10; // Margin between popup and target
+      const SCREEN_MARGIN = 10; // Margin from screen edges
 
-      // Position above the target with some margin
-      popupPosition.value.bottom = `${window.innerHeight - targetRect.top + 10}px`;
+      // Determine if we should show popup above or below
+      // If target is in the upper half of the screen, show popup below
+      // If target is in the lower half of the screen, show popup above
+      const viewportHeight = window.innerHeight;
+      const isInUpperHalf = targetRect.top < viewportHeight / 2;
+
+      // Reset positions
+      popupPosition.value.top = '';
+      popupPosition.value.bottom = '';
 
       // Center horizontally relative to the target
       const initialLeft = targetRect.left + targetRect.width / 2;
-
-      // We'll adjust this after the popup is rendered and we know its width
       popupPosition.value.left = `${initialLeft}px`;
 
       // Show the popup
       showPlatformPopup.value = true;
 
-      // After popup is visible, adjust position based on its width
+      // After popup is visible, adjust position based on its width and height
       nextTick(() => {
         const popup = document.querySelector('.platform-popup') as HTMLElement;
         if (popup) {
           const popupWidth = popup.offsetWidth;
+          const popupHeight = popup.offsetHeight;
+
+          // Adjust horizontal position
           popupPosition.value.left = `${initialLeft - popupWidth / 2}px`;
 
           // Make sure the popup doesn't go off-screen to the left
-          if (parseFloat(popupPosition.value.left) < 10) {
-            popupPosition.value.left = '10px';
+          if (parseFloat(popupPosition.value.left) < SCREEN_MARGIN) {
+            popupPosition.value.left = `${SCREEN_MARGIN}px`;
           }
 
           // Make sure the popup doesn't go off-screen to the right
           if (
             parseFloat(popupPosition.value.left) + popupWidth >
-            window.innerWidth - 10
+            window.innerWidth - SCREEN_MARGIN
           ) {
-            popupPosition.value.left = `${window.innerWidth - popupWidth - 10}px`;
+            popupPosition.value.left = `${window.innerWidth - popupWidth - SCREEN_MARGIN}px`;
           }
 
-          // Position the arrow
-          arrowPosition.value.left = `${targetRect.left + targetRect.width / 2 - parseFloat(popupPosition.value.left)}px`;
+          // Set vertical position based on available space
+          if (isInUpperHalf) {
+            // Position below the target
+            popupPosition.value.top = `${targetRect.bottom + POPUP_MARGIN}px`;
+          } else {
+            // Position above the target
+            popupPosition.value.bottom = `${viewportHeight - targetRect.top + POPUP_MARGIN}px`;
+          }
         }
       });
     });
@@ -665,11 +680,11 @@
     <!-- Hover popup to show all platforms -->
     <div
       v-if="showPlatformPopup"
-      class="platform-popup fixed z-[9999] mb-2 w-max rounded-md border border-gray-200 bg-white p-2 shadow-md dark:border-gray-700 dark:bg-[#212121]"
+      class="platform-popup fixed z-[9999] w-max rounded-md border border-gray-200 bg-white p-2 shadow-md dark:border-gray-700 dark:bg-[#212121]"
       :style="{
+        top: popupPosition.top,
         bottom: popupPosition.bottom,
         left: popupPosition.left,
-        'transform-origin': 'bottom center',
       }"
       @mouseenter="showPlatformPopup = true"
       @mouseleave="showPlatformPopup = false"
@@ -704,40 +719,17 @@
           }}</span>
         </div>
       </div>
-      <div
-        class="platform-popup-arrow"
-        style="pointer-events: none"
-        :style="{ left: arrowPosition.left }"
-      ></div>
     </div>
   </teleport>
 </template>
 
-<style>
+<style scoped>
   /* Platform popup styles - moved outside scoped to affect teleported elements */
   .platform-popup {
     max-height: 80vh;
     overflow-y: hidden;
   }
 
-  /* Triangle indicator for popup */
-  .platform-popup-arrow {
-    position: absolute;
-    bottom: -6px;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid white;
-    pointer-events: none;
-  }
-
-  .dark .platform-popup-arrow {
-    border-top-color: #212121;
-  }
-</style>
-
-<style scoped>
   .sidebar-scrollable {
     max-height: calc(100vh - 417px);
     overflow-y: auto;

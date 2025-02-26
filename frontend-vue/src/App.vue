@@ -73,7 +73,8 @@
     background: white !important;
     box-shadow: none !important;
     border: 1px solid #e5e7eb !important;
-    width: 220px !important;
+    width: 160px !important;
+    padding: 7px !important;
   }
 
   .dark .p-datepicker-input {
@@ -154,6 +155,7 @@
 
   .p-inputtext {
     color: black !important;
+    font-size: 14px !important;
   }
 
   .dark .p-inputtext {
