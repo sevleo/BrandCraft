@@ -1,12 +1,9 @@
 <script setup lang="ts">
   import {
-    Play,
-    Pause,
     Image as ImageIcon,
     ChevronLeft,
     ChevronRight,
     X,
-    Video,
   } from 'lucide-vue-next';
   import { ref, watch, onMounted, onUnmounted } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
@@ -69,11 +66,7 @@
         lastSelectedTime.value = newValue;
         currentTimeFormatted.value = formatTime(newValue);
 
-        // Update video position if video is already loaded
-        if (videoRef?.value?.duration) {
-          videoRef.value.currentTime = newValue;
-          sliderValue.value = (newValue / videoRef.value.duration) * 100;
-        }
+        // Only update modal video position
         if (modalVideoRef.value?.duration) {
           modalVideoRef.value.currentTime = newValue;
           sliderValue.value = (newValue / modalVideoRef.value.duration) * 100;
@@ -83,17 +76,7 @@
     { immediate: true }
   );
 
-  // Watch for video load to set initial timestamp
-  watch(
-    () => videoRef?.value?.duration,
-    (newDuration) => {
-      if (newDuration && props.initialVideoTimestamp !== undefined) {
-        videoRef.value!.currentTime = props.initialVideoTimestamp;
-        sliderValue.value = (props.initialVideoTimestamp / newDuration) * 100;
-      }
-    }
-  );
-
+  // Remove watch for main video load
   // Watch for modal video load to set initial timestamp
   watch(
     () => modalVideoRef.value?.duration,
@@ -146,16 +129,14 @@
     } else {
       video.currentTime = newTime;
     }
-
-    lastSelectedTime.value = newTime;
   };
 
   const captureCoverImage = () => {
     if (!modalVideoRef.value) return;
     const video = modalVideoRef.value;
     const timestamp = video.currentTime;
-    lastSelectedTime.value = timestamp;
-    emit('update:timestamp', timestamp);
+    editorDataStore.selectedPost.value.videoTimestamp = timestamp;
+    props.debouncedSave();
     showCoverModal.value = false;
   };
 
@@ -381,27 +362,7 @@
           </template>
         </div>
 
-        <!-- Controls -->
-        <div v-if="props.currentMediaType === 'video'" class="mt-2 px-2">
-          <div class="relative">
-            <input
-              type="range"
-              v-model="videoProgress"
-              min="0"
-              max="100"
-              step="0.1"
-              @input="onVideoProgressChange"
-              class="w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-gray-200 [&::-webkit-slider-runnable-track]:shadow-inner dark:[&::-webkit-slider-runnable-track]:bg-gray-700 [&::-webkit-slider-thumb]:-mt-[4px] [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:shadow-md hover:[&::-webkit-slider-thumb]:bg-blue-600 dark:[&::-webkit-slider-thumb]:border-gray-800"
-            />
-            <div
-              class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400"
-            >
-              {{ formatTime(videoCurrentTime) }} / {{ videoDuration }}
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between gap-4">
+        <div class="mt-[20px] flex items-center justify-between gap-4">
           <button
             v-if="props.currentMediaType === 'video'"
             @click="openCoverModal"
