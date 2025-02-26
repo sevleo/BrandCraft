@@ -642,9 +642,11 @@
         </div>
       </div>
       <div class="mb-[30px] flex w-full items-start justify-between p-2">
-        <div class="flex w-full flex-col items-start justify-start gap-2">
+        <div
+          class="mr-[30px] flex w-full flex-col items-start justify-start gap-2"
+        >
           <!-- Platform buttons container with conditional flex-wrap -->
-          <div class="flex gap-2" :class="{ 'flex-wrap': viewMode === 'full' }">
+          <div class="flex flex-wrap gap-2">
             <PlatformButton
               v-for="account in connectionsDataStore.connectedAccounts.value"
               :key="account.id"
