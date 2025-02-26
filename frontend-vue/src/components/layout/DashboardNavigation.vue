@@ -354,7 +354,7 @@
 
 <template>
   <nav
-    class="fixed bottom-0 left-0 top-0 h-screen w-[270px] border-r border-layoutSoft bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
+    class="fixed bottom-0 left-0 top-0 h-screen w-[260px] border-r border-layoutSoft bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
   >
     <div class="flex h-full flex-col bg-lightWhite">
       <!-- User Profile Section -->

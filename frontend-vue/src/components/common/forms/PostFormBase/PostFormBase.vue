@@ -630,8 +630,8 @@
         /> -->
       </div>
       <!-- View mode toggle -->
-      <div class="flex w-full items-center justify-between p-2">
-        <div class="flex items-center">
+      <div class="flex w-full items-center justify-between p-2 pt-[20px]">
+        <div class="flex items-center self-end">
           <ToggleSlider
             v-model="viewMode"
             leftOption="Compact"
@@ -640,42 +640,7 @@
             rightValue="full"
           />
         </div>
-      </div>
-      <div class="mb-[30px] flex w-full items-start justify-between p-2">
-        <div
-          class="mr-[30px] flex w-full flex-col items-start justify-start gap-2"
-        >
-          <!-- Platform buttons container with conditional flex-wrap -->
-          <div class="flex flex-wrap gap-2">
-            <PlatformButton
-              v-for="account in connectionsDataStore.connectedAccounts.value"
-              :key="account.id"
-              :account="account"
-              :show-username="viewMode === 'full'"
-              :is-selected="
-                editorDataStore.selectedPost.value?.platforms.includes(
-                  account.platform === 'twitter'
-                    ? `twitter-${account.id}`
-                    : account.platform === 'threads'
-                      ? `threads-${account.id}`
-                      : account.platform === 'bluesky'
-                        ? `bluesky-${account.id}`
-                        : account.platform === 'mastodon'
-                          ? `mastodon-${account.id}`
-                          : account.platform === 'tiktok'
-                            ? `tiktok-${account.id}`
-                            : account.platform === 'instagram'
-                              ? `instagram-${account.id}`
-                              : account.platform === 'youtube'
-                                ? `youtube-${account.id}`
-                                : account.platform
-                )
-              "
-              :onClick="() => togglePlatform(account)"
-            />
-          </div>
-        </div>
-        <div class="flex h-[38px] items-start justify-start">
+        <div class="ml-auto flex h-[38px] items-start justify-start">
           <DatePicker
             v-model="getScheduledDate"
             @hide="handleDateChange"
@@ -722,6 +687,44 @@
             <Loader2 class="h-4 w-4 animate-spin" />
           </template>
         </button>
+      </div>
+
+      <div
+        class="mb-[30px] flex w-full max-w-[800px] items-start justify-between p-2"
+      >
+        <div
+          class="mr-[30px] flex w-full flex-col items-start justify-start gap-2"
+        >
+          <!-- Platform buttons container with conditional flex-wrap -->
+          <div class="flex flex-wrap gap-2">
+            <PlatformButton
+              v-for="account in connectionsDataStore.connectedAccounts.value"
+              :key="account.id"
+              :account="account"
+              :show-username="viewMode === 'full'"
+              :is-selected="
+                editorDataStore.selectedPost.value?.platforms.includes(
+                  account.platform === 'twitter'
+                    ? `twitter-${account.id}`
+                    : account.platform === 'threads'
+                      ? `threads-${account.id}`
+                      : account.platform === 'bluesky'
+                        ? `bluesky-${account.id}`
+                        : account.platform === 'mastodon'
+                          ? `mastodon-${account.id}`
+                          : account.platform === 'tiktok'
+                            ? `tiktok-${account.id}`
+                            : account.platform === 'instagram'
+                              ? `instagram-${account.id}`
+                              : account.platform === 'youtube'
+                                ? `youtube-${account.id}`
+                                : account.platform
+                )
+              "
+              :onClick="() => togglePlatform(account)"
+            />
+          </div>
+        </div>
       </div>
       <div class="flex w-full items-start justify-start gap-4">
         <!-- Middle Component -->
@@ -871,9 +874,7 @@
             </div>
           </div>
         </div>
-        <div class="divider w-[0px] self-stretch bg-layoutSoft"></div>
-        <!-- Right Component -->
-        <div class="flex w-[350px] flex-shrink-0 flex-col gap-2 p-2">test</div>
+        <!-- <div class="divider w-[0px] self-stretch bg-layoutSoft"></div> -->
       </div>
     </div>
   </transition>

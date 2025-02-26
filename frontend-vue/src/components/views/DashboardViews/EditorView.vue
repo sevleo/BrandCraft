@@ -54,7 +54,7 @@
 
 <template>
   <main
-    class="ml-[270px] flex h-auto items-center justify-start bg-[white] dark:bg-[#121212]"
+    class="ml-[260px] mr-[260px] flex h-auto items-center justify-start bg-[white] dark:bg-[#121212]"
   >
     <DashboardNavigation />
 
@@ -84,7 +84,7 @@
       >
         <div
           v-if="!isLoading"
-          class="relative flex min-h-[100vh] w-full flex-grow items-start justify-center pt-[30px]"
+          class="relative flex min-h-[100vh] w-full flex-grow items-start justify-center"
         >
           <div
             v-if="showProgress"
@@ -144,5 +144,6 @@
         <Loader2 class="h-8 w-8 animate-spin stroke-[green]" />
       </div>
     </transition>
+    <div class="fixed bottom-0 right-0 top-0 w-[260px] bg-[red]">test</div>
   </main>
 </template>
