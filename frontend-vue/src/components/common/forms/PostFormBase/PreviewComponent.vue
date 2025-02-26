@@ -8,14 +8,13 @@
     X,
     Video,
   } from 'lucide-vue-next';
-  import { ref, watch } from 'vue';
+  import { ref, watch, onMounted } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
 
   const isHoveringVideo = ref(false);
   const isVideoPlaying = ref(false);
   const isVideoVertical = ref(true);
   const videoDuration = ref<string>('');
-  const videoRef = ref<HTMLVideoElement | null>(null);
   const modalVideoRef = ref<HTMLVideoElement | null>(null);
   const showCoverModal = ref(false);
   const sliderValue = ref(0);
@@ -40,14 +39,33 @@
   }>();
 
   const emit = defineEmits<{
-    (e: 'update:videoRef', videoRef: HTMLVideoElement | null): void;
     (e: 'update:timestamp', timestamp: number): void;
   }>();
 
-  // Emit the videoRef when it changes
-  watch(videoRef, (newVideoRef) => {
-    emit('update:videoRef', newVideoRef);
-  });
+  const videoRef = ref<HTMLVideoElement | null>(null);
+
+  // Handle video load
+  const handleVideoLoad = () => {
+    if (!videoRef?.value) return;
+    console.log('Video loaded:', videoRef.value);
+
+    // Set initial timestamp if provided
+    if (props.initialVideoTimestamp !== undefined && videoRef?.value.duration) {
+      videoRef.value.currentTime = props.initialVideoTimestamp;
+      sliderValue.value =
+        (props.initialVideoTimestamp / videoRef.value.duration) * 100;
+    }
+
+    // Start progress tracking
+    const video = videoRef.value;
+    isVideoVertical.value = video.videoHeight > video.videoWidth;
+
+    // Format duration
+    const duration = video.duration;
+    const minutes = Math.floor(duration / 60);
+    const seconds = Math.floor(duration % 60);
+    videoDuration.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   // Set initial timestamp if provided
   watch(
@@ -58,7 +76,7 @@
         currentTimeFormatted.value = formatTime(newValue);
 
         // Update video position if video is already loaded
-        if (videoRef.value?.duration) {
+        if (videoRef?.value?.duration) {
           videoRef.value.currentTime = newValue;
           sliderValue.value = (newValue / videoRef.value.duration) * 100;
         }
@@ -73,7 +91,7 @@
 
   // Watch for video load to set initial timestamp
   watch(
-    () => videoRef.value?.duration,
+    () => videoRef?.value?.duration,
     (newDuration) => {
       if (newDuration && props.initialVideoTimestamp !== undefined) {
         videoRef.value!.currentTime = props.initialVideoTimestamp;
@@ -93,46 +111,10 @@
     }
   );
 
-  const toggleVideo = () => {
-    if (!videoRef.value) return;
-
-    if (videoRef.value.paused) {
-      console.log(videoRef.value);
-      videoRef.value.play();
-      isVideoPlaying.value = true;
-    } else {
-      videoRef.value.pause();
-      isVideoPlaying.value = false;
-    }
-  };
-
-  const handleVideoLoad = () => {
-    if (!videoRef.value) return;
-
-    // Set initial timestamp if provided
-    if (props.initialVideoTimestamp !== undefined && videoRef.value.duration) {
-      videoRef.value.currentTime = props.initialVideoTimestamp;
-      sliderValue.value =
-        (props.initialVideoTimestamp / videoRef.value.duration) * 100;
-    }
-
-    // Start progress tracking
-    videoRef.value.addEventListener('timeupdate', updateVideoProgress);
-
-    isVideoVertical.value =
-      videoRef.value.videoHeight > videoRef.value.videoWidth;
-
-    // Format duration
-    const duration = videoRef.value.duration;
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    videoDuration.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
-
   const openCoverModal = () => {
-    if (!videoRef.value) return;
+    if (!videoRef?.value) return;
     showCoverModal.value = true;
-    videoRef.value.pause();
+    videoRef?.value.pause();
     isVideoPlaying.value = false;
   };
 
@@ -184,14 +166,14 @@
   };
 
   const updateVideoProgress = () => {
-    if (!videoRef.value) return;
-    videoCurrentTime.value = videoRef.value.currentTime;
+    if (!videoRef?.value) return;
+    videoCurrentTime.value = videoRef?.value.currentTime;
     videoProgress.value =
-      (videoRef.value.currentTime / videoRef.value.duration) * 100;
+      (videoRef?.value.currentTime / videoRef?.value.duration) * 100;
   };
 
   const onVideoProgressChange = () => {
-    if (!videoRef.value) return;
+    if (!videoRef?.value) return;
     const newTime = (videoProgress.value / 100) * videoRef.value.duration;
     videoRef.value.currentTime = newTime;
     videoCurrentTime.value = newTime;
@@ -242,15 +224,10 @@
     },
     { deep: true }
   );
-  watch(
-    () => props.mediaPreviewUrls[0],
-    (newUrl) => {
-      if (videoRef.value && newUrl) {
-        videoRef.value.src = newUrl;
-        videoRef.value.load(); // Ensure the video is properly loaded
-      }
-    }
-  );
+
+  onMounted(() => {
+    console.log(videoRef.value);
+  });
 </script>
 
 <template>
@@ -258,8 +235,6 @@
     id="preview-panel"
     class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
   >
-    {{ props.mediaPreviewUrls[0] }}
-
     <div class="flex w-full flex-col items-center justify-start">
       <div class="preview-container flex w-full flex-col">
         <div class="relative h-fit overflow-hidden rounded-lg bg-black">
@@ -273,7 +248,6 @@
             >
               <video
                 ref="videoRef"
-                :key="`${props.mediaPreviewUrls[0]}`"
                 :src="props.mediaPreviewUrls[0]"
                 @timeupdate="updateVideoProgress"
                 class="h-full w-full"
@@ -282,7 +256,6 @@
                   'object-contain': !isVideoVertical,
                 }"
                 controls
-                @click="toggleVideo"
                 @loadedmetadata="handleVideoLoad"
               ></video>
               <!-- Remove Button -->

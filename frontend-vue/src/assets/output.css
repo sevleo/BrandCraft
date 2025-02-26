@@ -3134,6 +3134,11 @@ body {
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
 
+.dark\:border-gray-700:is(.dark *) {
+  --tw-border-opacity: 1;
+  border-color: rgb(55 65 81 / var(--tw-border-opacity, 1));
+}
+
 .dark\:bg-\[\#121212\]:is(.dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(18 18 18 / var(--tw-bg-opacity, 1));

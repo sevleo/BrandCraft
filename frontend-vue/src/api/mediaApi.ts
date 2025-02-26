@@ -79,12 +79,12 @@ export async function uploadVideoToS3(
         eventSource.close();
         await postsStore.getAllPostGroups();
         // Refresh the selected post in editor store with updated data
-        const updatedPost = postsStore.postGroups.value.find(
-          post => post._id === editorDataStore.selectedPost.value?._id
-        );
-        if (updatedPost) {
-          await editorDataStore.selectPost(updatedPost);
-        }
+        // const updatedPost = postsStore.postGroups.value.find(
+        //   (post) => post._id === editorDataStore.selectedPost.value?._id
+        // );
+        // if (updatedPost) {
+        //   await editorDataStore.selectPost(updatedPost);
+        // }
         resolve(sessionId);
       }
 

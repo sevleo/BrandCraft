@@ -22,6 +22,7 @@
   import editorDataStore from '@/utils/editorDataStore';
 
   const toast = useToast();
+  // const videoRef = ref<HTMLVideoElement | null>(null);
 
   const isLoading = ref(true);
   const isSaving = ref(false);
@@ -30,117 +31,112 @@
   );
 
   const replicatedValue = ref('');
-  const videoRef = ref<HTMLVideoElement | null>(null);
-
-  const handleVideoRefUpdate = (ref: HTMLVideoElement | null) => {
-    videoRef.value = ref;
-  };
 
   const handleTimestampUpdate = (timestamp: number) => {
     editorDataStore.selectedPost.value.videoTimestamp = timestamp;
   };
 
-  const validationErrors = computed(() => {
-    const errors = [];
+  // const validationErrors = computed(() => {
+  //   const errors = [];
 
-    // Check if media is currently uploading
-    if (editorDataStore.isUploading.value) {
-      errors.push('Please wait for media upload to complete');
-    }
+  //   // Check if media is currently uploading
+  //   if (editorDataStore.isUploading.value) {
+  //     errors.push('Please wait for media upload to complete');
+  //   }
 
-    // TikTok errors
-    if (
-      editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-        p.startsWith('tiktok')
-      )
-    ) {
-      // 1. Check if media is uploaded
-      if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
-        errors.push('Please upload a video for your TikTok post');
-      } else if (
-        editorDataStore.currentMediaType.value === 'video' &&
-        !isVideoDurationValid.value
-      ) {
-        const maxDuration =
-          connectionsDataStore.tiktokAccount.value?.creatorInfo
-            .max_video_post_duration_sec;
-        errors.push(
-          `Video duration exceeds maximum allowed length of ${maxDuration} seconds`
-        );
-      } else if (editorDataStore.currentMediaType.value === 'image') {
-        errors.push('Images are not supported for TikTok posts');
-      }
+  //   // TikTok errors
+  //   if (
+  //     editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+  //       p.startsWith('tiktok')
+  //     )
+  //   ) {
+  //     // 1. Check if media is uploaded
+  //     if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+  //       errors.push('Please upload a video for your TikTok post');
+  //     } else if (
+  //       editorDataStore.currentMediaType.value === 'video' &&
+  //       !isVideoDurationValid.value
+  //     ) {
+  //       const maxDuration =
+  //         connectionsDataStore.tiktokAccount.value?.creatorInfo
+  //           .max_video_post_duration_sec;
+  //       errors.push(
+  //         `Video duration exceeds maximum allowed length of ${maxDuration} seconds`
+  //       );
+  //     } else if (editorDataStore.currentMediaType.value === 'image') {
+  //       errors.push('Images are not supported for TikTok posts');
+  //     }
 
-      // 2. Check if viewer setting is selected
-      // if (!editorDataStore.tiktokSettings.value.viewerSetting) {
-      //   errors.push('Please select who can view your post');
-      // }
+  //     // 2. Check if viewer setting is selected
+  //     if (!editorDataStore.tiktokSettings.value.viewerSetting) {
+  //       errors.push('Please select who can view your post');
+  //     }
 
-      // 3. Check commercial content settings
-      // if (
-      //   editorDataStore.tiktokSettings.value.commercialContent &&
-      //   !editorDataStore.tiktokSettings.value.brandOrganic &&
-      //   !editorDataStore.tiktokSettings.value.brandedContent
-      // ) {
-      //   errors.push(
-      //     'You need to indicate if your content promotes yourself, a third party, or both.'
-      //   );
-      // }
-    }
+  //     // 3. Check commercial content settings
+  //     if (
+  //       editorDataStore.tiktokSettings.value.commercialContent &&
+  //       !editorDataStore.tiktokSettings.value.brandOrganic &&
+  //       !editorDataStore.tiktokSettings.value.brandedContent
+  //     ) {
+  //       errors.push(
+  //         'You need to indicate if your content promotes yourself, a third party, or both.'
+  //       );
+  //     }
+  //   }
 
-    // Instagram errors
-    if (
-      editorDataStore.selectedPost.value?.platforms.some((p: any) =>
-        p.startsWith('instagram')
-      )
-    ) {
-      // 1. Check if media is uploaded
-      if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
-        errors.push('Please upload a video or image for your Instagram post');
-      }
+  //   // Instagram errors
+  //   if (
+  //     editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+  //       p.startsWith('instagram')
+  //     )
+  //   ) {
+  //     // 1. Check if media is uploaded
+  //     if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+  //       errors.push('Please upload a video or image for your Instagram post');
+  //     }
 
-      // 2. Check video duration limits for Reels and Stories
-      if (
-        editorDataStore.currentMediaType.value === 'video' &&
-        videoRef.value
-      ) {
-        const duration = Math.floor(videoRef.value.duration);
-        const maxDuration =
-          editorDataStore.selectedPost.value?.platformSettings.instagram!
-            .videoType === 'REELS'
-            ? 900
-            : 60;
-        const durationText =
-          editorDataStore.selectedPost.value?.platformSettings.instagram!
-            .videoType === 'REELS'
-            ? '15 minutes'
-            : '1 minute';
+  //     // 2. Check video duration limits for Reels and Stories
+  //     if (
+  //       editorDataStore.currentMediaType.value === 'video' &&
+  //       videoRef.value
+  //     ) {
+  //       const duration = Math.floor(videoRef.value.duration);
+  //       const maxDuration =
+  //         editorDataStore.selectedPost.value?.platformSettings.instagram!
+  //           .videoType === 'REELS'
+  //           ? 900
+  //           : 60;
+  //       const durationText =
+  //         editorDataStore.selectedPost.value?.platformSettings.instagram!
+  //           .videoType === 'REELS'
+  //           ? '15 minutes'
+  //           : '1 minute';
 
-        if (duration > maxDuration) {
-          errors.push(
-            `Video duration exceeds maximum allowed length of ${durationText} for Instagram ${editorDataStore.selectedPost.value?.platformSettings.instagram!.videoType.toLowerCase()}`
-          );
-        }
-      }
-    }
+  //       if (duration > maxDuration) {
+  //         errors.push(
+  //           `Video duration exceeds maximum allowed length of ${durationText} for Instagram ${editorDataStore.selectedPost.value?.platformSettings.instagram!.videoType.toLowerCase()}`
+  //         );
+  //       }
+  //     }
+  //   }
 
-    return errors;
-  });
+  //   return errors;
+  // });
 
-  const isVideoDurationValid = computed(() => {
-    if (
-      editorDataStore.uploadProgress.value < 100 ||
-      !videoRef.value ||
-      editorDataStore.currentMediaType.value !== 'video'
-    ) {
-      return true; // Assume valid while upload is in progress or metadata isn't loaded
-    }
-    const maxDuration =
-      connectionsDataStore.tiktokAccount.value?.creatorInfo
-        .max_video_post_duration_sec || Infinity;
+  // const isVideoDurationValid = computed(() => {
+  //   if (
+  //     editorDataStore.uploadProgress.value < 100 ||
+  //     !videoRef.value ||
+  //     editorDataStore.currentMediaType.value !== 'video'
+  //   ) {
+  //     return true; // Assume valid while upload is in progress or metadata isn't loaded
+  //   }
+  //   const maxDuration =
+  //     connectionsDataStore.tiktokAccount.value?.creatorInfo
+  //       .max_video_post_duration_sec || Infinity;
 
-    return Math.floor(videoRef.value.duration) <= maxDuration;
-  });
+  //   return Math.floor(videoRef.value.duration) <= maxDuration;
+  // });
 
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
@@ -704,7 +700,6 @@
                     :initial-video-timestamp="
                       editorDataStore.selectedPost.value.videoTimestamp
                     "
-                    @update:videoRef="handleVideoRefUpdate"
                     @update:timestamp="handleTimestampUpdate"
                     :debouncedSave="debouncedSave"
                   />

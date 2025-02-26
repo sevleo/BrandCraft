@@ -92,38 +92,40 @@ const reset = () => {
 
 // Select a post without triggering auto-save
 const selectPost = async (post: any) => {
-  isUserEdit.value = false; // Ensure no auto-save triggers
-  selectedPost.value = post;
+  if (post) {
+    isUserEdit.value = false; // Ensure no auto-save triggers
+    selectedPost.value = post;
 
-  // Initialize media URLs with proper null checks
-  selectedPost.value.initialMediaUrls = selectedPost.value.mediaFiles.map(
-    (file: any) => file.url
-  );
-  selectedPost.value.mediaPreviewUrls = selectedPost.value.mediaFiles.map(
-    (file: any) => file.url
-  );
+    // Initialize media URLs with proper null checks
+    selectedPost.value.initialMediaUrls = selectedPost?.value?.mediaFiles?.map(
+      (file: any) => file.url
+    );
+    selectedPost.value.mediaPreviewUrls = selectedPost?.value?.mediaFiles?.map(
+      (file: any) => file.url
+    );
 
-  // Set currentMediaType based on first media file
-  if (
-    selectedPost.value.mediaFiles &&
-    selectedPost.value.mediaFiles.length > 0
-  ) {
-    currentMediaType.value = selectedPost.value.mediaFiles[0].type as
-      | 'image'
-      | 'video';
-  } else {
-    currentMediaType.value = null;
+    // Set currentMediaType based on first media file
+    if (
+      selectedPost.value.mediaFiles &&
+      selectedPost.value.mediaFiles.length > 0
+    ) {
+      currentMediaType.value = selectedPost.value.mediaFiles[0].type as
+        | 'image'
+        | 'video';
+    } else {
+      currentMediaType.value = null;
+    }
+
+    // get creatorInfo for TikTok
+    const tiktokPlatform = selectedPost.value?.platforms?.find((p: any) =>
+      p.startsWith('tiktok')
+    );
+    if (tiktokPlatform) {
+      await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
+    }
+
+    console.log(selectedPost.value);
   }
-
-  // get creatorInfo for TikTok
-  const tiktokPlatform = selectedPost.value?.platforms?.find((p: any) =>
-    p.startsWith('tiktok')
-  );
-  if (tiktokPlatform) {
-    await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
-  }
-
-  console.log(selectedPost.value);
 };
 
 export default {
