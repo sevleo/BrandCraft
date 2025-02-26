@@ -56,7 +56,7 @@
   </div>
 </template>
 
-<style scope>
+<style>
   .icon-container path {
     fill: white !important;
   }

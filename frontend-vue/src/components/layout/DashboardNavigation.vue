@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
+  import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
   import authData from '@/utils/authDataStore';
   import { logout, verifyAuth } from '@/api/authApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
@@ -29,6 +29,7 @@
   import editorDataStore from '@/utils/editorDataStore';
   import { createPostGroup } from '@/helpers/savePostGroup';
   import { deleteScheduledPost } from '@/api/postApi';
+  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
   const themeStore = useThemeStore();
 
@@ -103,6 +104,49 @@
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  // Extract platform name from platform ID string (e.g., "twitter-1234567890" -> "twitter")
+  function getPlatformName(platformId: string): string {
+    if (!platformId) return '';
+    // Split by hyphen and take the first part
+    return platformId.split('-')[0];
+  }
+
+  // Get account data for a platform
+  function getAccountForPlatform(platformId: string) {
+    const platformName = getPlatformName(platformId);
+    const accounts = connectionsDataStore.connectedAccounts.value;
+
+    // Find account that matches the platform and has the platformId
+    return accounts.find(
+      (account: any) =>
+        account.platform === platformName && platformId.includes(account.id)
+    );
+  }
+
+  // Get platform icon based on platform name
+  function getPlatformIcon(platformName: string): string[] {
+    switch (platformName) {
+      case 'twitter':
+        return ['fab', 'x-twitter'];
+      case 'threads':
+        return ['fab', 'threads'];
+      case 'bluesky':
+        return ['fab', 'bluesky'];
+      case 'instagram':
+        return ['fab', 'instagram'];
+      case 'tiktok':
+        return ['fab', 'tiktok'];
+      case 'youtube':
+        return ['fab', 'youtube'];
+      case 'mastodon':
+        return ['fab', 'mastodon'];
+      case 'facebook':
+        return ['fab', 'facebook'];
+      default:
+        return ['fas', 'link'];
+    }
   }
 
   // Close dropdown when clicking outside
@@ -218,14 +262,72 @@
     deletingPostId.value = null;
   };
 
+  // Platform popup state
+  const showPlatformPopup = ref(false);
+  const activePopupPlatforms = ref<string[]>([]);
+  const popupPosition = ref({ bottom: '0px', left: '0px' });
+  const arrowPosition = ref({ left: '50%' });
+
+  // Show platform popup
+  function showPopup(event: MouseEvent, platforms: string[]) {
+    const target = event.currentTarget as HTMLElement;
+    activePopupPlatforms.value = platforms;
+
+    nextTick(() => {
+      const targetRect = target.getBoundingClientRect();
+
+      // Position above the target with some margin
+      popupPosition.value.bottom = `${window.innerHeight - targetRect.top + 10}px`;
+
+      // Center horizontally relative to the target
+      const initialLeft = targetRect.left + targetRect.width / 2;
+
+      // We'll adjust this after the popup is rendered and we know its width
+      popupPosition.value.left = `${initialLeft}px`;
+
+      // Show the popup
+      showPlatformPopup.value = true;
+
+      // After popup is visible, adjust position based on its width
+      nextTick(() => {
+        const popup = document.querySelector('.platform-popup') as HTMLElement;
+        if (popup) {
+          const popupWidth = popup.offsetWidth;
+          popupPosition.value.left = `${initialLeft - popupWidth / 2}px`;
+
+          // Make sure the popup doesn't go off-screen to the left
+          if (parseFloat(popupPosition.value.left) < 10) {
+            popupPosition.value.left = '10px';
+          }
+
+          // Make sure the popup doesn't go off-screen to the right
+          if (
+            parseFloat(popupPosition.value.left) + popupWidth >
+            window.innerWidth - 10
+          ) {
+            popupPosition.value.left = `${window.innerWidth - popupWidth - 10}px`;
+          }
+
+          // Position the arrow
+          arrowPosition.value.left = `${targetRect.left + targetRect.width / 2 - parseFloat(popupPosition.value.left)}px`;
+        }
+      });
+    });
+  }
+
+  // Hide platform popup
+  function hidePopup() {
+    showPlatformPopup.value = false;
+  }
+
   onMounted(async () => {
     await verifyAuth();
     document.addEventListener('click', handleClickOutside);
-    await postsStore.getAllPostGroups();
+    await Promise.all([
+      postsStore.getAllPostGroups(),
+      connectionsDataStore.getAllAccounts(),
+    ]);
     if (editorDataStore.selectedPost.value._id === '') {
-      console.log('test');
-      console.log(sortedDraftPosts.value[0]);
-
       editorDataStore.selectPost(sortedDraftPosts.value[0]);
     }
   });
@@ -397,7 +499,7 @@
               }"
             >
               <div
-                class="relative flex h-[80px] flex-col justify-between border-l-[5px] px-4 py-2"
+                class="relative flex h-[90px] flex-col justify-between border-l-[5px] px-4 py-2"
                 :class="{
                   'border-l-[#00e676]': post._id === selectedPostId,
                   'border-l-transparent': post._id !== selectedPostId,
@@ -405,7 +507,7 @@
               >
                 <!-- Post Content -->
                 <div
-                  class="mb-2 line-clamp-2 text-sm text-gray-700 dark:text-gray-300"
+                  class="line-clamp-2 text-sm text-gray-700 dark:text-gray-300"
                 >
                   <p v-if="post.content">
                     {{ post.content }}
@@ -414,7 +516,7 @@
                 </div>
 
                 <!-- Post Details -->
-                <div class="flex items-center justify-end text-xs">
+                <div class="flex items-center justify-between text-xs">
                   <!-- Scheduled Time -->
                   <div
                     class="flex items-center text-gray-500 dark:text-gray-400"
@@ -423,15 +525,43 @@
                   </div>
 
                   <!-- Platforms -->
-                  <div class="flex items-center space-x-1">
-                    <Instagram
-                      v-if="post.platforms?.includes('instagram')"
-                      class="h-3 w-3 text-gray-500 dark:text-gray-400"
-                    />
-                    <Youtube
-                      v-if="post.platforms?.includes('youtube')"
-                      class="h-3 w-3 text-gray-500 dark:text-gray-400"
-                    />
+                  <div class="ml-2 flex items-center gap-1">
+                    <div
+                      v-for="(platformId, index) in post.platforms.slice(0, 3)"
+                      :key="platformId"
+                      class="relative"
+                    >
+                      <div class="h-6 w-6 rounded-full bg-gray-200">
+                        <img
+                          v-if="
+                            getAccountForPlatform(platformId)?.profileImageUrl
+                          "
+                          :src="
+                            getAccountForPlatform(platformId)?.profileImageUrl
+                          "
+                          class="h-6 w-6 rounded-full object-cover"
+                          :alt="getPlatformName(platformId)"
+                        />
+                      </div>
+                      <div
+                        class="icon-container absolute bottom-0 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-black bg-black"
+                      >
+                        <FontAwesomeIcon
+                          :icon="getPlatformIcon(getPlatformName(platformId))"
+                          class="h-[8px] stroke-white"
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Show "+" indicator if there are more than 3 platforms -->
+                    <div
+                      v-if="post.platforms.length > 3"
+                      class="platform-more-container relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-gray-300 text-xs font-medium hover:bg-gray-400"
+                      @mouseenter="showPopup($event, post.platforms)"
+                      @mouseleave="hidePopup"
+                    >
+                      +{{ post.platforms.length - 3 }}
+                    </div>
                   </div>
                 </div>
                 <button
@@ -531,7 +661,81 @@
       </div>
     </div>
   </nav>
+  <teleport to="body">
+    <!-- Hover popup to show all platforms -->
+    <div
+      v-if="showPlatformPopup"
+      class="platform-popup fixed z-[9999] mb-2 w-max rounded-md border border-gray-200 bg-white p-2 shadow-md dark:border-gray-700 dark:bg-[#212121]"
+      :style="{
+        bottom: popupPosition.bottom,
+        left: popupPosition.left,
+        'transform-origin': 'bottom center',
+      }"
+      @mouseenter="showPlatformPopup = true"
+      @mouseleave="showPlatformPopup = false"
+    >
+      <div class="flex flex-col gap-2">
+        <div
+          v-for="platformId in activePopupPlatforms"
+          :key="platformId"
+          class="flex items-center gap-2"
+        >
+          <div class="relative">
+            <div class="h-6 w-6 rounded-full bg-gray-200">
+              <img
+                v-if="getAccountForPlatform(platformId)?.profileImageUrl"
+                :src="getAccountForPlatform(platformId)?.profileImageUrl"
+                class="h-6 w-6 rounded-full object-cover"
+                :alt="getPlatformName(platformId)"
+              />
+            </div>
+            <div
+              class="icon-container absolute bottom-0 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-black bg-black"
+            >
+              <FontAwesomeIcon
+                :icon="getPlatformIcon(getPlatformName(platformId))"
+                class="h-[8px] stroke-white"
+              />
+            </div>
+          </div>
+          <span class="text-xs">{{
+            getAccountForPlatform(platformId)?.username ||
+            getPlatformName(platformId)
+          }}</span>
+        </div>
+      </div>
+      <div
+        class="platform-popup-arrow"
+        style="pointer-events: none"
+        :style="{ left: arrowPosition.left }"
+      ></div>
+    </div>
+  </teleport>
 </template>
+
+<style>
+  /* Platform popup styles - moved outside scoped to affect teleported elements */
+  .platform-popup {
+    max-height: 80vh;
+    overflow-y: hidden;
+  }
+
+  /* Triangle indicator for popup */
+  .platform-popup-arrow {
+    position: absolute;
+    bottom: -6px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid white;
+    pointer-events: none;
+  }
+
+  .dark .platform-popup-arrow {
+    border-top-color: #212121;
+  }
+</style>
 
 <style scoped>
   .sidebar-scrollable {
