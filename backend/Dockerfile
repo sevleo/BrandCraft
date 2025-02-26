@@ -6,11 +6,11 @@ USER root
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Install Node.js and necessary build tools for Whisper
+# Install Node.js, npm, and necessary build tools
 RUN apt-get update && \
     apt-get install -y curl gnupg build-essential git ffmpeg && \
     curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs && \
+    apt-get install -y nodejs npm && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -34,6 +34,9 @@ ENV NODE_ENV=production
 
 # Copy package.json and package-lock.json files, if they exist
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+
+RUN node -v && npm -v
+
 
 # Install Node.js dependencies
 RUN npm install --production --silent && mv node_modules ../
