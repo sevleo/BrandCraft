@@ -901,6 +901,18 @@ video {
   margin-top: 50px;
 }
 
+.mb-\[230px\] {
+  margin-bottom: 230px;
+}
+
+.mb-\[270px\] {
+  margin-bottom: 270px;
+}
+
+.mb-\[290px\] {
+  margin-bottom: 290px;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -2307,6 +2319,14 @@ video {
 
 .pt-\[30px\] {
   padding-top: 30px;
+}
+
+.pr-1 {
+  padding-right: 0.25rem;
+}
+
+.pr-\[5px\] {
+  padding-right: 5px;
 }
 
 .text-left {

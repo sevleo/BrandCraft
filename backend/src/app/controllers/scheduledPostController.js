@@ -49,7 +49,7 @@ exports.updatePostGroup = async (req, res) => {
         userId,
       },
       {
-        status: "pending",
+        status: status,
         $currentDate: { updatedAt: true },
       },
       { new: true }

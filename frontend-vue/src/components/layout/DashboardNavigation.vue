@@ -457,7 +457,7 @@
         </div>
         <div
           @click="handleCreateDraft"
-          class="group flex h-[80px] cursor-pointer items-start border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
+          class="group flex h-[50px] cursor-pointer items-center border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-100 hover:bg-white"
         >
           <div class="flex items-center">
             <component
@@ -507,7 +507,7 @@
               >
                 <!-- Post Content -->
                 <div
-                  class="line-clamp-2 text-sm text-gray-700 dark:text-gray-300"
+                  class="line-clamp-2 pr-[5px] text-sm text-gray-700 dark:text-gray-300"
                 >
                   <p v-if="post.content">
                     {{ post.content }}
@@ -739,7 +739,7 @@
 
 <style scoped>
   .sidebar-scrollable {
-    max-height: calc(100vh - 447px);
+    max-height: calc(100vh - 417px);
     overflow-y: auto;
   }
 
