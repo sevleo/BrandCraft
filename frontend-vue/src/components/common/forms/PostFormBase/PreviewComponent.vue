@@ -197,11 +197,8 @@
       editorDataStore.selectedPost.value.mediaPreviewUrls[index]
     );
     editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
-
-    // Only remove from selectedMedia if it's not an initial media
-    if (!isInitialMedia) {
-      editorDataStore.selectedMedia.value.splice(index, 1);
-    }
+    editorDataStore.selectedPost.value.mediaFiles.splice(index, 1);
+    editorDataStore.selectedMedia.value.splice(index, 1);
 
     // Reset currentMediaType if no media left
     if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
@@ -261,7 +258,9 @@
   >
     <div class="flex w-full flex-col items-center justify-start">
       <div class="preview-container flex w-full flex-col">
-        <div class="relative h-fit overflow-hidden rounded-lg bg-black">
+        <div
+          class="relative h-[640px] w-[360px] overflow-hidden rounded-lg bg-black"
+        >
           <!-- Video Preview -->
 
           <template
