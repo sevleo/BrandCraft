@@ -470,7 +470,7 @@
       } finally {
         isSaving.value = false;
       }
-    }, 1000); // 0.5 second delay
+    }, 300); // 0.3 second delay
   };
 
   onMounted(async () => {
@@ -507,15 +507,12 @@
       :key="postKey"
       class="transition-container flex w-full max-w-[1000px] flex-col items-start justify-start gap-4"
     >
-      <p>{{ editorDataStore.isUserEdit }}</p>
-      <p>1 - {{ editorDataStore.selectedPost.value }}</p>
-
       <!-- Loading Indicator -->
       <div
         v-if="isSaving"
         class="saving-indicator absolute left-4 top-4 flex items-center gap-2 text-blue-500"
       >
-        <Loader2 class="h-4 w-4 animate-spin stroke-[green]" />
+        <Loader2 class="h-4 w-4 animate-spin stroke-[gray]" />
         <!-- <LoopingRhombusesSpinner
           :animation-duration="1500"
           :rhombus-size="8"
@@ -536,6 +533,7 @@
         <button @click="() => handleSave()">Save</button>
       </div>
       <div class="flex w-full items-start justify-start gap-4">
+        <!-- Left Component -->
         <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">
           <PlatformButton
             v-for="account in connectionsDataStore.connectedAccounts.value"
@@ -565,7 +563,7 @@
         </div>
 
         <div class="divider w-[1px] self-stretch bg-layoutSoft"></div>
-        <!-- Left Component (Scheduling Form) -->
+        <!-- Middle Component -->
         <div
           class="scheduling-form border-greenBG flex h-fit max-w-[800px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
         >
@@ -709,38 +707,41 @@
                 </div>
               </div>
             </div>
-            <p>
-              {{ '_id: ' + editorDataStore.selectedPost.value._id }}
-            </p>
-            <p>
-              {{
-                'mediaFiles: ' + editorDataStore.selectedPost.value.mediaFiles
-              }}
-            </p>
-            <p>
-              {{
-                'mediaPreviewUrls: ' +
-                editorDataStore.selectedPost.value.mediaPreviewUrls
-              }}
-            </p>
-            <p>
-              {{
-                'initialMediaUrls: ' +
-                editorDataStore.selectedPost.value.initialMediaUrls
-              }}
-            </p>
-            <p>
-              {{
-                'currentMediaType: ' + editorDataStore.currentMediaType.value
-              }}
-            </p>
-            <p>{{ 'selectedMedia:' + editorDataStore.selectedMedia.value }}</p>
+            <!-- <div>
+              <p>
+                {{ '_id: ' + editorDataStore.selectedPost.value._id }}
+              </p>
+              <p>
+                {{
+                  'mediaFiles: ' + editorDataStore.selectedPost.value.mediaFiles
+                }}
+              </p>
+              <p>
+                {{
+                  'mediaPreviewUrls: ' +
+                  editorDataStore.selectedPost.value.mediaPreviewUrls
+                }}
+              </p>
+              <p>
+                {{
+                  'initialMediaUrls: ' +
+                  editorDataStore.selectedPost.value.initialMediaUrls
+                }}
+              </p>
+              <p>
+                {{
+                  'currentMediaType: ' + editorDataStore.currentMediaType.value
+                }}
+              </p>
+              <p>
+                {{ 'selectedMedia:' + editorDataStore.selectedMedia.value }}
+              </p>
+            </div> -->
           </div>
         </div>
         <div class="divider w-[1px] self-stretch bg-layoutSoft"></div>
+        <!-- Right Component -->
         <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">test</div>
-
-        <!-- Right Component (Preview) -->
       </div>
     </div>
   </transition>

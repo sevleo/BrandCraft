@@ -60,14 +60,14 @@
       >
         <div
           v-if="!isLoading"
-          :class="'relative flex w-full flex-grow items-center justify-center pt-[30px]'"
+          class="relative flex min-h-[100vh] w-full flex-grow items-start justify-center"
         >
           <div
             v-if="
               editorDataStore.uploadProgress.value > 0 ||
               editorDataStore.processingProgress.value > 0
             "
-            class="fixed left-1/2 top-4 z-50 w-[400px] -translate-x-1/2 transform space-y-3 rounded-lg bg-white p-4 shadow-lg dark:bg-gray-800"
+            class="absolute left-1/2 top-0 z-50 w-[400px] -translate-x-1/2 transform space-y-3 rounded-lg bg-white p-4 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/5"
           >
             <!-- Upload Progress -->
             <div class="space-y-2">
