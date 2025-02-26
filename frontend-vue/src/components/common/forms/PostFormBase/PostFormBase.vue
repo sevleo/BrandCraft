@@ -520,20 +520,8 @@
         /> -->
       </div>
 
-      <div class="flex w-full items-center justify-end p-2">
-        <DatePicker
-          v-model="getScheduledDate"
-          @hide="handleDateChange"
-          showTime
-          showIcon
-          :showSeconds="false"
-          hourFormat="12"
-          class="w-[250px]"
-        />
-      </div>
-      <div class="flex w-full items-start justify-start gap-4">
-        <!-- Left Component -->
-        <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">
+      <div class="flex w-full items-center justify-between p-2">
+        <div class="flex flex-shrink-0 gap-2">
           <PlatformButton
             v-for="account in connectionsDataStore.connectedAccounts.value"
             :key="account.id"
@@ -560,8 +548,17 @@
             :onClick="() => togglePlatform(account)"
           />
         </div>
-
-        <div class="divider w-[0px] self-stretch bg-layoutSoft"></div>
+        <DatePicker
+          v-model="getScheduledDate"
+          @hide="handleDateChange"
+          showTime
+          showIcon
+          :showSeconds="false"
+          hourFormat="12"
+          class="w-[250px]"
+        />
+      </div>
+      <div class="flex w-full items-start justify-start gap-4">
         <!-- Middle Component -->
         <div
           class="scheduling-form border-greenBG flex h-fit max-w-[800px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"

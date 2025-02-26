@@ -12,13 +12,13 @@
 
 <template>
   <div
-    class="group flex cursor-pointer items-center gap-2 rounded-full p-0 transition-all duration-100"
+    class="group flex cursor-pointer items-center rounded-full transition-all duration-100"
     :class="isSelected ? 'bg-gray-100' : ''"
     @click="onClick"
   >
     <button
       type="button"
-      class="relative flex h-[50px] w-[50px] items-center justify-center gap-2 rounded-full text-sm"
+      class="relative flex h-[40px] w-[40px] items-center justify-center rounded-full text-sm"
       :class="[
         isSelected
           ? 'outline outline-[1px] outline-[black] dark:outline-white'
@@ -48,10 +48,10 @@
       </div>
     </button>
     <span
-      class="pr-3 text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-900"
+      class="text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-900"
       :class="{ 'text-gray-900 dark:text-gray-200': isSelected }"
     >
-      {{ account.username }}
+      <!-- {{ account.username }} -->
     </span>
   </div>
 </template>
