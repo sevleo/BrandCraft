@@ -10,9 +10,12 @@
     Smile,
     Loader2,
     MoreHorizontal,
+    Minimize2,
+    Maximize2,
   } from 'lucide-vue-next';
   import 'emoji-picker-element';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
+  import ToggleSlider from '@/components/common/buttons/ToggleSlider.vue';
   import { uploadVideoToS3 } from '@/api/mediaApi';
   import { getCreatorInfo } from '@api/tiktokApi';
   import TikTokPresets from '@/components/common/forms/PostFormBase/TikTokPresets.vue';
@@ -134,13 +137,15 @@
   //   return Math.floor(videoRef.value.duration) <= maxDuration;
   // });
 
-  // Platform buttons view mode (compact or full)
-  const viewMode = ref('compact'); // Default to compact view
+  // Get view mode from localStorage or default to 'compact'
+  const viewMode = ref(localStorage.getItem('postFormViewMode') || 'compact');
+
+  // Watch for changes to viewMode and save to localStorage
+  watch(viewMode, (newValue) => {
+    localStorage.setItem('postFormViewMode', newValue);
+  });
 
   // Toggle between compact and full view for platform buttons
-  const toggleViewMode = () => {
-    viewMode.value = viewMode.value === 'compact' ? 'full' : 'compact';
-  };
 
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
@@ -478,7 +483,7 @@
       } finally {
         isSaving.value = false;
       }
-    }, 300); // 0.3 second delay
+    }, 700); // 0.3 second delay
   };
 
   onMounted(async () => {
@@ -528,38 +533,20 @@
         /> -->
       </div>
 
-      <div class="flex w-full items-center justify-between p-2">
-        <div class="flex w-full flex-col gap-2">
+      <div class="mb-[30px] flex w-full items-start justify-between p-2">
+        <div class="flex w-full flex-col items-start justify-start gap-2">
           <!-- View mode toggle -->
-          <div class="mb-2 flex items-center justify-between">
-            <div class="text-sm text-gray-500">Platform Selection</div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-500">View:</span>
-              <button
-                @click="toggleViewMode"
-                class="rounded-md px-2 py-1 text-xs transition-colors"
-                :class="
-                  viewMode === 'compact'
-                    ? 'bg-gray-200 text-gray-800'
-                    : 'bg-transparent text-gray-500 hover:bg-gray-100'
-                "
-              >
-                Compact
-              </button>
-              <button
-                @click="toggleViewMode"
-                class="rounded-md px-2 py-1 text-xs transition-colors"
-                :class="
-                  viewMode === 'full'
-                    ? 'bg-gray-200 text-gray-800'
-                    : 'bg-transparent text-gray-500 hover:bg-gray-100'
-                "
-              >
-                Full
-              </button>
+          <div class="mb-2 flex w-full items-center justify-between">
+            <div class="flex items-center">
+              <ToggleSlider
+                v-model="viewMode"
+                leftOption="Compact"
+                rightOption="Full"
+                leftValue="compact"
+                rightValue="full"
+              />
             </div>
           </div>
-
           <!-- Platform buttons container with conditional flex-wrap -->
           <div class="flex gap-2" :class="{ 'flex-wrap': viewMode === 'full' }">
             <PlatformButton
@@ -590,15 +577,17 @@
             />
           </div>
         </div>
-        <DatePicker
-          v-model="getScheduledDate"
-          @hide="handleDateChange"
-          showTime
-          showIcon
-          :showSeconds="false"
-          hourFormat="12"
-          class="w-[250px]"
-        />
+        <div class="flex h-auto flex-1 items-start justify-start">
+          <DatePicker
+            v-model="getScheduledDate"
+            @hide="handleDateChange"
+            showTime
+            showIcon
+            :showSeconds="false"
+            hourFormat="12"
+            class="w-[250px]"
+          />
+        </div>
       </div>
       <div class="flex w-full items-start justify-start gap-4">
         <!-- Middle Component -->
@@ -780,7 +769,7 @@
         </div>
         <div class="divider w-[0px] self-stretch bg-layoutSoft"></div>
         <!-- Right Component -->
-        <div class="flex w-[250px] flex-shrink-0 flex-col gap-2 p-2">test</div>
+        <div class="flex w-[350px] flex-shrink-0 flex-col gap-2 p-2">test</div>
       </div>
     </div>
   </transition>

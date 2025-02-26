@@ -5,7 +5,7 @@
     account: any;
     isSelected?: boolean;
     onClick?: () => void;
-    showUsername?: boolean; 
+    showUsername?: boolean;
   }
 
   defineProps<Props>();
@@ -50,7 +50,7 @@
     </button>
     <span
       v-if="showUsername"
-      class="ml-2 text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-900"
+      class="mx-3 text-sm text-gray-500 transition-colors duration-200 group-hover:text-gray-900"
       :class="{ 'text-gray-900 dark:text-gray-200': isSelected }"
     >
       {{ account.username }}
