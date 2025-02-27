@@ -938,6 +938,10 @@ video {
   margin-right: 0px;
 }
 
+.mr-\[20px\] {
+  margin-right: 20px;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -1181,6 +1185,10 @@ video {
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.min-h-\[100\%\] {
+  min-height: 100%;
 }
 
 .w-1\/2 {

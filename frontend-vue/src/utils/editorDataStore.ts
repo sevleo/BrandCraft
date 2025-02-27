@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getCreatorInfo } from '@/api/tiktokApi';
 
 type SelectedPost = {
@@ -79,6 +79,13 @@ const selectedMedia = ref<File[]>([]); // this is newly selected media
 const uploadProgress = ref<number>(0);
 const processingProgress = ref<number>(0);
 const isPanelVisible = ref<boolean>(true); // Track right panel visibility
+const viewMode = ref(localStorage.getItem('postFormViewMode') || 'compact');
+const isSaving = ref(false);
+
+// Watch for changes to viewMode and save to localStorage
+watch(viewMode, (newValue) => {
+  localStorage.setItem('postFormViewMode', newValue);
+});
 
 // ✅ Simple reset
 const reset = () => {
@@ -141,4 +148,6 @@ export default {
   isPanelVisible,
   reset,
   selectPost,
+  viewMode,
+  isSaving,
 };

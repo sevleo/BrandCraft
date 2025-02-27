@@ -1,30 +1,16 @@
 <script setup lang="ts">
   import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
-  import connectionsDataStore from '@/utils/connectionsDataStore';
   import editorDataStore from '@/utils/editorDataStore';
-  import DatePicker from 'primevue/datepicker';
   import {
-    FileEdit,
-    SendHorizonal,
-    Check,
     Loader2,
-    PanelRight,
-    PanelRightClose,
     Smile,
     MoreHorizontal,
-    Minimize2,
-    Maximize2,
-    Calendar,
-    Send,
-    AlertCircle,
     Image as ImageIcon,
     Video,
   } from 'lucide-vue-next';
   import { updatePostGroup } from '@/helpers/savePostGroup';
   import 'emoji-picker-element';
-  import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
-  import ToggleSlider from '@/components/common/buttons/ToggleSlider.vue';
   import { uploadVideoToS3 } from '@/api/mediaApi';
   import { getCreatorInfo } from '@api/tiktokApi';
   import TikTokPresets from '@/components/common/forms/PostFormBase/TikTokPresets.vue';
@@ -36,7 +22,6 @@
   // const videoRef = ref<HTMLVideoElement | null>(null);
 
   const isLoading = ref(true);
-  const isSaving = ref(false);
   const postKey = computed(
     () => editorDataStore.selectedPost?.value._id || 'new'
   );
@@ -145,31 +130,11 @@
   //   return Math.floor(videoRef.value.duration) <= maxDuration;
   // });
 
-  // Get view mode from localStorage or default to 'compact'
-  const viewMode = ref(localStorage.getItem('postFormViewMode') || 'compact');
-
-  // Watch for changes to viewMode and save to localStorage
-  watch(viewMode, (newValue) => {
-    localStorage.setItem('postFormViewMode', newValue);
-  });
-
   // Toggle between compact and full view for platform buttons
 
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
   );
-
-  const getScheduledDate = computed({
-    get: () => {
-      return editorDataStore.selectedPost.value.scheduledTime
-        ? new Date(editorDataStore.selectedPost.value.scheduledTime)
-        : null;
-    },
-    set: (date: Date | null) => {
-      editorDataStore.selectedPost.value.scheduledTime =
-        date?.toISOString() || null;
-    },
-  });
 
   async function handleMediaSelect(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -214,7 +179,7 @@
             (progress) => {
               editorDataStore.uploadProgress.value = progress;
             },
-            isSaving
+            editorDataStore.isSaving
           );
 
           toast.add({
@@ -306,44 +271,6 @@
     input.click();
   };
 
-  const togglePlatform = async (account: any) => {
-    editorDataStore.isUserEdit.value = true;
-
-    const accountId = (() => {
-      switch (account.platform) {
-        case 'twitter':
-          return `twitter-${account.id}`;
-        case 'threads':
-          return `threads-${account.id}`;
-        case 'bluesky':
-          return `bluesky-${account.id}`;
-        case 'mastodon':
-          return `mastodon-${account.id}`;
-        case 'tiktok':
-          return `tiktok-${account.id}`;
-        case 'instagram':
-          return `instagram-${account.id}`;
-        case 'youtube':
-          return `youtube-${account.id}`;
-        default:
-          return account.platform;
-      }
-    })();
-
-    const index =
-      editorDataStore.selectedPost.value?.platforms.indexOf(accountId);
-    if (index === -1) {
-      editorDataStore.selectedPost.value?.platforms.push(accountId);
-    } else {
-      editorDataStore.selectedPost.value?.platforms.splice(index, 1);
-    }
-
-    debouncedSave();
-    if (account.platform === 'tiktok') {
-      await getCreatorInfo(account.id);
-    }
-  };
-
   const showEmojiPicker = ref(false);
   const emojiPickerRef = ref<HTMLDivElement | null>(null);
   const emojiButtonRef = ref<HTMLButtonElement | null>(null);
@@ -421,11 +348,6 @@
     replicatedValue.value = (e.target as HTMLTextAreaElement).value;
   };
 
-  const handleDateChange = () => {
-    editorDataStore.isUserEdit.value = true;
-    debouncedSave();
-  };
-
   // Watch for changes in selectedPost and update editorDataStore
   watch(
     () => editorDataStore.selectedPost.value,
@@ -450,7 +372,7 @@
 
   async function handleSave() {
     try {
-      isSaving.value = true;
+      editorDataStore.isSaving.value = true;
       await updatePostGroup(editorDataStore.selectedMedia.value);
       // toast.add({
       //   severity: 'success',
@@ -467,7 +389,7 @@
         life: 3000,
       });
     } finally {
-      isSaving.value = false;
+      editorDataStore.isSaving.value = false;
     }
   }
 
@@ -482,118 +404,22 @@
     console.log('saving');
 
     // Show saving indicator immediately when typing starts
-    isSaving.value = true;
+    editorDataStore.isSaving.value = true;
 
     // Set new timeout
     saveTimeout = setTimeout(async () => {
       try {
         await handleSave();
       } finally {
-        isSaving.value = false;
+        editorDataStore.isSaving.value = false;
       }
     }, 700); // 0.3 second delay
-  };
-
-  // Schedule button state
-  const scheduleButtonState = ref<
-    'initial' | 'confirm' | 'processing' | 'scheduled'
-  >('initial');
-
-  // Toggle panel visibility function
-  const togglePanelVisibility = () => {
-    editorDataStore.isPanelVisible.value =
-      !editorDataStore.isPanelVisible.value;
-  };
-
-  // Handle scheduling the post
-  const handleSchedule = async () => {
-    // First click - show confirmation
-    if (scheduleButtonState.value === 'initial') {
-      scheduleButtonState.value = 'confirm';
-      return;
-    }
-
-    // Second click - process scheduling
-    if (scheduleButtonState.value === 'confirm') {
-      try {
-        scheduleButtonState.value = 'processing';
-
-        // Update status to scheduled
-        editorDataStore.selectedPost.value.status = 'scheduled';
-
-        // Save the post with the scheduled status
-        await handleSave();
-
-        scheduleButtonState.value = 'scheduled';
-
-        toast.add({
-          severity: 'success',
-          summary: 'Scheduled',
-          detail: 'Post has been scheduled successfully',
-          life: 3000,
-        });
-      } catch (error: any) {
-        console.error('Scheduling error:', error);
-        scheduleButtonState.value = 'initial';
-
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message || 'Failed to schedule post',
-          life: 3000,
-        });
-      }
-    }
-  };
-
-  // Reset confirmation state when mouse leaves the button
-  const handleScheduleButtonMouseLeave = () => {
-    if (scheduleButtonState.value === 'confirm') {
-      scheduleButtonState.value = 'initial';
-    }
-  };
-
-  // Change post back to draft
-  const handleChangeToDraft = async () => {
-    try {
-      scheduleButtonState.value = 'processing';
-
-      // Update status to draft
-      editorDataStore.selectedPost.value.status = 'draft';
-
-      // Save the post with the draft status
-      await handleSave();
-
-      scheduleButtonState.value = 'initial';
-
-      toast.add({
-        severity: 'success',
-        summary: 'Changed to Draft',
-        detail: 'Post has been changed to draft',
-        life: 3000,
-      });
-    } catch (error: any) {
-      console.error('Change to draft error:', error);
-      scheduleButtonState.value = 'scheduled';
-
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: error.message || 'Failed to change post to draft',
-        life: 3000,
-      });
-    }
   };
 
   // Set initial button state based on post status
   onMounted(async () => {
     isLoading.value = false;
     document.addEventListener('click', handleClickOutside);
-
-    // Set schedule button state based on post status
-    if (editorDataStore.selectedPost.value?.status === 'scheduled') {
-      scheduleButtonState.value = 'scheduled';
-    }
 
     // Initialize replicatedValue with current content
     replicatedValue.value = editorDataStore.selectedPost.value?.content || '';
@@ -622,124 +448,14 @@
   <transition name="fade" mode="out-in">
     <div
       v-if="!isLoading"
-      :key="postKey"
       class="transition-container flex w-full max-w-[1100px] flex-col items-start justify-start px-[30px]"
     >
       <!-- Loading Indicator -->
       <div
-        v-if="isSaving"
-        class="saving-indicator absolute left-4 top-4 flex items-center gap-2 text-blue-500"
+        v-if="editorDataStore.isSaving.value"
+        class="saving-indicator absolute bottom-4 left-4 flex items-center gap-2 text-blue-500"
       >
         <Loader2 class="h-4 w-4 animate-spin stroke-[gray]" />
-        <!-- <LoopingRhombusesSpinner
-          :animation-duration="1500"
-          :rhombus-size="8"
-          color="#ff1d5e"
-        /> -->
-      </div>
-      <!-- View mode toggle -->
-      <div class="flex w-full items-start justify-between p-2">
-        <div class="flex w-full flex-col items-start justify-start gap-2">
-          <!-- Platform buttons container with conditional flex-wrap -->
-          <ToggleSlider
-            v-model="viewMode"
-            leftOption="Compact"
-            rightOption="Full"
-            leftValue="compact"
-            rightValue="full"
-          />
-        </div>
-      </div>
-      <div class="mb-[30px] flex w-full items-start justify-between p-2">
-        <div class="flex items-center self-end">
-          <!-- Platform buttons container with conditional flex-wrap -->
-          <div class="flex flex-wrap gap-2">
-            <PlatformButton
-              v-for="account in connectionsDataStore.connectedAccounts.value"
-              :key="account.id"
-              :account="account"
-              :show-username="viewMode === 'full'"
-              :is-selected="
-                editorDataStore.selectedPost.value?.platforms.includes(
-                  account.platform === 'twitter'
-                    ? `twitter-${account.id}`
-                    : account.platform === 'threads'
-                      ? `threads-${account.id}`
-                      : account.platform === 'bluesky'
-                        ? `bluesky-${account.id}`
-                        : account.platform === 'mastodon'
-                          ? `mastodon-${account.id}`
-                          : account.platform === 'tiktok'
-                            ? `tiktok-${account.id}`
-                            : account.platform === 'instagram'
-                              ? `instagram-${account.id}`
-                              : account.platform === 'youtube'
-                                ? `youtube-${account.id}`
-                                : account.platform
-                )
-              "
-              :onClick="() => togglePlatform(account)"
-            />
-          </div>
-        </div>
-        <div class="ml-auto flex h-[38px] items-start justify-start">
-          <DatePicker
-            v-model="getScheduledDate"
-            @hide="handleDateChange"
-            showTime
-            showIcon
-            :showSeconds="false"
-            hourFormat="12"
-            class=""
-          />
-        </div>
-        <button
-          v-if="scheduleButtonState === 'scheduled'"
-          @click="handleChangeToDraft"
-          class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] bg-[#f0f0f0] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#e9e9e9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
-        >
-          Change to Draft
-          <FileEdit class="h-4 w-4" />
-        </button>
-        <button
-          v-else
-          @click="handleSchedule"
-          @mouseleave="handleScheduleButtonMouseLeave"
-          :disabled="scheduleButtonState === 'processing'"
-          :class="{
-            'ml-2 flex h-[38px] items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all': true,
-            'border-[#e9e9e9] text-gray-700 hover:bg-[#f9f9f9] dark:border-[#313131]':
-              scheduleButtonState === 'initial',
-            'bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 border-green-200 dark:border-green-800':
-              scheduleButtonState === 'confirm',
-            'border-[#e9e9e9] bg-[#f0f0f0] text-gray-400 dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-500':
-              scheduleButtonState === 'processing',
-          }"
-        >
-          <template v-if="scheduleButtonState === 'initial'">
-            Schedule
-            <SendHorizonal class="h-4 w-4" />
-          </template>
-          <template v-else-if="scheduleButtonState === 'confirm'">
-            Confirm
-            <Check class="h-4 w-4" />
-          </template>
-          <template v-else-if="scheduleButtonState === 'processing'">
-            Scheduling...
-            <Loader2 class="h-4 w-4 animate-spin" />
-          </template>
-        </button>
-        <button
-          @click="togglePanelVisibility"
-          class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
-        >
-          <template v-if="editorDataStore.isPanelVisible.value">
-            <PanelRightClose class="h-4 w-4" />
-          </template>
-          <template v-else>
-            <PanelRight class="h-4 w-4" />
-          </template>
-        </button>
       </div>
 
       <div class="flex w-full items-start justify-center gap-4">
