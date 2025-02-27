@@ -3,6 +3,21 @@ Built by Creator, for Creators
 
 
 
+- fix schedule/draft button
+- add character counter
+- add validations
+- add title
+- add notes
+- add created/edited
+- updates video / image preview styles
+- update dashboard navigation
+- update calendar
+- add List view
+- update Accounts view
+
+- DEPLOY
+- MARKET
+- DEMO
 
 
 
@@ -10,11 +25,6 @@ Built by Creator, for Creators
 
 
 
-
-
-
-- to trigger status change, add Schedule button
-  - validations should be on schedule button
 
 
 - simplify media upload

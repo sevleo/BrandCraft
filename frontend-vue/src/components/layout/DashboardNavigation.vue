@@ -22,6 +22,7 @@
     Trash2,
     Check,
     Loader2,
+    Calendar,
   } from 'lucide-vue-next';
   import postsStore from '@/utils/postsStore';
   import editorDataStore from '@/utils/editorDataStore';
@@ -645,13 +646,7 @@
           <Users class="mr-2 h-5 w-5" />
           Accounts
         </router-link>
-        <router-link
-          to="/dashboard/settings"
-          class="flex items-center rounded-md text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
-        >
-          <Settings class="mr-2 h-5 w-5" />
-          Settings
-        </router-link>
+
         <a
           href="https://insigh.to/b/brandcraftart"
           target="_blank"
