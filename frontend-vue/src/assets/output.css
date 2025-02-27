@@ -1150,6 +1150,14 @@ video {
   height: 100vh;
 }
 
+.h-32 {
+  height: 8rem;
+}
+
+.h-px {
+  height: 1px;
+}
+
 .max-h-0 {
   max-height: 0px;
 }
@@ -1783,6 +1791,10 @@ video {
   border-top-width: 1px;
 }
 
+.border-l {
+  border-left-width: 1px;
+}
+
 .border-none {
   border-style: none;
 }
@@ -2163,6 +2175,31 @@ video {
   background-color: rgb(255 0 0 / var(--tw-bg-opacity, 1));
 }
 
+.bg-greenLight {
+  --tw-bg-opacity: 1;
+  background-color: rgb(52 178 111 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[green\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 128 0 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#d1d1d1\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(209 209 209 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#f3fff3\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 255 243 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#317c31\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(49 124 49 / var(--tw-bg-opacity, 1));
+}
+
 .stroke-\[gray\] {
   stroke: gray;
 }
@@ -2193,6 +2230,18 @@ video {
 
 .stroke-white {
   stroke: #fff;
+}
+
+.stroke-\[red\] {
+  stroke: red;
+}
+
+.stroke-\[gray-500\] {
+  stroke: gray-500;
+}
+
+.stroke-gray-700 {
+  stroke: #374151;
 }
 
 .object-contain {
@@ -2427,6 +2476,10 @@ video {
   vertical-align: top;
 }
 
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -2513,6 +2566,10 @@ video {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.font-normal {
+  font-weight: 400;
 }
 
 .uppercase {
@@ -2674,6 +2731,16 @@ video {
   color: rgb(133 77 14 / var(--tw-text-opacity, 1));
 }
 
+.text-\[red\] {
+  --tw-text-opacity: 1;
+  color: rgb(255 0 0 / var(--tw-text-opacity, 1));
+}
+
+.text-\[\#0a0a0a\] {
+  --tw-text-opacity: 1;
+  color: rgb(10 10 10 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -2728,6 +2795,11 @@ video {
   --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.outline-none {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 
 .outline {
@@ -2815,6 +2887,10 @@ video {
 
 .duration-500 {
   transition-duration: 500ms;
+}
+
+.duration-1000 {
+  transition-duration: 1000ms;
 }
 
 .ease-in {

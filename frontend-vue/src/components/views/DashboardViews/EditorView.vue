@@ -282,7 +282,7 @@
     <DashboardNavigation />
 
     <transition name="fade" mode="out-in">
-      <div class="flex w-full items-center justify-center" :key="postKey">
+      <div :key="postKey" class="flex w-full items-center justify-center">
         <!-- Loading state -->
 
         <!-- No post selected state -->
@@ -323,13 +323,13 @@
                 </div>
                 <button
                   @click="togglePanelVisibility"
-                  class="flex items-center gap-2 rounded-md border border-[#e9e9e9] px-1 py-1 text-sm font-medium text-gray-700 transition-all hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
+                  class="flex items-center gap-2 rounded-md border-[#e9e9e9] px-1 py-1 text-sm font-medium text-gray-700 transition-all hover:bg-[#f9f9f9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
                 >
                   <template v-if="editorDataStore.isPanelVisible.value">
-                    <PanelRightClose class="h-4 w-4" />
+                    <PanelRightClose class="h-4 w-4 stroke-gray-700" />
                   </template>
                   <template v-else>
-                    <PanelRight class="h-4 w-4" />
+                    <PanelRight class="h-4 w-4 stroke-gray-700" />
                   </template>
                 </button>
               </div>
@@ -384,7 +384,7 @@
               @click="handleChangeToDraft"
               class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] bg-[#f0f0f0] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#e9e9e9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
             >
-              Change to Draft
+              <span class="font-normal"> Change to Draft </span>
               <FileEdit class="h-4 w-4" />
             </button>
             <button
@@ -403,15 +403,15 @@
               }"
             >
               <template v-if="scheduleButtonState === 'initial'">
-                Schedule
+                <span class="font-normal"> Schedule </span>
                 <SendHorizonal class="h-4 w-4" />
               </template>
               <template v-else-if="scheduleButtonState === 'confirm'">
-                Confirm
+                <span class="font-normal"> Confirm </span>
                 <Check class="h-4 w-4" />
               </template>
               <template v-else-if="scheduleButtonState === 'processing'">
-                Scheduling...
+                <span class="font-normal"> Scheduling... </span>
                 <Loader2 class="h-4 w-4 animate-spin" />
               </template>
             </button>
@@ -472,7 +472,71 @@
                 </div>
               </div>
             </div>
+            <div
+              :class="
+                editorDataStore.isPanelVisible.value ? 'w-[260px]' : 'w-0'
+              "
+              class="fixed bottom-0 right-0 top-0 border-l border-layoutSoft bg-[white] transition-all duration-200 ease-in-out dark:bg-[#121212]"
+            >
+              <div
+                class="h-full transition-all duration-200"
+                :class="{
+                  'w-[260px] opacity-100': editorDataStore.isPanelVisible.value,
+                  'w-0 opacity-0': !editorDataStore.isPanelVisible.value,
+                }"
+              >
+                <!-- Section 1: Draft Title, Created, Last Edited -->
+                <div class="mb-4 flex flex-col gap-3 px-3 pt-3">
+                  <input
+                    type="text"
+                    placeholder="Draft title"
+                    class="w-full rounded-md bg-white text-sm outline-none"
+                  />
+                  <div class="text-xs text-gray-500 dark:text-gray-400">
+                    <div class="flex justify-between">
+                      <span>Created:</span>
+                      <span>Feb 27, 2025</span>
+                    </div>
+                    <div class="mt-1 flex justify-between">
+                      <span>Last edited:</span>
+                      <span>Today, 7:30 AM</span>
+                    </div>
+                  </div>
+                </div>
 
+                <!-- Divider -->
+                <div
+                  class="mb-4 h-px w-full bg-layoutSoft dark:bg-gray-700"
+                ></div>
+
+                <!-- Section 2: Words, Characters -->
+                <div class="mb-4 px-3">
+                  <div class="text-xs text-gray-500 dark:text-gray-400">
+                    <div class="flex justify-between">
+                      <span>Words:</span>
+                      <span>0</span>
+                    </div>
+                    <div class="mt-1 flex justify-between">
+                      <span>Characters:</span>
+                      <span>0</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Divider -->
+                <div
+                  class="mb-4 h-px w-full bg-layoutSoft dark:bg-gray-700"
+                ></div>
+
+                <!-- Section 4: Draft Notes -->
+                <div class="font-mono">
+                  <textarea
+                    placeholder="Add notes..."
+                    class="h-32 w-full resize-none rounded-md border border-gray-200 bg-[#f3fff3] px-3 py-2 font-mono text-sm outline-none"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
             <PostFormBase />
           </div>
         </div>
@@ -481,11 +545,5 @@
         </div>
       </div>
     </transition>
-    <div
-      :class="editorDataStore.isPanelVisible.value ? 'w-[260px]' : 'w-0'"
-      class="fixed bottom-0 right-0 top-0 bg-[red] transition-all duration-300 ease-in-out"
-    >
-      test
-    </div>
   </main>
 </template>

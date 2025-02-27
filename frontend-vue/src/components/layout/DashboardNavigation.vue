@@ -18,8 +18,6 @@
     Users,
     MessageCircle,
     User,
-    Instagram,
-    Youtube,
     PencilLine,
     Trash2,
     Check,
