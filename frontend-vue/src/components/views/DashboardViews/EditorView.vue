@@ -466,11 +466,11 @@
               >
                 <!-- Section 1: Draft Title, Created, Last Edited -->
                 <div class="mb-4 flex flex-col gap-3 px-3 pt-3">
-                  <input
+                  <!-- <input
                     type="text"
                     placeholder="Draft title"
                     class="w-full rounded-md bg-white text-sm outline-none"
-                  />
+                  /> -->
                   <div class="text-xs text-gray-500 dark:text-gray-400">
                     <div class="flex justify-between">
                       <span>Created:</span>
@@ -522,12 +522,12 @@
                 ></div>
 
                 <!-- Section 4: Draft Notes -->
-                <div class="font-mono">
+                <!-- <div class="font-mono">
                   <textarea
                     placeholder="Add notes..."
                     class="h-32 w-full resize-none rounded-md border border-gray-200 bg-[#f3fff3] px-3 py-2 font-mono text-sm outline-none"
                   ></textarea>
-                </div>
+                </div> -->
               </div>
             </div>
             <PostFormBase />

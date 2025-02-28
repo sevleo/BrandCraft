@@ -3,8 +3,7 @@ Built by Creator, for Creators
 
 
 - add validations
-- add title
-- add notes
+
 
 - updates video / image preview styles
 - update dashboard navigation
@@ -20,7 +19,8 @@ Built by Creator, for Creators
 
 
 
-
+- add title
+- add notes
 
 
 
