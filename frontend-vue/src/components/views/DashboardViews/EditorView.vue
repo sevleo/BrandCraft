@@ -528,6 +528,8 @@
                     class="h-32 w-full resize-none rounded-md border border-gray-200 bg-[#f3fff3] px-3 py-2 font-mono text-sm outline-none"
                   ></textarea>
                 </div> -->
+
+                <!-- Section 5: Validation Errors -->
               </div>
             </div>
             <PostFormBase />

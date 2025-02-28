@@ -17,6 +17,7 @@
   import InstagramPresets from '@/components/common/forms/PostFormBase/InstagramPresets.vue';
   import PreviewComponent from '@/components/common/forms/PostFormBase/PreviewComponent.vue';
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
+  import ValidationErrors from '@/components/editor/ValidationErrors.vue';
 
   const toast = useToast();
   // const videoRef = ref<HTMLVideoElement | null>(null);
@@ -550,6 +551,8 @@
                 </div>
 
                 <div class="mb-4"></div>
+
+                <ValidationErrors />
 
                 <!-- Settings Panel -->
                 <div class="flex flex-col gap-1">
