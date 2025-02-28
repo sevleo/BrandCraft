@@ -75,6 +75,12 @@ const defaultPost: SelectedPost = {
   updatedAt: '',
 };
 
+const formatTime = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
+
 // Reactive references
 const selectedPost = ref<SelectedPost>(structuredClone(defaultPost));
 const currentMediaType = ref<'image' | 'video' | null>(null);
@@ -86,6 +92,46 @@ const processingProgress = ref<number>(0);
 const isPanelVisible = ref<boolean>(true); // Track right panel visibility
 const viewMode = ref(localStorage.getItem('postFormViewMode') || 'compact');
 const isSaving = ref(false);
+const videoRef = ref<HTMLVideoElement | null>(null);
+const videoDuration = ref<string>('');
+const videoDurationSeconds = ref<number | null>(null);
+
+// Update video duration when videoRef changes
+watch(
+  videoRef,
+  (newVideo) => {
+    if (newVideo && newVideo.readyState >= 1) {
+      // Video is already loaded
+      updateVideoDuration(newVideo);
+    }
+
+    if (newVideo) {
+      // Add event listener for when metadata loads
+      newVideo.addEventListener('loadedmetadata', () => {
+        updateVideoDuration(newVideo);
+      });
+    }
+  },
+  { immediate: true }
+);
+
+// Function to update video duration
+const updateVideoDuration = (video: HTMLVideoElement) => {
+  if (video && !isNaN(video.duration)) {
+    videoDurationSeconds.value = video.duration;
+    videoDuration.value = formatTime(video.duration);
+    console.log('Video duration updated:', videoDuration.value);
+  }
+};
+
+// Video metadata
+const videoMetadata = computed(() => {
+  if (!videoRef?.value) return null;
+
+  return {
+    duration: videoDuration.value,
+  };
+});
 
 // Computed properties for content statistics
 const contentStats = computed(() => {
@@ -146,6 +192,11 @@ const reset = () => {
 // Select a post without triggering auto-save
 const selectPost = async (post: any) => {
   if (post) {
+    // Reset video-related state when switching posts
+    videoRef.value = null;
+    videoDuration.value = '';
+    videoDurationSeconds.value = null;
+
     isUserEdit.value = false; // Ensure no auto-save triggers
     selectedPost.value = post;
 
@@ -178,6 +229,10 @@ const selectPost = async (post: any) => {
     }
 
     console.log(selectedPost.value);
+
+    if (videoRef.value) {
+      videoDuration.value = formatTime(videoRef.value.duration);
+    }
   }
 };
 
@@ -210,6 +265,10 @@ export default {
   selectPost,
   contentStats,
   updateTimestamps,
+  videoRef,
+  videoDuration,
+  videoDurationSeconds,
+  videoMetadata,
 };
 
 /**

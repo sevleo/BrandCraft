@@ -1,5 +1,6 @@
-import { computed, watchEffect, ref } from 'vue';
-import editorDataStore from './editorDataStore';
+import { computed, ref, watchEffect } from 'vue';
+import editorDataStore from '@/utils/editorDataStore';
+import connectionsDataStore from '@/utils/connectionsDataStore';
 
 // Define validation rules for different platforms
 const platformCharacterLimits = {
@@ -52,6 +53,171 @@ const validateContentLength = () => {
   return errors;
 };
 
+const validateIsUploading = () => {
+  const errors: ValidationError[] = [];
+
+  if (editorDataStore.isUploading.value) {
+    errors.push({
+      platform: 'All',
+      message: 'Please wait for media upload to complete',
+      type: 'error',
+    });
+  }
+
+  return errors;
+};
+
+const validateTikTok = () => {
+  const errors: ValidationError[] = [];
+
+  // TikTok errors
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+      p.startsWith('tiktok')
+    )
+  ) {
+    // 1. Check if media is uploaded
+    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+      errors.push({
+        platform: 'TikTok',
+        message: 'Please upload a video for your TikTok post',
+        type: 'error',
+      });
+    }
+    // 2. Check if it's a video
+    if (editorDataStore.currentMediaType.value === 'image') {
+      errors.push({
+        platform: 'TikTok',
+        message: 'Images are not supported for TikTok posts',
+        type: 'error',
+      });
+    }
+
+    // 3. Check video duration
+    if (editorDataStore.currentMediaType.value === 'video') {
+      const maxDuration = 10;
+      // const maxDuration =
+      //   connectionsDataStore.tiktokAccount.value?.creatorInfo
+      //     .max_video_post_duration_sec || Infinity;
+
+      const currentDuration = editorDataStore.videoDurationSeconds.value;
+
+      if (
+        currentDuration !== null &&
+        Math.floor(currentDuration) > maxDuration
+      ) {
+        errors.push({
+          platform: 'TikTok',
+          message: `Video duration (${Math.floor(currentDuration)}s) exceeds maximum allowed length of ${maxDuration} seconds`,
+          type: 'error',
+        });
+      }
+    }
+    // 4. Check commercial content settings
+    if (
+      editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.commercialContent &&
+      !editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.brandOrganic &&
+      !editorDataStore.selectedPost.value.platformSettings.tiktok
+        ?.brandedContent
+    ) {
+      errors.push({
+        platform: 'TikTok',
+        message:
+          'You need to indicate if your content promotes yourself, a third party, or both.',
+        type: 'error',
+      });
+    }
+  }
+  return errors;
+};
+
+//     // 2. Check video duration limits for Reels and Stories
+//     if (
+//       editorDataStore.currentMediaType.value === 'video' &&
+//       videoRef.value
+//     ) {
+//       const duration = Math.floor(videoRef.value.duration);
+//       const maxDuration =
+//         editorDataStore.selectedPost.value?.platformSettings.instagram!
+//           .videoType === 'REELS'
+//           ? 900
+//           : 60;
+//       const durationText =
+//         editorDataStore.selectedPost.value?.platformSettings.instagram!
+//           .videoType === 'REELS'
+//           ? '15 minutes'
+//           : '1 minute';
+
+//       if (duration > maxDuration) {
+//         errors.push(
+//           `Video duration exceeds maximum allowed length of ${durationText} for Instagram ${editorDataStore.selectedPost.value?.platformSettings.instagram!.videoType.toLowerCase()}`
+//         );
+//       }
+//     }
+//   }
+
+//   return errors;
+// });
+
+const validateInstagram = () => {
+  const errors: ValidationError[] = [];
+
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+      p.startsWith('instagram')
+    )
+  ) {
+    // 1. Check if media is uploaded
+    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+      errors.push({
+        platform: 'Instagram',
+        message: 'Please upload a video for your Instagram post',
+        type: 'error',
+      });
+    }
+    // 2. Check video duration limits for Reels and Stories
+    if (editorDataStore.currentMediaType.value === 'video') {
+      //   const maxDuration =
+      // editorDataStore.selectedPost.value?.platformSettings.instagram!
+      //   .videoType === 'REELS'
+      //   ? 900
+      //   : 60;
+      const maxDuration = 10;
+      const currentDuration = editorDataStore.videoDurationSeconds.value;
+
+      if (currentDuration! > maxDuration) {
+        errors.push({
+          platform: 'Instagram',
+          message: `Test inst`,
+          type: 'error',
+        });
+      }
+    }
+  }
+
+  return errors;
+};
+
+// Set up watchers to validate whenever relevant data changes
+watchEffect(() => {
+  // Clear previous errors
+  validationErrors.value = [];
+
+  // Run all validation functions and combine results
+  validationErrors.value = [
+    ...validateContentLength(),
+    ...validateIsUploading(),
+    ...validateTikTok(),
+    ...validateInstagram(),
+    // Add more validation functions here as needed
+  ];
+});
+
+// Export a computed property that returns the current validation errors
+export const errors = computed(() => validationErrors.value);
+
 // Helper function to get display name for platforms
 const getPlatformDisplayName = (platform: string): string => {
   const displayNames: Record<string, string> = {
@@ -66,18 +232,3 @@ const getPlatformDisplayName = (platform: string): string => {
 
   return displayNames[platform] || platform;
 };
-
-// Set up watchers to validate whenever relevant data changes
-watchEffect(() => {
-  // Clear previous errors
-  validationErrors.value = [];
-
-  // Run all validation functions and combine results
-  validationErrors.value = [
-    ...validateContentLength(),
-    // Add more validation functions here as needed
-  ];
-});
-
-// Export a computed property that returns the current validation errors
-export const errors = computed(() => validationErrors.value);

@@ -7,13 +7,12 @@
     Trash2,
     Check,
   } from 'lucide-vue-next';
-  import { ref, watch, onMounted, onUnmounted } from 'vue';
+  import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
 
   const isHoveringVideo = ref(false);
   const isVideoPlaying = ref(false);
   const isVideoVertical = ref(true);
-  const videoDuration = ref<string>('');
   const modalVideoRef = ref<HTMLVideoElement | null>(null);
   const showCoverModal = ref(false);
   const sliderValue = ref(0);
@@ -38,23 +37,20 @@
     debouncedSave: () => void;
   }>();
 
-  const videoRef = ref<HTMLVideoElement | null>(null);
-
   // Handle video load
   const handleVideoLoad = () => {
     console.log('Video loaded');
-    if (!videoRef?.value) return;
-    console.log('Video loaded:', videoRef.value);
+    if (!editorDataStore.videoRef?.value) return;
+    console.log('Video loaded:', editorDataStore.videoRef.value);
 
     // Start progress tracking
-    const video = videoRef.value;
+    const video = editorDataStore.videoRef.value;
     isVideoVertical.value = video.videoHeight > video.videoWidth;
 
-    // Format duration
-    const duration = video.duration;
-    const minutes = Math.floor(duration / 60);
-    const seconds = Math.floor(duration % 60);
-    videoDuration.value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    // Set initial timestamp if provided
+    if (props.initialVideoTimestamp) {
+      video.currentTime = props.initialVideoTimestamp;
+    }
   };
 
   // Set initial timestamp if provided
@@ -88,9 +84,9 @@
   );
 
   const openCoverModal = () => {
-    if (!videoRef?.value) return;
+    if (!editorDataStore.videoRef?.value) return;
     showCoverModal.value = true;
-    videoRef?.value.pause();
+    editorDataStore.videoRef.value.pause();
     isVideoPlaying.value = false;
   };
 
@@ -140,10 +136,12 @@
   };
 
   const updateVideoProgress = () => {
-    if (!videoRef?.value) return;
-    videoCurrentTime.value = videoRef?.value.currentTime;
+    if (!editorDataStore.videoRef?.value) return;
+    videoCurrentTime.value = editorDataStore.videoRef.value.currentTime;
     videoProgress.value =
-      (videoRef?.value.currentTime / videoRef?.value.duration) * 100;
+      (editorDataStore.videoRef.value.currentTime /
+        editorDataStore.videoRef.value.duration) *
+      100;
   };
 
   const nextImage = () => {
@@ -200,7 +198,7 @@
 
   // Function to check if video is playable
   const checkVideoAvailability = () => {
-    const videoElement = videoRef.value;
+    const videoElement = editorDataStore.videoRef.value;
     if (videoElement && videoElement.readyState >= 2) {
       console.log('Video is now playable');
       clearInterval(retryInterval.value!); // Stop retrying
@@ -215,7 +213,7 @@
   onMounted(() => {
     console.log('Component mounted');
 
-    if (videoRef.value) {
+    if (editorDataStore.videoRef.value) {
       // Retry loading every 3 seconds
       retryInterval.value = setInterval(checkVideoAvailability, 2000);
     }
@@ -253,7 +251,12 @@
               @mouseleave="isHoveringVideo = false"
             >
               <video
-                ref="videoRef"
+                :ref="
+                  (el) => {
+                    editorDataStore.videoRef.value =
+                      el as HTMLVideoElement | null;
+                  }
+                "
                 :src="props.mediaPreviewUrls[0]"
                 @timeupdate="updateVideoProgress"
                 class="h-full w-full"

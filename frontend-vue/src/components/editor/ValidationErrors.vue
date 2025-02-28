@@ -5,9 +5,6 @@
 
 <template>
   <div v-if="errors.length > 0" class="validation-errors mt-4 px-3">
-    <div class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-      Validation Issues:
-    </div>
     <div class="space-y-2">
       <div
         v-for="(error, index) in errors"
@@ -25,6 +22,7 @@
       </div>
     </div>
   </div>
+
   <div v-else class="h-0"></div>
 </template>
 
