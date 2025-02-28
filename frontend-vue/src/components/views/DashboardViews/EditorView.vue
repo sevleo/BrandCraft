@@ -14,6 +14,14 @@
   import DatePicker from 'primevue/datepicker';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import { FileEdit, SendHorizonal, Check } from 'lucide-vue-next';
+  import {
+    formatDistanceToNow,
+    format,
+    isToday,
+    isYesterday,
+    isThisWeek,
+    parseISO,
+  } from 'date-fns';
 
   const toast = useToast();
 
@@ -23,9 +31,7 @@
   const showProgress = ref(false);
 
   // Schedule button state
-  const scheduleButtonState = ref<
-    'initial' | 'confirm' | 'processing' | 'scheduled'
-  >('initial');
+  const scheduleButtonState = ref<'draft' | 'scheduled'>('draft');
 
   let saveTimeout: NodeJS.Timeout | null = null;
 
@@ -52,10 +58,25 @@
     }
   );
 
+  // Watch for selected post changes
+  watch(
+    () => editorDataStore.selectedPost.value,
+    (newPost) => {
+      if (newPost?.status === 'scheduled') {
+        scheduleButtonState.value = 'scheduled';
+      } else if (newPost?.status === 'draft') {
+        scheduleButtonState.value = 'draft';
+      }
+    },
+    { deep: true }
+  );
+
   onMounted(async () => {
     // Set schedule button state based on post status
     if (editorDataStore.selectedPost.value?.status === 'scheduled') {
       scheduleButtonState.value = 'scheduled';
+    } else if (editorDataStore.selectedPost.value?.status === 'draft') {
+      scheduleButtonState.value = 'draft';
     }
 
     themeStore.initializeTheme();
@@ -185,82 +206,37 @@
     debouncedSave();
   };
 
-  // Handle scheduling the post
-  const handleSchedule = async () => {
-    // First click - show confirmation
-    if (scheduleButtonState.value === 'initial') {
-      scheduleButtonState.value = 'confirm';
-      return;
-    }
+  // Toggle post status between draft and scheduled
+  const togglePostStatus = async (action: 'schedule' | 'draft') => {
+    if (action === 'schedule') {
+      // Update status to scheduled
+      editorDataStore.selectedPost.value.status = 'scheduled';
 
-    // Second click - process scheduling
-    if (scheduleButtonState.value === 'confirm') {
-      try {
-        scheduleButtonState.value = 'processing';
+      // Save the post with the scheduled status
+      await handleSave();
 
-        // Update status to scheduled
-        editorDataStore.selectedPost.value.status = 'scheduled';
+      scheduleButtonState.value = 'scheduled';
 
-        // Save the post with the scheduled status
-        await handleSave();
-
-        scheduleButtonState.value = 'scheduled';
-
-        toast.add({
-          severity: 'success',
-          summary: 'Scheduled',
-          detail: 'Post has been scheduled successfully',
-          life: 3000,
-        });
-      } catch (error: any) {
-        console.error('Scheduling error:', error);
-        scheduleButtonState.value = 'initial';
-
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message || 'Failed to schedule post',
-          life: 3000,
-        });
-      }
-    }
-  };
-
-  // Reset confirmation state when mouse leaves the button
-  const handleScheduleButtonMouseLeave = () => {
-    if (scheduleButtonState.value === 'confirm') {
-      scheduleButtonState.value = 'initial';
-    }
-  };
-
-  // Change post back to draft
-  const handleChangeToDraft = async () => {
-    try {
-      scheduleButtonState.value = 'processing';
-
+      toast.add({
+        closable: false,
+        severity: 'success',
+        detail: 'Set Live',
+        life: 2000,
+      });
+    } else if (action === 'draft') {
       // Update status to draft
       editorDataStore.selectedPost.value.status = 'draft';
 
       // Save the post with the draft status
       await handleSave();
 
-      scheduleButtonState.value = 'initial';
+      scheduleButtonState.value = 'draft';
 
       toast.add({
+        closable: false,
         severity: 'success',
-        summary: 'Changed to Draft',
-        detail: 'Post has been changed to draft',
-        life: 3000,
-      });
-    } catch (error: any) {
-      console.error('Change to draft error:', error);
-      scheduleButtonState.value = 'scheduled';
-
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: error.message || 'Failed to change post to draft',
-        life: 3000,
+        detail: 'Unpublished',
+        life: 2000,
       });
     }
   };
@@ -268,6 +244,26 @@
   const postKey = computed(
     () => editorDataStore.selectedPost?.value._id || 'new'
   );
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+
+    const date = parseISO(dateString);
+    const now = new Date();
+    const diffInMinutes = (now.getTime() - date.getTime()) / (1000 * 60);
+
+    if (diffInMinutes < 1) {
+      return 'just now';
+    } else if (isToday(date)) {
+      return formatDistanceToNow(date, { addSuffix: true }); // e.g., "2 hours ago"
+    } else if (isYesterday(date)) {
+      return 'yesterday';
+    } else if (isThisWeek(date)) {
+      return format(date, 'EEEE'); // Day of week (Monday, Tuesday, etc.)
+    } else {
+      return format(date, 'MMM d, yyyy'); // Feb 28, 2025
+    }
+  };
 </script>
 
 <template>
@@ -301,7 +297,7 @@
         <div
           v-else-if="
             !isLoading &&
-            postsStore.draftPosts.value.length > 0 &&
+            postsStore.postGroups.value.length > 0 &&
             editorDataStore.selectedPost.value._id !== ''
           "
           class="relative flex min-h-[100vh] w-full flex-grow flex-col items-center justify-center"
@@ -380,40 +376,23 @@
               />
             </div>
             <button
-              v-if="scheduleButtonState === 'scheduled'"
-              @click="handleChangeToDraft"
-              class="ml-2 flex h-[38px] items-center gap-2 rounded-md border border-[#e9e9e9] bg-[#f0f0f0] px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-[#e9e9e9] dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-300 dark:hover:bg-[#252525]"
+              v-if="scheduleButtonState === 'draft'"
+              @click="() => togglePostStatus('schedule')"
+              class="text-green-700 dark:text-green-400 ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border border-green-500 bg-[#f0f9f0] px-4 py-2 text-sm font-medium transition-all hover:bg-[#e6f7e6] dark:border-green-700 dark:bg-[#0a1f0a] dark:hover:bg-[#1a331a]"
             >
-              <span class="font-normal"> Change to Draft </span>
-              <FileEdit class="h-4 w-4" />
+              <span class="font-normal">Set Live</span>
+              <SendHorizonal
+                class="text-green-600 dark:text-green-400 h-4 w-4"
+              />
             </button>
+
             <button
-              v-else
-              @click="handleSchedule"
-              @mouseleave="handleScheduleButtonMouseLeave"
-              :disabled="scheduleButtonState === 'processing'"
-              :class="{
-                'ml-2 flex h-[38px] items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all': true,
-                'border-[#e9e9e9] text-gray-700 hover:bg-[#f9f9f9] dark:border-[#313131]':
-                  scheduleButtonState === 'initial',
-                'bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30 border-green-200 dark:border-green-800':
-                  scheduleButtonState === 'confirm',
-                'border-[#e9e9e9] bg-[#f0f0f0] text-gray-400 dark:border-[#313131] dark:bg-[#1a1a1a] dark:text-gray-500':
-                  scheduleButtonState === 'processing',
-              }"
+              v-else-if="scheduleButtonState === 'scheduled'"
+              @click="() => togglePostStatus('draft')"
+              class="ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border border-amber-500 bg-[#fff8e6] px-4 py-2 text-sm font-medium text-amber-700 transition-all hover:bg-[#ffefc7] dark:border-amber-700 dark:bg-[#332a14] dark:text-amber-400 dark:hover:bg-[#473b1d]"
             >
-              <template v-if="scheduleButtonState === 'initial'">
-                <span class="font-normal"> Schedule </span>
-                <SendHorizonal class="h-4 w-4" />
-              </template>
-              <template v-else-if="scheduleButtonState === 'confirm'">
-                <span class="font-normal"> Confirm </span>
-                <Check class="h-4 w-4" />
-              </template>
-              <template v-else-if="scheduleButtonState === 'processing'">
-                <span class="font-normal"> Scheduling... </span>
-                <Loader2 class="h-4 w-4 animate-spin" />
-              </template>
+              <span class="font-normal">Revoke</span>
+              <FileEdit class="h-4 w-4 text-amber-600 dark:text-amber-400" />
             </button>
           </div>
           <div
@@ -495,11 +474,15 @@
                   <div class="text-xs text-gray-500 dark:text-gray-400">
                     <div class="flex justify-between">
                       <span>Created:</span>
-                      <span>Feb 27, 2025</span>
+                      <span>{{
+                        formatDate(editorDataStore.selectedPost.value.createdAt)
+                      }}</span>
                     </div>
                     <div class="mt-1 flex justify-between">
                       <span>Last edited:</span>
-                      <span>Today, 7:30 AM</span>
+                      <span>{{
+                        formatDate(editorDataStore.selectedPost.value.updatedAt)
+                      }}</span>
                     </div>
                   </div>
                 </div>
@@ -514,11 +497,21 @@
                   <div class="text-xs text-gray-500 dark:text-gray-400">
                     <div class="flex justify-between">
                       <span>Words:</span>
-                      <span>0</span>
+                      <span>{{
+                        editorDataStore.contentStats.value.wordCount
+                      }}</span>
                     </div>
                     <div class="mt-1 flex justify-between">
                       <span>Characters:</span>
-                      <span>0</span>
+                      <span>{{
+                        editorDataStore.contentStats.value.characterCount
+                      }}</span>
+                    </div>
+                    <div class="mt-1 flex justify-between">
+                      <span>Reading time:</span>
+                      <span>{{
+                        editorDataStore.contentStats.value.readingTime
+                      }}</span>
                     </div>
                   </div>
                 </div>

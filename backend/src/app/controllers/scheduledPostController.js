@@ -39,8 +39,8 @@ exports.updatePostGroup = async (req, res) => {
     const userId = req.user._id;
     const { id } = req.params;
 
-    console.log("test");
-    console.log("scheduledTime", scheduledTime);
+    console.log("updating post group");
+    console.log("status", status);
 
     // Find bundle and verify ownership
     const postGroup = await ScheduledPostGroup.findOneAndUpdate(
@@ -301,7 +301,7 @@ exports.getPostGroups = async (req, res) => {
         select: "url key fileName mimeType size type",
       })
       .select(
-        "scheduledTime platforms mediaFiles status content sameContent platformSettings videoTimestamp updatedAt"
+        "scheduledTime platforms mediaFiles status content sameContent platformSettings videoTimestamp updatedAt createdAt"
       );
 
     // Refresh Threads profil

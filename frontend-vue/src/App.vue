@@ -69,6 +69,49 @@
 
 <!-- Global styles for PrimeVue -->
 <style>
+  .p-toast {
+    width: fit-content !important;
+  }
+  .p-toast-message {
+    border: 1px solid rgb(0, 0, 0) !important;
+    border-radius: 10px !important;
+  }
+
+  .p-toast-message.p-toast-message-success {
+    background-color: rgb(35, 35, 40) !important;
+  }
+
+  .p-toast-message-content {
+    display: flex !important;
+    justify-content: start !important;
+    align-items: center !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 8px !important;
+    padding-top: 8px !important;
+  }
+
+  .p-toast-message-text {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: start !important;
+    gap: 0px !important;
+  }
+
+  .p-toast-message-content .p-toast-summary,
+  .p-toast-message-content .p-toast-detail {
+    color: rgb(167, 167, 167) !important;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .p-toast-message-content svg {
+    height: 14px !important;
+    width: 14px !important;
+    stroke: white;
+    stroke-width: 0.7px;
+  }
+
   .p-datepicker-input {
     background: white !important;
     box-shadow: none !important;

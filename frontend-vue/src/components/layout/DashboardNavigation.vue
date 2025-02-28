@@ -76,13 +76,13 @@
   }
 
   async function navigateToEditor(post: any) {
+    console.log(post);
     // Check if trying to switch to a different post while on editor
     if (
       router.currentRoute.value.path === '/dashboard/editor' &&
       editorDataStore.selectedPost.value._id !== post._id
     ) {
-      const isSaving = document.querySelector('.saving-indicator');
-      if (isSaving) {
+      if (editorDataStore.isSaving.value) {
         return;
       }
       editorDataStore.selectPost(post);
@@ -206,6 +206,7 @@
     try {
       isCreatingDraft.value = true;
       await createPostGroup();
+      activeView.value = 'drafts';
     } finally {
       isCreatingDraft.value = false;
     }

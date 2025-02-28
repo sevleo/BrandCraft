@@ -1,5 +1,6 @@
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { getCreatorInfo } from '@/api/tiktokApi';
+import postsStore from './postsStore';
 
 type SelectedPost = {
   _id: string;
@@ -17,6 +18,8 @@ type SelectedPost = {
     instagram?: InstagramSettings;
     youtube?: YoutubeSettings;
   };
+  createdAt: string;
+  updatedAt: string;
 };
 
 interface TikTokSettings {
@@ -68,6 +71,8 @@ const defaultPost: SelectedPost = {
       title: '',
     },
   },
+  createdAt: '',
+  updatedAt: '',
 };
 
 // Reactive references
@@ -81,6 +86,45 @@ const processingProgress = ref<number>(0);
 const isPanelVisible = ref<boolean>(true); // Track right panel visibility
 const viewMode = ref(localStorage.getItem('postFormViewMode') || 'compact');
 const isSaving = ref(false);
+
+// Computed properties for content statistics
+const contentStats = computed(() => {
+  const content = selectedPost.value?.content || '';
+
+  // More accurate character count that properly handles emojis
+  const characterCount = getAccurateCharacterCount(content);
+
+  // Word count (split by whitespace and filter out empty strings)
+  const wordCount = content
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+
+  // Calculate reading time (average reading speed is ~200-250 words per minute)
+  const wordsPerMinute = 160;
+  const readingTimeRaw = wordCount / wordsPerMinute;
+
+  // Format reading time
+  let readingTime: string;
+
+  if (readingTimeRaw < 1 / 60) {
+    // Less than 1 second
+    readingTime = '0 sec read';
+  } else if (readingTimeRaw < 1) {
+    // Less than 1 minute, show seconds
+    const seconds = Math.ceil(readingTimeRaw * 60);
+    readingTime = `${seconds} sec read`;
+  } else {
+    // 1 minute or more
+    const minutes = Math.ceil(readingTimeRaw);
+    readingTime = minutes === 1 ? '1 min read' : `${minutes} min read`;
+  }
+
+  return {
+    characterCount,
+    wordCount,
+    readingTime,
+  };
+});
 
 // Watch for changes to viewMode and save to localStorage
 watch(viewMode, (newValue) => {
@@ -137,10 +181,26 @@ const selectPost = async (post: any) => {
   }
 };
 
+// Update just the timestamp fields without affecting other properties
+const updateTimestamps = (postId: string) => {
+  // Find the post in postsStore to get the latest timestamps
+  const refreshedPost = postsStore.postGroups.value.find(
+    (group) => group._id === postId
+  );
+
+  if (refreshedPost && selectedPost.value) {
+    // Only update the timestamp fields
+    selectedPost.value.createdAt = refreshedPost.createdAt;
+    selectedPost.value.updatedAt = refreshedPost.updatedAt;
+  }
+};
+
 export default {
   selectedPost,
   currentMediaType,
   isUploading,
+  isSaving,
+  viewMode,
   isUserEdit,
   selectedMedia,
   uploadProgress,
@@ -148,6 +208,63 @@ export default {
   isPanelVisible,
   reset,
   selectPost,
-  viewMode,
-  isSaving,
+  contentStats,
+  updateTimestamps,
 };
+
+/**
+ * Gets an accurate character count that properly handles emojis and special characters
+ * Many social media platforms count emojis as multiple characters
+ * @param text The text to count characters in
+ * @returns The character count
+ */
+function getAccurateCharacterCount(text: string): number {
+  if (!text) return 0;
+
+  // Process URLs (most platforms count URLs as fixed length)
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  let processedText = text;
+  const urls = text.match(urlRegex) || [];
+
+  // Count characters with special handling for emojis
+  let count = 0;
+
+  // Convert string to array of code points
+  const codePoints = [...processedText];
+
+  for (let i = 0; i < codePoints.length; i++) {
+    const char = codePoints[i];
+
+    // Check if it's a URL and skip (we'll add fixed counts for URLs later)
+    if (urls.some((url) => processedText.indexOf(url, count) === count)) {
+      const url = urls.find(
+        (url) => processedText.indexOf(url, count) === count
+      )!;
+      count += 23; // Standard t.co URL length for Twitter
+      i += url.length - 1;
+      continue;
+    }
+
+    // Check if it's an emoji (most emojis are in the Supplementary Multilingual Plane or higher)
+    const codePoint = char.codePointAt(0) || 0;
+
+    // Emoji ranges
+    const isEmoji =
+      (codePoint >= 0x1f000 && codePoint <= 0x1ffff) || // Emoticons, transport & map symbols, etc.
+      (codePoint >= 0x2600 && codePoint <= 0x27bf) || // Miscellaneous symbols
+      (codePoint >= 0x2b50 && codePoint <= 0x2b55) || // Star symbols
+      (codePoint >= 0x2700 && codePoint <= 0x27bf) || // Dingbats
+      (codePoint >= 0x3030 && codePoint <= 0x303d) || // CJK symbols
+      (codePoint >= 0x3297 && codePoint <= 0x3299) || // Japanese symbols
+      codePoint === 0x00a9 || // Copyright
+      codePoint === 0x00ae; // Registered trademark
+
+    if (isEmoji) {
+      count += 2; // Most platforms count emojis as 2 characters
+    } else {
+      count += 1; // Regular character
+    }
+  }
+
+  return count;
+}

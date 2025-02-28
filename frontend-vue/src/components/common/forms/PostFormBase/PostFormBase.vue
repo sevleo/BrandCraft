@@ -452,8 +452,8 @@
     >
       <!-- Loading Indicator -->
       <div
-        v-if="editorDataStore.isSaving.value"
-        class="saving-indicator absolute bottom-4 left-4 flex items-center gap-2 text-blue-500"
+        :class="editorDataStore.isSaving.value ? 'opacity-100' : 'opacity-0'"
+        class="saving-indicator absolute left-2 top-2 flex items-center gap-2 text-blue-500 transition-all duration-300"
       >
         <Loader2 class="h-4 w-4 animate-spin stroke-[gray]" />
       </div>

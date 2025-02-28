@@ -17,6 +17,11 @@ async function createPostGroup() {
   editorDataStore.selectedPost.value._id = newPostGroup._id;
   router.push('/dashboard/editor');
   console.log(editorDataStore.selectedPost.value);
+
+  // Update just the timestamp fields without affecting other properties
+  if (editorDataStore.selectedPost.value?._id) {
+    editorDataStore.updateTimestamps(editorDataStore.selectedPost.value._id);
+  }
 }
 
 async function updatePostGroup(selectedMedia: File[]) {
@@ -68,11 +73,16 @@ async function updatePostGroup(selectedMedia: File[]) {
   }
 
   formData.append('sameContent', 'true');
-  formData.append('status', 'draft');
+  formData.append('status', editorDataStore.selectedPost.value?.status);
 
   await apiSavePostGroup(formData, editorDataStore.selectedPost.value?._id);
 
   await postsStore.getAllPostGroups();
+
+  // Update just the timestamp fields without affecting other properties
+  if (editorDataStore.selectedPost.value?._id) {
+    editorDataStore.updateTimestamps(editorDataStore.selectedPost.value._id);
+  }
 }
 
 export { createPostGroup, updatePostGroup };

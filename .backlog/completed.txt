@@ -333,3 +333,15 @@ Wed Feb 26 DAY 100
   - if user leaves the page before save, it's okay. but we shluld show file upload progress
 - on change of cover images, trigger save
 - when deleting a post, change to the most recent one
+
+
+Thur Feb 26 DAY 101
+
+Fri Feb 27 DAY 102
+- fix schedule/draft button
+- add character counter
+- add created/edited
+
+
+
+Sat Feb 28 DAY 103
