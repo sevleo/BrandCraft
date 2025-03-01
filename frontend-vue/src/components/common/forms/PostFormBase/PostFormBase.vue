@@ -479,7 +479,7 @@
                 </div>
 
                 <div
-                  class="preview-container overflow-hidden rounded-[10px] rounded-r-[10px] bg-[white] dark:bg-[#313131]"
+                  class="preview-container overflow-hidden rounded-[10px] bg-[white] dark:bg-[#313131]"
                 >
                   <PreviewComponent
                     :key="

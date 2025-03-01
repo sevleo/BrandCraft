@@ -231,168 +231,235 @@
   <div
     :key="componentKey"
     id="preview-panel"
-    class="flex h-fit min-h-[150px] flex-1 flex-col justify-start rounded-[8px] bg-[white] dark:bg-[#121212]"
+    class="flex h-fit min-h-[150px] flex-1 flex-col justify-center rounded-[15px] border border-dashed border-gray-300 bg-[#ffffff] p-4 dark:bg-[#121212]"
   >
-    <div class="flex w-full flex-col items-center justify-start">
-      <div class="preview-container flex w-full flex-col items-center">
+    <div
+      class="preview-container flex h-full w-full flex-col items-center justify-center"
+    >
+      <!-- Video Preview -->
+      <div
+        v-if="props.currentMediaType === 'video' && props.mediaPreviewUrls[0]"
+        class="relative aspect-[9/16] w-[350px] overflow-hidden rounded-lg bg-black"
+      >
         <div
-          class="relative aspect-[9/16] w-[350px] overflow-hidden rounded-lg bg-black"
+          class="relative h-full w-full"
+          @mouseenter="isHoveringVideo = true"
+          @mouseleave="isHoveringVideo = false"
         >
-          <!-- Video Preview -->
-
-          <template
-            v-if="
-              props.currentMediaType === 'video' && props.mediaPreviewUrls[0]
+          <video
+            :ref="
+              (el) => {
+                editorDataStore.videoRef.value = el as HTMLVideoElement | null;
+              }
             "
-          >
-            <div
-              class="relative h-full w-full"
-              @mouseenter="isHoveringVideo = true"
-              @mouseleave="isHoveringVideo = false"
-            >
-              <video
-                :ref="
-                  (el) => {
-                    editorDataStore.videoRef.value =
-                      el as HTMLVideoElement | null;
-                  }
-                "
-                :src="props.mediaPreviewUrls[0]"
-                @timeupdate="updateVideoProgress"
-                class="h-full w-full"
-                :class="{
-                  'object-cover': isVideoVertical,
-                  'object-contain': !isVideoVertical,
-                }"
-                controls
-                @loadeddata="handleVideoLoad"
-              ></video>
-              <!-- Remove Button -->
-              <button
-                @click="removeMedia(0)"
-                @mouseleave="handleMouseLeave"
-                class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
-              >
-                <component
-                  :is="deletingMediaIndex === 0 ? Check : Trash2"
-                  class="h-7 w-7 rounded-full p-1 transition-all duration-200"
-                  :class="[
-                    deletingMediaIndex === 0
-                      ? 'bg-red-100 stroke-red-500'
-                      : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
-                  ]"
-                />
-              </button>
-            </div>
-          </template>
-
-          <!-- Image Preview -->
-          <template v-else-if="props.currentMediaType === 'image'">
-            <div class="relative h-full w-full">
-              <!-- Remove Button -->
-              <button
-                @click="removeMedia(currentImageIndex)"
-                @mouseleave="handleMouseLeave"
-                class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
-              >
-                <component
-                  :is="
-                    deletingMediaIndex === currentImageIndex ? Check : Trash2
-                  "
-                  class="h-7 w-7 rounded-full p-1 transition-all duration-200"
-                  :class="[
-                    deletingMediaIndex === currentImageIndex
-                      ? 'bg-red-100 stroke-red-500'
-                      : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
-                  ]"
-                />
-              </button>
-              <img
-                :src="props.mediaPreviewUrls[currentImageIndex]"
-                class="h-full w-full object-contain"
-                alt="Preview"
-              />
-              <!-- Navigation Arrows -->
-              <div
-                v-if="props.mediaPreviewUrls.length > 1"
-                class="absolute bottom-4 flex h-fit w-full flex-col items-center justify-center"
-              >
-                <div class="flex items-center justify-center">
-                  <button
-                    @click="previousImage"
-                    class="mr-2 rounded-full bg-white/30 p-2 text-white backdrop-blur-sm transition-opacity hover:bg-white/50"
-                    :disabled="currentImageIndex === 0"
-                    :class="{
-                      'cursor-not-allowed opacity-50': currentImageIndex === 0,
-                    }"
-                  >
-                    <ChevronLeft :size="16" />
-                  </button>
-                  <!-- Thumbnail Strip -->
-                  <div
-                    v-if="props.mediaPreviewUrls.length > 1"
-                    class="flex max-w-[300px] justify-center gap-2 overflow-x-auto rounded-lg bg-black/30 p-2 backdrop-blur-sm"
-                  >
-                    <button
-                      v-for="(url, index) in props.mediaPreviewUrls"
-                      :key="url"
-                      @click="currentImageIndex = index"
-                      class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-200"
-                      :class="[
-                        currentImageIndex === index
-                          ? 'border-white'
-                          : 'border-transparent hover:border-gray-500',
-                      ]"
-                    >
-                      <img
-                        :src="url"
-                        :alt="'Preview ' + (index + 1)"
-                        class="h-full w-full object-cover"
-                        :class="[
-                          currentImageIndex === index
-                            ? 'opacity-100'
-                            : 'opacity-50 hover:opacity-80',
-                        ]"
-                      />
-                    </button>
-                  </div>
-                  <button
-                    @click="nextImage"
-                    class="ml-2 rounded-full bg-white/30 p-2 text-white backdrop-blur-sm transition-opacity hover:bg-white/50"
-                    :disabled="
-                      currentImageIndex === props.mediaPreviewUrls.length - 1
-                    "
-                    :class="{
-                      'cursor-not-allowed opacity-50':
-                        currentImageIndex === props.mediaPreviewUrls.length - 1,
-                    }"
-                  >
-                    <ChevronRight :size="16" />
-                  </button>
-                </div>
-                <!-- Image Counter -->
-                <div
-                  v-if="props.mediaPreviewUrls.length > 1"
-                  class="rounded-full bg-black/30 px-3 py-1 text-sm text-white backdrop-blur-sm"
-                >
-                  {{ currentImageIndex + 1 }} /
-                  {{ props.mediaPreviewUrls.length }}
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <div class="mt-[20px] flex items-center justify-between gap-4">
+            :src="props.mediaPreviewUrls[0]"
+            @timeupdate="updateVideoProgress"
+            class="h-full w-full"
+            :class="{
+              'object-cover': isVideoVertical,
+              'object-contain': !isVideoVertical,
+            }"
+            controls
+            @loadeddata="handleVideoLoad"
+          ></video>
+          <!-- Remove Button -->
           <button
-            v-if="props.currentMediaType === 'video'"
-            @click="openCoverModal"
-            class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            @click="removeMedia(0)"
+            @mouseleave="handleMouseLeave"
+            class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
           >
-            <ImageIcon :size="16" />
-            Set Cover Image
+            <component
+              :is="deletingMediaIndex === 0 ? Check : Trash2"
+              class="h-7 w-7 rounded-full p-1 transition-all duration-200"
+              :class="[
+                deletingMediaIndex === 0
+                  ? 'bg-red-100 stroke-red-500'
+                  : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+              ]"
+            />
           </button>
         </div>
+      </div>
+      <!-- Image Preview -->
+      <div
+        class="relative grid grid-cols-2 grid-rows-2 gap-2"
+        v-else-if="props.currentMediaType === 'image'"
+      >
+        <!-- 2x2 Grid Image Preview -->
+        <!-- Single image: takes full 2x2 grid -->
+        <template v-if="props.mediaPreviewUrls.length === 1">
+          <div class="relative col-span-2 row-span-2">
+            <img
+              :src="props.mediaPreviewUrls[0]"
+              class="h-full w-full object-cover"
+              alt="Preview"
+            />
+            <!-- Delete button for single image -->
+            <button
+              @click="removeMedia(0)"
+              @mouseleave="handleMouseLeave"
+              class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
+            >
+              <component
+                :is="deletingMediaIndex === 0 ? Check : Trash2"
+                class="h-7 w-7 rounded-full p-1 transition-all duration-200"
+                :class="[
+                  deletingMediaIndex === 0
+                    ? 'bg-red-100 stroke-red-500'
+                    : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                ]"
+              />
+            </button>
+          </div>
+        </template>
+
+        <!-- Two images: each takes a full column -->
+        <template v-else-if="props.mediaPreviewUrls.length === 2">
+          <div
+            v-for="(url, index) in props.mediaPreviewUrls"
+            :key="index"
+            class="relative col-span-1 row-span-2"
+          >
+            <img
+              :src="url"
+              class="h-full w-full rounded-sm object-cover"
+              alt="Preview"
+            />
+            <!-- Delete button for each image -->
+            <button
+              @click="removeMedia(index)"
+              @mouseleave="handleMouseLeave"
+              class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
+            >
+              <component
+                :is="deletingMediaIndex === index ? Check : Trash2"
+                class="h-6 w-6 rounded-full p-1 transition-all duration-200"
+                :class="[
+                  deletingMediaIndex === index
+                    ? 'bg-red-100 stroke-red-500'
+                    : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                ]"
+              />
+            </button>
+          </div>
+        </template>
+
+        <!-- Three images: first image takes first column, 2nd and 3rd split second column -->
+        <template v-else-if="props.mediaPreviewUrls.length === 3">
+          <div class="relative col-span-1 row-span-2">
+            <img
+              :src="props.mediaPreviewUrls[0]"
+              class="h-full w-full rounded-sm object-cover"
+              alt="Preview"
+            />
+            <!-- Delete button for first image -->
+            <button
+              @click="removeMedia(0)"
+              @mouseleave="handleMouseLeave"
+              class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
+            >
+              <component
+                :is="deletingMediaIndex === 0 ? Check : Trash2"
+                class="h-6 w-6 rounded-full p-1 transition-all duration-200"
+                :class="[
+                  deletingMediaIndex === 0
+                    ? 'bg-red-100 stroke-red-500'
+                    : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                ]"
+              />
+            </button>
+          </div>
+          <div class="relative col-span-1 row-span-1">
+            <img
+              :src="props.mediaPreviewUrls[1]"
+              class="h-full w-full rounded-sm object-cover"
+              alt="Preview"
+            />
+            <!-- Delete button for second image -->
+            <button
+              @click="removeMedia(1)"
+              @mouseleave="handleMouseLeave"
+              class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
+            >
+              <component
+                :is="deletingMediaIndex === 1 ? Check : Trash2"
+                class="h-5 w-5 rounded-full p-1 transition-all duration-200"
+                :class="[
+                  deletingMediaIndex === 1
+                    ? 'bg-red-100 stroke-red-500'
+                    : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                ]"
+              />
+            </button>
+          </div>
+          <div class="relative col-span-1 row-span-1">
+            <img
+              :src="props.mediaPreviewUrls[2]"
+              class="h-full w-full rounded-sm object-cover"
+              alt="Preview"
+            />
+            <!-- Delete button for third image -->
+            <button
+              @click="removeMedia(2)"
+              @mouseleave="handleMouseLeave"
+              class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
+            >
+              <component
+                :is="deletingMediaIndex === 2 ? Check : Trash2"
+                class="h-5 w-5 rounded-full p-1 transition-all duration-200"
+                :class="[
+                  deletingMediaIndex === 2
+                    ? 'bg-red-100 stroke-red-500'
+                    : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                ]"
+              />
+            </button>
+          </div>
+        </template>
+
+        <!-- Four images: each takes a square in the 2x2 grid -->
+        <template v-else-if="props.mediaPreviewUrls.length >= 4">
+          <div
+            v-for="(url, index) in props.mediaPreviewUrls.slice(0, 4)"
+            :key="index"
+            class="relative col-span-1 row-span-1 aspect-square"
+          >
+            <img
+              :src="url"
+              class="h-full w-full rounded-sm object-cover"
+              alt="Preview"
+            />
+            <!-- Delete button for each image -->
+            <button
+              @click="removeMedia(index)"
+              @mouseleave="handleMouseLeave"
+              class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
+            >
+              <component
+                :is="deletingMediaIndex === index ? Check : Trash2"
+                class="h-5 w-5 rounded-full p-1 transition-all duration-200"
+                :class="[
+                  deletingMediaIndex === index
+                    ? 'bg-red-100 stroke-red-500'
+                    : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                ]"
+              />
+            </button>
+          </div>
+        </template>
+      </div>
+
+      <div
+        v-if="props.currentMediaType === 'video'"
+        class="mt-[20px] flex items-center justify-between gap-4"
+      >
+        <button
+          @click="openCoverModal"
+          class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+        >
+          <ImageIcon :size="16" />
+          Set Cover Image
+        </button>
       </div>
     </div>
   </div>
