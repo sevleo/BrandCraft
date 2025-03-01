@@ -358,7 +358,7 @@
       <div class="flex w-full items-start justify-center gap-4">
         <!-- Middle Component -->
         <div
-          class="scheduling-form border-greenBG flex h-fit max-w-[600px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
+          class="scheduling-form border-greenBG mb-5 flex h-fit max-w-[600px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
         >
           <div class="flex h-auto w-full flex-col gap-2 p-2">
             <!-- <div>{{ currentMediaType }}</div>
@@ -499,6 +499,7 @@
                       editorDataStore.selectedPost.value.videoTimestamp
                     "
                     :debouncedSave="debouncedSave"
+                    :handleSave="handleSave"
                   />
                 </div>
               </div>

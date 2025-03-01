@@ -59,7 +59,9 @@
             class="validation-error mb-2 text-sm text-red-700 dark:text-red-400"
           >
             <div>
-              <span class="font-medium">{{ error.platform }}:</span>
+              <span class="font-medium">{{
+                error.platform && error.platform + ':'
+              }}</span>
               <span class="ml-1 opacity-90">{{ error.message }}</span>
             </div>
           </li>

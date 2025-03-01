@@ -42,8 +42,6 @@ async function updatePostGroup(selectedMedia: File[]) {
     editorDataStore.selectedPost.value?.scheduledTime || ''
   );
 
-  console.log(editorDataStore.selectedPost.value?.scheduledTime);
-
   if (editorDataStore.selectedPost.value?.platforms) {
     formData.append(
       'platforms',
@@ -86,8 +84,6 @@ async function updatePostGroup(selectedMedia: File[]) {
 
   // Save the post ID before saving
   const postId = editorDataStore.selectedPost.value?._id;
-
-  console.log(formData.get('scheduledTime'));
 
   await apiSavePostGroup(formData, postId);
 

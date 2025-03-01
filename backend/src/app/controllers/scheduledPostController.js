@@ -88,6 +88,9 @@ exports.updatePostGroup = async (req, res) => {
       url: { $nin: parsedKeptMediaUrls }, // Find media that is NOT in keptMediaUrls
     });
 
+    console.log("media to delete");
+    console.log(mediaToDelete);
+
     await Promise.all(
       mediaToDelete.map(async (media) => {
         try {

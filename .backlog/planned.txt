@@ -62,6 +62,7 @@ Built by Creator, for Creators
 - when log out with black theme, login screen looks bad. change to white on login screen always.
 
 
+- Refactor image deletion (store deleted images separately in editorDataStore m'okay?)
 - add API for logging into BrandCraft and uploading a post
 
 

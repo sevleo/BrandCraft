@@ -343,5 +343,8 @@ Fri Feb 27 DAY 102
 - add created/edited
 
 
-
 Sat Feb 28 DAY 103
+- add validations
+- updates video / image preview styles
+
+Sun Feb 29 DAY 104

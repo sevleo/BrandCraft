@@ -4,7 +4,7 @@ import connectionsDataStore from '@/utils/connectionsDataStore';
 
 // Interface for validation errors
 export interface ValidationError {
-  platform: string;
+  platform?: string;
   message: string;
   type: 'error' | 'warning';
 }
@@ -19,7 +19,6 @@ const validateIsUploading = () => {
 
   if (editorDataStore.isUploading.value) {
     errors.push({
-      platform: 'All',
       message: 'Please wait for media upload to complete',
       type: 'error',
     });
@@ -174,7 +173,6 @@ const validateScheduledTime = () => {
     editorDataStore.selectedPost.value?.scheduledTime === ''
   ) {
     errors.push({
-      platform: 'All',
       message: 'Scheduled time is required for scheduled posts',
       type: 'error',
     });
@@ -336,7 +334,6 @@ const validatePlatformSelection = () => {
     editorDataStore.selectedPost.value.platforms.length === 0
   ) {
     errors.push({
-      platform: 'All',
       message: 'Please select at least one platform to post to',
       type: 'error',
     });
