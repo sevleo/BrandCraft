@@ -77,6 +77,7 @@ async function updatePostGroup(selectedMedia: File[]) {
 
   formData.append('sameContent', 'true');
 
+  // If there are validation errors, force the post to draft status
   if (errors.value.length > 0) {
     formData.append('status', 'draft');
   } else {
@@ -93,21 +94,28 @@ async function updatePostGroup(selectedMedia: File[]) {
   // Refresh the post groups
   await postsStore.getAllPostGroups();
 
-  // Find the updated post in the refreshed post groups and re-select it
-  if (postId) {
-    const updatedPost = postsStore.postGroups.value.find(
-      (post) => post._id === postId
-    );
-    if (updatedPost) {
-      // Re-select the post to update all UI elements
-      await editorDataStore.selectPost(updatedPost);
-    }
-  }
-
   // Update just the timestamp fields without affecting other properties
   if (editorDataStore.selectedPost.value?._id) {
     editorDataStore.updateTimestamps(editorDataStore.selectedPost.value._id);
   }
+
+  // Store the original status
+  const originalStatus = editorDataStore.selectedPost.value?.status;
+
+  // Track if status was changed due to validation errors
+  let statusChangedDueToErrors = false;
+
+  if (errors.value.length > 0) {
+    // If the post was previously scheduled, update it to draft in the UI as well
+    if (editorDataStore.selectedPost.value && originalStatus === 'scheduled') {
+      // Update the status in the UI immediately
+      editorDataStore.selectedPost.value.status = 'draft';
+      statusChangedDueToErrors = true;
+    }
+  }
+
+  // Return whether the status was changed due to validation errors
+  return statusChangedDueToErrors;
 }
 
 export { createPostGroup, updatePostGroup };

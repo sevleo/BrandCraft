@@ -451,7 +451,7 @@
                 <ValidationMessages />
 
                 <!-- Settings Panel -->
-                <div class="flex flex-col gap-1">
+                <div class="mb-4 flex flex-col gap-1">
                   <TikTokPresets
                     v-if="
                       editorDataStore.selectedPost.value?.platforms.some(

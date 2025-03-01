@@ -81,6 +81,10 @@
     background-color: rgb(35, 35, 40) !important;
   }
 
+  .p-toast-message.p-toast-message-error {
+    background-color: rgb(129, 0, 0) !important;
+  }
+
   .p-toast-message-content {
     display: flex !important;
     justify-content: start !important;
@@ -100,16 +104,16 @@
 
   .p-toast-message-content .p-toast-summary,
   .p-toast-message-content .p-toast-detail {
-    color: rgb(167, 167, 167) !important;
+    color: rgb(225, 225, 225) !important;
     font-size: 14px;
     font-weight: 500;
   }
 
   .p-toast-message-content svg {
-    height: 14px !important;
-    width: 14px !important;
+    height: 18px !important;
+    width: 18px !important;
     stroke: white;
-    stroke-width: 0.7px;
+    stroke-width: 1.2px;
   }
 
   .p-datepicker-input {

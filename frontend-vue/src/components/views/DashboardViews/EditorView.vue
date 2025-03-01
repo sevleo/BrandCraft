@@ -187,7 +187,22 @@
   async function handleSave() {
     try {
       editorDataStore.isSaving.value = true;
-      await updatePostGroup(editorDataStore.selectedMedia.value);
+      const statusChangedDueToErrors = await updatePostGroup(
+        editorDataStore.selectedMedia.value
+      );
+
+      // If the status was changed due to validation errors, show a notification
+      if (statusChangedDueToErrors) {
+        // Make sure the button state is updated to match the new status
+        scheduleButtonState.value = 'draft';
+        toast.add({
+          closable: false,
+          severity: 'error',
+          detail: 'Errors detected, changing status to Draft',
+          life: 4000,
+        });
+      }
+
       // toast.add({
       //   severity: 'success',
       //   summary: 'Success',
@@ -489,8 +504,8 @@
             class="relative flex min-h-[100%] w-full flex-grow items-start justify-center"
           >
             <div
-              v-if="showProgress"
-              class="absolute left-1/2 top-0 z-50 w-[400px] -translate-x-1/2 transform space-y-3 rounded-lg bg-white p-4 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/5"
+              v-show="showProgress"
+              class="absolute left-1/2 top-[-100px] z-50 w-[400px] -translate-x-1/2 transform space-y-3 rounded-lg bg-white p-4 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/5"
             >
               <!-- Upload Progress -->
               <div class="space-y-2">

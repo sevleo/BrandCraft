@@ -739,6 +739,18 @@ video {
   top: 100%;
 }
 
+.top-\[100px\] {
+  top: 100px;
+}
+
+.bottom-\[100px\] {
+  bottom: 100px;
+}
+
+.top-\[-100px\] {
+  top: -100px;
+}
+
 .z-10 {
   z-index: 10;
 }
