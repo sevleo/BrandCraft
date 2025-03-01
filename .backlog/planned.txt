@@ -5,11 +5,9 @@ Built by Creator, for Creators
 
 
 
-
-- update dashboard navigation
-- update calendar
+- add Posted view (read only)
 - add List view
-- update Accounts view
+- update dashboard navigation styles
 
 - DEPLOY
 - MARKET
@@ -19,6 +17,7 @@ Built by Creator, for Creators
 
 
 
+- update Accounts view
 - add title
 - add notes
 

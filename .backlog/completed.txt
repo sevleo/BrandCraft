@@ -348,6 +348,7 @@ Fri Feb 27 DAY 102
 Sat Feb 28 DAY 103
 - add validations
 - updates video / image preview styles
+- update calendar
 
 
 
