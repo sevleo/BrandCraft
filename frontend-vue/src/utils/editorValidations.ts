@@ -2,14 +2,6 @@ import { computed, ref, watchEffect } from 'vue';
 import editorDataStore from '@/utils/editorDataStore';
 import connectionsDataStore from '@/utils/connectionsDataStore';
 
-// Define validation rules for different platforms
-const platformCharacterLimits = {
-  twitter: 280,
-  bluesky: 300,
-  threads: 500,
-  // Add other platforms as needed
-};
-
 // Interface for validation errors
 export interface ValidationError {
   platform: string;
@@ -335,6 +327,24 @@ const validateThreads = () => {
   return errors;
 };
 
+const validatePlatformSelection = () => {
+  const errors: ValidationError[] = [];
+
+  // Check if platforms array exists and has at least one item
+  if (
+    !editorDataStore.selectedPost.value?.platforms ||
+    editorDataStore.selectedPost.value.platforms.length === 0
+  ) {
+    errors.push({
+      platform: 'All',
+      message: 'Please select at least one platform to post to',
+      type: 'error',
+    });
+  }
+
+  return errors;
+};
+
 // Helper function to deduplicate validation errors
 const deduplicateErrors = (errors: ValidationError[]): ValidationError[] => {
   // Use a Map to track unique error messages per platform
@@ -371,6 +381,7 @@ watchEffect(() => {
     ...validateMastodon(),
     ...validateBluesky(),
     ...validateThreads(),
+    ...validatePlatformSelection(),
     // Add more validation functions here as needed
   ];
 
@@ -390,18 +401,3 @@ watchEffect(() => {
 // Export computed properties that return the current validation errors and warnings
 export const errors = computed(() => validationErrors.value);
 export const warnings = computed(() => validationWarnings.value);
-
-// Helper function to get display name for platforms
-const getPlatformDisplayName = (platform: string): string => {
-  const displayNames: Record<string, string> = {
-    twitter: 'Twitter/X',
-    bluesky: 'Bluesky',
-    threads: 'Threads',
-    mastodon: 'Mastodon',
-    tiktok: 'TikTok',
-    instagram: 'Instagram',
-    youtube: 'YouTube',
-  };
-
-  return displayNames[platform] || platform;
-};

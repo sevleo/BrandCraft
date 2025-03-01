@@ -228,10 +228,10 @@ const selectPost = async (post: any) => {
       await getCreatorInfo(tiktokPlatform.split('-').slice(1).join('-'));
     }
 
-    console.log(selectedPost.value);
-
     if (videoRef.value) {
-      videoDuration.value = formatTime(videoRef.value.duration);
+      videoDuration.value = formatTime(
+        (videoRef.value as HTMLVideoElement).duration
+      );
     }
   }
 };

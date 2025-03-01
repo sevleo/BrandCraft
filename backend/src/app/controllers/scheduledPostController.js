@@ -195,6 +195,8 @@ exports.updatePostGroup = async (req, res) => {
     if (scheduledTime && scheduledTime !== undefined) {
       const validatedTime = await validateScheduledTime(scheduledTime);
       if (validatedTime) updateData.scheduledTime = validatedTime;
+    } else {
+      updateData.scheduledTime = null;
     }
     if (parsedPlatforms !== undefined) updateData.platforms = parsedPlatforms;
     if (sameContent !== undefined)

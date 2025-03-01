@@ -1,7 +1,6 @@
 const express = require("express");
 const authenticateWithRefresh = require("../middleware/authenticateWithRefresh");
 const multer = require("multer");
-
 const scheduledPostController = require("../controllers/scheduledPostController");
 
 const router = express.Router();

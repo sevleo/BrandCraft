@@ -22,6 +22,7 @@
     isThisWeek,
     parseISO,
   } from 'date-fns';
+  import { errors } from '@/utils/editorValidations';
 
   const toast = useToast();
 
@@ -32,6 +33,8 @@
 
   // Schedule button state
   const scheduleButtonState = ref<'draft' | 'scheduled'>('draft');
+  // Track if status change is in progress
+  const isStatusChanging = ref(false);
 
   let saveTimeout: NodeJS.Timeout | null = null;
 
@@ -62,10 +65,13 @@
   watch(
     () => editorDataStore.selectedPost.value,
     (newPost) => {
-      if (newPost?.status === 'scheduled') {
-        scheduleButtonState.value = 'scheduled';
-      } else if (newPost?.status === 'draft') {
-        scheduleButtonState.value = 'draft';
+      // Only update button state if we're not in the middle of a status change
+      if (!isStatusChanging.value) {
+        if (newPost?.status === 'scheduled') {
+          scheduleButtonState.value = 'scheduled';
+        } else if (newPost?.status === 'draft') {
+          scheduleButtonState.value = 'draft';
+        }
       }
     },
     { deep: true }
@@ -208,36 +214,80 @@
 
   // Toggle post status between draft and scheduled
   const togglePostStatus = async (action: 'schedule' | 'draft') => {
-    if (action === 'schedule') {
-      // Update status to scheduled
-      editorDataStore.selectedPost.value.status = 'scheduled';
+    // If already in the process of changing status, don't allow another change
+    if (isStatusChanging.value) {
+      return;
+    }
 
-      // Save the post with the scheduled status
-      await handleSave();
+    try {
+      // Set status changing flag to true
+      isStatusChanging.value = true;
 
-      scheduleButtonState.value = 'scheduled';
+      if (action === 'schedule') {
+        // Check for validation errors before scheduling
+        if (hasValidationErrors.value) {
+          toast.add({
+            closable: false,
+            severity: 'error',
+            detail: 'Please fix validation errors before setting the post live',
+            life: 3000,
+          });
+          isStatusChanging.value = false;
+          return;
+        }
+
+        // Update status to scheduled
+        editorDataStore.selectedPost.value.status = 'scheduled';
+
+        // Save the post with the scheduled status and wait for confirmation
+        await handleSave();
+
+        // Only change button state after successful save
+        scheduleButtonState.value = 'scheduled';
+
+        toast.add({
+          closable: false,
+          severity: 'success',
+          detail: 'Set Live',
+          life: 2000,
+        });
+      } else if (action === 'draft') {
+        // Update status to draft
+        editorDataStore.selectedPost.value.status = 'draft';
+
+        // Save the post with the draft status and wait for confirmation
+        await handleSave();
+
+        // Only change button state after successful save
+        scheduleButtonState.value = 'draft';
+
+        toast.add({
+          closable: false,
+          severity: 'success',
+          detail: 'Unpublished',
+          life: 2000,
+        });
+      }
+    } catch (error: any) {
+      console.error('Error changing post status:', error);
+
+      // Revert the status change in the data store if there was an error
+      if (action === 'schedule') {
+        editorDataStore.selectedPost.value.status = 'draft';
+      } else if (action === 'draft') {
+        editorDataStore.selectedPost.value.status = 'scheduled';
+      }
 
       toast.add({
         closable: false,
-        severity: 'success',
-        detail: 'Set Live',
-        life: 2000,
+        severity: 'error',
+        detail:
+          error?.response?.data?.message || 'Failed to change post status',
+        life: 3000,
       });
-    } else if (action === 'draft') {
-      // Update status to draft
-      editorDataStore.selectedPost.value.status = 'draft';
-
-      // Save the post with the draft status
-      await handleSave();
-
-      scheduleButtonState.value = 'draft';
-
-      toast.add({
-        closable: false,
-        severity: 'success',
-        detail: 'Unpublished',
-        life: 2000,
-      });
+    } finally {
+      // Set status changing flag back to false
+      isStatusChanging.value = false;
     }
   };
 
@@ -264,6 +314,9 @@
       return format(date, 'MMM d, yyyy'); // Feb 28, 2025
     }
   };
+
+  // Check if there are any validation errors
+  const hasValidationErrors = computed(() => errors.value.length > 0);
 </script>
 
 <template>
@@ -378,21 +431,57 @@
             <button
               v-if="scheduleButtonState === 'draft'"
               @click="() => togglePostStatus('schedule')"
-              class="text-green-700 dark:text-green-400 ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border border-green-500 bg-[#f0f9f0] px-4 py-2 text-sm font-medium transition-all hover:bg-[#e6f7e6] dark:border-green-700 dark:bg-[#0a1f0a] dark:hover:bg-[#1a331a]"
+              :disabled="hasValidationErrors || isStatusChanging"
+              :class="[
+                'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all',
+                hasValidationErrors || isStatusChanging
+                  ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
+                  : 'text-green-700 dark:text-green-400 border-green-500 bg-[#f0f9f0] hover:bg-[#e6f7e6] dark:border-green-700 dark:bg-[#0a1f0a] dark:hover:bg-[#1a331a]',
+              ]"
             >
               <span class="font-normal">Set Live</span>
+              <span v-if="isStatusChanging">
+                <Loader2
+                  class="h-4 w-4 animate-spin text-gray-400 dark:text-gray-500"
+                />
+              </span>
               <SendHorizonal
-                class="text-green-600 dark:text-green-400 h-4 w-4"
+                v-else
+                :class="[
+                  'h-4 w-4',
+                  hasValidationErrors || isStatusChanging
+                    ? 'text-gray-400 dark:text-gray-500'
+                    : 'text-green-600 dark:text-green-400',
+                ]"
               />
             </button>
 
             <button
               v-else-if="scheduleButtonState === 'scheduled'"
               @click="() => togglePostStatus('draft')"
-              class="ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border border-amber-500 bg-[#fff8e6] px-4 py-2 text-sm font-medium text-amber-700 transition-all hover:bg-[#ffefc7] dark:border-amber-700 dark:bg-[#332a14] dark:text-amber-400 dark:hover:bg-[#473b1d]"
+              :disabled="isStatusChanging"
+              :class="[
+                'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all',
+                isStatusChanging
+                  ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
+                  : 'border-amber-500 bg-[#fff8e6] text-amber-700 hover:bg-[#ffefc7] dark:border-amber-700 dark:bg-[#332a14] dark:text-amber-400 dark:hover:bg-[#473b1d]',
+              ]"
             >
               <span class="font-normal">Revoke</span>
-              <FileEdit class="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              <span v-if="isStatusChanging">
+                <Loader2
+                  class="h-4 w-4 animate-spin text-gray-400 dark:text-gray-500"
+                />
+              </span>
+              <FileEdit
+                v-else
+                :class="[
+                  'h-4 w-4',
+                  isStatusChanging
+                    ? 'text-gray-400 dark:text-gray-500'
+                    : 'text-amber-600 dark:text-amber-400',
+                ]"
+              />
             </button>
           </div>
           <div
