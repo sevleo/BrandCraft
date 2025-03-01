@@ -17,42 +17,11 @@ export interface ValidationError {
   type: 'error' | 'warning';
 }
 
-// Create a reactive array to hold validation errors
+// Create reactive arrays to hold validation errors and warnings
 const validationErrors = ref<ValidationError[]>([]);
+const validationWarnings = ref<ValidationError[]>([]);
 
-// Function to validate content length for each platform
-const validateContentLength = () => {
-  const errors: ValidationError[] = [];
-  const selectedPlatforms = editorDataStore.selectedPost.value?.platforms || [];
-
-  // Get character count from the editor data store
-  const characterCount = editorDataStore.contentStats.value.characterCount;
-
-  // Check each selected platform for character limits
-  selectedPlatforms.forEach((platformId) => {
-    // Extract platform name from the ID (format is 'platform-id')
-    const platform = platformId.split('-')[0];
-
-    // Check if we have a limit for this platform
-    if (platform in platformCharacterLimits) {
-      const limit =
-        platformCharacterLimits[
-          platform as keyof typeof platformCharacterLimits
-        ];
-
-      if (characterCount > limit) {
-        errors.push({
-          platform: getPlatformDisplayName(platform),
-          message: `Content exceeds ${limit} character limit (currently ${characterCount})`,
-          type: 'error',
-        });
-      }
-    }
-  });
-
-  return errors;
-};
-
+// Function to validate if content is being uploaded
 const validateIsUploading = () => {
   const errors: ValidationError[] = [];
 
@@ -125,7 +94,7 @@ const validateTikTok = () => {
       errors.push({
         platform: 'TikTok',
         message:
-          'You need to indicate if your content promotes yourself, a third party, or both.',
+          'You need to indicate if your content promotes yourself, a third party, or both',
         type: 'error',
       });
     }
@@ -204,25 +173,223 @@ const validateYoutube = () => {
   return errors;
 };
 
+const validateScheduledTime = () => {
+  const errors: ValidationError[] = [];
+
+  // Check if post is scheduled but no time is set
+  if (
+    !editorDataStore.selectedPost.value?.scheduledTime ||
+    editorDataStore.selectedPost.value?.scheduledTime === ''
+  ) {
+    errors.push({
+      platform: 'All',
+      message: 'Scheduled time is required for scheduled posts',
+      type: 'error',
+    });
+  }
+
+  return errors;
+};
+
+const validateTwitter = () => {
+  const errors: ValidationError[] = [];
+
+  // Check if Twitter is selected
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p) =>
+      p.startsWith('twitter')
+    )
+  ) {
+    // Check if there's content or media
+    const hasContent = editorDataStore.selectedPost.value.content.trim() !== '';
+    const hasMedia =
+      editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0;
+
+    if (!hasContent && !hasMedia) {
+      errors.push({
+        platform: 'Twitter/X',
+        message: 'Either text content or media is required for Twitter posts',
+        type: 'error',
+      });
+    }
+
+    // Check character limit (280 for Twitter) - as a warning
+    const characterCount = editorDataStore.contentStats.value.characterCount;
+    if (characterCount > 280) {
+      errors.push({
+        platform: 'Twitter/X',
+        message: `Content exceeds 280 character limit (currently ${characterCount}). If you have Premium, this is fine. If you don't have Premium, the post will fail.`,
+        type: 'warning',
+      });
+    }
+  }
+
+  return errors;
+};
+
+const validateMastodon = () => {
+  const errors: ValidationError[] = [];
+
+  // Check if Mastodon is selected
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p) =>
+      p.startsWith('mastodon')
+    )
+  ) {
+    // Check if there's content or media
+    const hasContent = editorDataStore.selectedPost.value.content.trim() !== '';
+    const hasMedia =
+      editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0;
+
+    if (!hasContent && !hasMedia) {
+      errors.push({
+        platform: 'Mastodon',
+        message: 'Either text content or media is required for Mastodon posts',
+        type: 'error',
+      });
+    }
+
+    // Check character limit for Mastodon (500 characters)
+    const characterCount = editorDataStore.contentStats.value.characterCount;
+    if (characterCount > 500) {
+      errors.push({
+        platform: 'Mastodon',
+        message: `Content exceeds 500 character limit (currently ${characterCount})`,
+        type: 'error',
+      });
+    }
+  }
+
+  return errors;
+};
+
+const validateBluesky = () => {
+  const errors: ValidationError[] = [];
+
+  // Check if Bluesky is selected
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p) =>
+      p.startsWith('bluesky')
+    )
+  ) {
+    // Check if there's content or media
+    const hasContent = editorDataStore.selectedPost.value.content.trim() !== '';
+    const hasMedia =
+      editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0;
+
+    if (!hasContent && !hasMedia) {
+      errors.push({
+        platform: 'Bluesky',
+        message: 'Either text content or media is required for Bluesky posts',
+        type: 'error',
+      });
+    }
+
+    // Check character limit for Bluesky (300 characters)
+    const characterCount = editorDataStore.contentStats.value.characterCount;
+    if (characterCount > 300) {
+      errors.push({
+        platform: 'Bluesky',
+        message: `Content exceeds 300 character limit (currently ${characterCount})`,
+        type: 'error',
+      });
+    }
+  }
+
+  return errors;
+};
+
+const validateThreads = () => {
+  const errors: ValidationError[] = [];
+
+  // Check if Threads is selected
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p) =>
+      p.startsWith('threads')
+    )
+  ) {
+    // Check if there's content or media
+    const hasContent = editorDataStore.selectedPost.value.content.trim() !== '';
+    const hasMedia =
+      editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0;
+
+    if (!hasContent && !hasMedia) {
+      errors.push({
+        platform: 'Threads',
+        message: 'Either text content or media is required for Threads posts',
+        type: 'error',
+      });
+    }
+
+    // Check character limit for Threads (500 characters)
+    const characterCount = editorDataStore.contentStats.value.characterCount;
+    if (characterCount > 500) {
+      errors.push({
+        platform: 'Threads',
+        message: `Content exceeds 500 character limit (currently ${characterCount})`,
+        type: 'error',
+      });
+    }
+  }
+
+  return errors;
+};
+
+// Helper function to deduplicate validation errors
+const deduplicateErrors = (errors: ValidationError[]): ValidationError[] => {
+  // Use a Map to track unique error messages per platform
+  const uniqueErrors = new Map<string, ValidationError>();
+
+  errors.forEach((error) => {
+    // Create a unique key based on platform and message
+    const key = `${error.platform}:${error.message}`;
+
+    // Only add the error if we haven't seen this exact error before
+    if (!uniqueErrors.has(key)) {
+      uniqueErrors.set(key, error);
+    }
+  });
+
+  // Convert the Map values back to an array
+  return Array.from(uniqueErrors.values());
+};
+
 // Set up watchers to validate whenever relevant data changes
 watchEffect(() => {
-  // Clear previous errors
+  // Clear previous errors and warnings
   validationErrors.value = [];
+  validationWarnings.value = [];
 
   // Run all validation functions and combine results
-  // Run all validation functions and combine results
-  validationErrors.value = [
-    ...validateContentLength(),
+  const allValidations = [
     ...validateIsUploading(),
     ...validateTikTok(),
     ...validateInstagram(),
     ...validateYoutube(),
+    ...validateScheduledTime(),
+    ...validateTwitter(),
+    ...validateMastodon(),
+    ...validateBluesky(),
+    ...validateThreads(),
     // Add more validation functions here as needed
   ];
+
+  // Separate errors and warnings
+  const errors = allValidations.filter(
+    (validation) => validation.type === 'error'
+  );
+  const warnings = allValidations.filter(
+    (validation) => validation.type === 'warning'
+  );
+
+  // Deduplicate errors and warnings before assigning
+  validationErrors.value = deduplicateErrors(errors);
+  validationWarnings.value = deduplicateErrors(warnings);
 });
 
-// Export a computed property that returns the current validation errors
+// Export computed properties that return the current validation errors and warnings
 export const errors = computed(() => validationErrors.value);
+export const warnings = computed(() => validationWarnings.value);
 
 // Helper function to get display name for platforms
 const getPlatformDisplayName = (platform: string): string => {
