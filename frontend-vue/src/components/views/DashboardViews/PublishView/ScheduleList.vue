@@ -184,10 +184,7 @@
   const selectedDateRange = computed({
     get: () => postsStore.dates.value,
     set: (value) => {
-      postsStore.dates.value = value;
-      if (value && value.length === 2) {
-        postsStore.setDateRange(value[0], value[1]);
-      }
+      postsStore.updateDates(value);
     },
   });
 
@@ -337,7 +334,7 @@
     }
 
     // Update the store and local state
-    postsStore.setDateRange(startDate, endDate);
+    postsStore.updateDates([startDate, endDate]);
     selectedDateRange.value = [startDate, endDate];
   });
 
@@ -361,7 +358,7 @@
         selectedSortOption.value = 'thisWeek';
       }
 
-      postsStore.setDateRange(startDate, endDate);
+      postsStore.updateDates([startDate, endDate]);
       selectedDateRange.value = [startDate, endDate];
     }
   );

@@ -120,7 +120,6 @@ const updateVideoDuration = (video: HTMLVideoElement) => {
   if (video && !isNaN(video.duration)) {
     videoDurationSeconds.value = video.duration;
     videoDuration.value = formatTime(video.duration);
-    console.log('Video duration updated:', videoDuration.value);
   }
 };
 

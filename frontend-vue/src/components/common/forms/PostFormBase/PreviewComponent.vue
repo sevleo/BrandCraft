@@ -40,9 +40,7 @@
 
   // Handle video load
   const handleVideoLoad = () => {
-    console.log('Video loaded');
     if (!editorDataStore.videoRef?.value) return;
-    console.log('Video loaded:', editorDataStore.videoRef.value);
 
     // Start progress tracking
     const video = editorDataStore.videoRef.value;
@@ -202,19 +200,15 @@
   const checkVideoAvailability = () => {
     const videoElement = editorDataStore.videoRef.value;
     if (videoElement && videoElement.readyState >= 2) {
-      console.log('Video is now playable');
       clearInterval(retryInterval.value!); // Stop retrying
       retryInterval.value = null;
       // componentKey.value = Date.now();
     } else {
-      console.log('Video not ready, retrying...');
       componentKey.value = Date.now();
     }
   };
 
   onMounted(() => {
-    console.log('Component mounted');
-
     if (editorDataStore.videoRef.value) {
       // Retry loading every 3 seconds
       retryInterval.value = setInterval(checkVideoAvailability, 2000);

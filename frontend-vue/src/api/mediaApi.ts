@@ -24,7 +24,6 @@ export async function uploadVideoToS3(
   onProgress?: (progress: number) => void,
   isSaving?: any
 ): Promise<string> {
-  console.log('try upload');
   editorDataStore.uploadProgress.value = 0;
   editorDataStore.processingProgress.value = 0;
 
@@ -46,7 +45,6 @@ export async function uploadVideoToS3(
         if (progressEvent.total) {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           editorDataStore.uploadProgress.value = progress;
-          console.log(progress);
           if (onProgress) {
             onProgress(progress);
           }
@@ -58,8 +56,6 @@ export async function uploadVideoToS3(
   const { sessionId } = response.data;
   isSaving.value = false;
 
-  console.log('sessionId: ', sessionId);
-
   // Step 2: Connect to SSE for processing progress
   return new Promise((resolve, reject) => {
     const eventSource = new EventSource(
@@ -70,7 +66,6 @@ export async function uploadVideoToS3(
       const data = JSON.parse(event.data);
       if (data.percent !== undefined) {
         editorDataStore.processingProgress.value = data.percent;
-        console.log(data.percent);
       }
 
       if (data.completed) {

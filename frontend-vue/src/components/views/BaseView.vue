@@ -11,7 +11,6 @@
     let refreshToken = urlParams.get('refreshToken');
 
     if (!accessToken || !refreshToken) {
-      console.log('No tokens found in URL');
       accessToken = localStorage.getItem('accessToken');
       refreshToken = localStorage.getItem('refreshToken');
     }

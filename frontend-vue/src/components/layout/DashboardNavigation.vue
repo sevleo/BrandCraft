@@ -76,7 +76,6 @@
   }
 
   async function navigateToEditor(post: any) {
-    console.log(post);
     // Check if trying to switch to a different post while on editor
     if (
       router.currentRoute.value.path === '/dashboard/editor' &&

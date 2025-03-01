@@ -24,8 +24,6 @@ async function verifyAuth(BACKEND_URL: string) {
       authData.signedIn.value = true;
       authData.isAdmin.value = response.data.user.isAdmin;
       authData.displayName.value = response.data.user.displayName;
-
-      console.log(response.data);
     } catch (err) {
       console.error(err);
       authData.signedIn.value = false;

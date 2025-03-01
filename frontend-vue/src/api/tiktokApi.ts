@@ -28,7 +28,6 @@ async function connectTikTok() {
 }
 
 async function getCreatorInfo(platformId: string) {
-  console.log('getting creator info');
   try {
     const response = await axiosInstance.post('/get-creator-info', {
       platformId,

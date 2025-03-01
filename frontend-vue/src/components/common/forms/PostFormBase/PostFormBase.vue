@@ -298,8 +298,6 @@
       clearTimeout(saveTimeout);
     }
 
-    console.log('saving');
-
     // Show saving indicator immediately when typing starts
     editorDataStore.isSaving.value = true;
 

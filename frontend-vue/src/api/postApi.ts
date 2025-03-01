@@ -24,11 +24,6 @@ async function apiSavePostGroup(postData: FormData, id?: string) {
       },
     };
 
-    console.log('FormData contents:');
-    for (const [key, value] of postData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-
     let response;
     if (id) {
       response = await axiosInstance.put(`/update/${id}`, postData, config);
@@ -46,7 +41,6 @@ async function apiSavePostGroup(postData: FormData, id?: string) {
 async function getPostGroups() {
   try {
     const response = await axiosInstance.get('/scheduled-posts');
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to get scheduled posts:', error);

@@ -13,14 +13,10 @@ async function createPostGroup(scheduledTime: string) {
 
   const newPostGroup = await apiSavePostGroup(formData);
 
-  console.log(newPostGroup);
-
-  console.log(newPostGroup);
   await postsStore.getAllPostGroups();
   editorDataStore.reset();
   editorDataStore.selectedPost.value._id = newPostGroup._id;
   router.push('/dashboard/editor');
-  console.log(editorDataStore.selectedPost.value);
 
   // Update just the timestamp fields without affecting other properties
   if (editorDataStore.selectedPost.value?._id) {

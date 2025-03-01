@@ -1,4 +1,4 @@
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { getPostGroups, getPostsStats } from '../api/postApi';
 import {
   startOfDay,
@@ -48,17 +48,19 @@ const dateRange = ref<{ start: Date | null; end: Date | null }>({
 
 const dates = ref<Date[] | null>(null); // Allows null or a valid date array
 
-watch(dates, (newValue) => {
-  if (!newValue) {
+function updateDates(newDates: Date[] | null) {
+  dates.value = newDates;
+
+  if (!newDates) {
     dateRange.value = { start: null, end: null };
     return;
   }
 
-  if (newValue.length === 2) {
-    const [start, end] = newValue;
+  if (newDates.length === 2) {
+    const [start, end] = newDates;
     setDateRange(start, end); // Pass valid Dates to your function
   }
-});
+}
 
 const predefinedRanges = {
   lastWeek: () => ({
@@ -119,7 +121,6 @@ async function getAllPostGroups() {
   try {
     const response = await getPostGroups();
     postGroups.value = response.postGroups;
-    console.log(postGroups.value);
     return response.data;
   } catch (error) {
     console.error('Failed to get scheduled posts:', error);
@@ -221,5 +222,6 @@ export default {
   setDateRange,
   setPredefinedRange,
   dates,
+  updateDates,
   posts,
 };
