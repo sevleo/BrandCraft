@@ -4,12 +4,12 @@
 </script>
 
 <template>
-  <div v-if="errors.length > 0" class="validation-errors mt-4 px-3">
+  <div v-if="errors.length > 0" class="validation-errors mt-4 px-3 py-[20px]">
     <div class="space-y-2">
       <div
         v-for="(error, index) in errors"
         :key="index"
-        class="validation-error flex items-start gap-2 rounded-md bg-red-50 p-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
+        class="validation-error flex items-start gap-2 rounded-md border border-red-800 bg-red-50 p-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400"
       >
         <div class="mt-0.5 flex-shrink-0">
           <AlertCircle v-if="error.type === 'error'" class="h-4 w-4" />

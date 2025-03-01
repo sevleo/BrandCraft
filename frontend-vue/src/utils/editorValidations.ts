@@ -95,10 +95,10 @@ const validateTikTok = () => {
 
     // 3. Check video duration
     if (editorDataStore.currentMediaType.value === 'video') {
-      const maxDuration = 10;
-      // const maxDuration =
-      //   connectionsDataStore.tiktokAccount.value?.creatorInfo
-      //     .max_video_post_duration_sec || Infinity;
+      // const maxDuration = 10;
+      const maxDuration =
+        connectionsDataStore.tiktokAccount.value?.creatorInfo
+          .max_video_post_duration_sec || 900;
 
       const currentDuration = editorDataStore.videoDurationSeconds.value;
 
@@ -133,34 +133,6 @@ const validateTikTok = () => {
   return errors;
 };
 
-//     // 2. Check video duration limits for Reels and Stories
-//     if (
-//       editorDataStore.currentMediaType.value === 'video' &&
-//       videoRef.value
-//     ) {
-//       const duration = Math.floor(videoRef.value.duration);
-//       const maxDuration =
-//         editorDataStore.selectedPost.value?.platformSettings.instagram!
-//           .videoType === 'REELS'
-//           ? 900
-//           : 60;
-//       const durationText =
-//         editorDataStore.selectedPost.value?.platformSettings.instagram!
-//           .videoType === 'REELS'
-//           ? '15 minutes'
-//           : '1 minute';
-
-//       if (duration > maxDuration) {
-//         errors.push(
-//           `Video duration exceeds maximum allowed length of ${durationText} for Instagram ${editorDataStore.selectedPost.value?.platformSettings.instagram!.videoType.toLowerCase()}`
-//         );
-//       }
-//     }
-//   }
-
-//   return errors;
-// });
-
 const validateInstagram = () => {
   const errors: ValidationError[] = [];
 
@@ -179,21 +151,53 @@ const validateInstagram = () => {
     }
     // 2. Check video duration limits for Reels and Stories
     if (editorDataStore.currentMediaType.value === 'video') {
-      //   const maxDuration =
-      // editorDataStore.selectedPost.value?.platformSettings.instagram!
-      //   .videoType === 'REELS'
-      //   ? 900
-      //   : 60;
-      const maxDuration = 10;
+      const maxDuration =
+        editorDataStore.selectedPost.value?.platformSettings.instagram!
+          .videoType === 'REELS'
+          ? 900
+          : 60;
+      // const maxDuration = 10;
       const currentDuration = editorDataStore.videoDurationSeconds.value;
 
-      if (currentDuration! > maxDuration) {
+      if (
+        currentDuration !== null &&
+        Math.floor(currentDuration) > maxDuration
+      ) {
         errors.push({
           platform: 'Instagram',
-          message: `Test inst`,
+          message: `Video duration (${Math.floor(currentDuration)}s) exceeds maximum allowed length of ${maxDuration} seconds`,
           type: 'error',
         });
       }
+    }
+  }
+
+  return errors;
+};
+
+const validateYoutube = () => {
+  const errors: ValidationError[] = [];
+
+  if (
+    editorDataStore.selectedPost.value?.platforms.some((p: any) =>
+      p.startsWith('youtube')
+    )
+  ) {
+    // 1. Check if media is uploaded
+    if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
+      errors.push({
+        platform: 'Youtube',
+        message: 'Please upload a video for your Youtube post',
+        type: 'error',
+      });
+    }
+    // 2. Check if it's a video
+    if (editorDataStore.currentMediaType.value === 'image') {
+      errors.push({
+        platform: 'Youtube',
+        message: 'Images are not supported for Youtube posts',
+        type: 'error',
+      });
     }
   }
 
@@ -206,11 +210,13 @@ watchEffect(() => {
   validationErrors.value = [];
 
   // Run all validation functions and combine results
+  // Run all validation functions and combine results
   validationErrors.value = [
     ...validateContentLength(),
     ...validateIsUploading(),
     ...validateTikTok(),
     ...validateInstagram(),
+    ...validateYoutube(),
     // Add more validation functions here as needed
   ];
 });

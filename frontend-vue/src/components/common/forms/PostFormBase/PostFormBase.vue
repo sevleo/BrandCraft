@@ -29,23 +29,6 @@
 
   const replicatedValue = ref('');
 
-  // const isVideoDurationValid = computed(() => {
-  //   if (
-  //     editorDataStore.uploadProgress.value < 100 ||
-  //     !videoRef.value ||
-  //     editorDataStore.currentMediaType.value !== 'video'
-  //   ) {
-  //     return true; // Assume valid while upload is in progress or metadata isn't loaded
-  //   }
-  //   const maxDuration =
-  //     connectionsDataStore.tiktokAccount.value?.creatorInfo
-  //       .max_video_post_duration_sec || Infinity;
-
-  //   return Math.floor(videoRef.value.duration) <= maxDuration;
-  // });
-
-  // Toggle between compact and full view for platform buttons
-
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
   );
