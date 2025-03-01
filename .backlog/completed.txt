@@ -336,6 +336,8 @@ Wed Feb 26 DAY 100
 
 
 Thur Feb 26 DAY 101
+- update frame rate for MP4 videos too
+
 
 Fri Feb 27 DAY 102
 - fix schedule/draft button
@@ -346,5 +348,7 @@ Fri Feb 27 DAY 102
 Sat Feb 28 DAY 103
 - add validations
 - updates video / image preview styles
+
+
 
 Sun Feb 29 DAY 104

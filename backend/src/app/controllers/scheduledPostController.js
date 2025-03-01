@@ -7,12 +7,19 @@ const axios = require("axios");
 
 exports.createPostGroup = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, scheduledTime } = req.body;
     const userId = req.user._id;
+
+    let dateTime = null;
+    if (scheduledTime && scheduledTime !== undefined) {
+      const validatedTime = await validateScheduledTime(scheduledTime);
+      if (validatedTime) dateTime = validatedTime;
+    }
 
     const postGroup = new ScheduledPostGroup({
       userId: userId,
       status: status,
+      scheduledTime: dateTime,
     });
 
     await postGroup.save();

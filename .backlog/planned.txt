@@ -2,10 +2,10 @@ cBacklog:
 Built by Creator, for Creators
 
 
-- add validations
 
 
-- updates video / image preview styles
+
+
 - update dashboard navigation
 - update calendar
 - add List view
@@ -43,7 +43,6 @@ Built by Creator, for Creators
 
 - For youtube connection, inform that a channel is necessary to connect account
 
-- Add proper validations
 
 - Add proper token refresh mechanism where possible (at least IG and Threads).
 
@@ -63,6 +62,8 @@ Built by Creator, for Creators
 
 
 - Refactor image deletion (store deleted images separately in editorDataStore m'okay?)
+  - also refactor how we store media in editorDataStore to make it more efficient
+
 - add API for logging into BrandCraft and uploading a post
 
 
@@ -76,21 +77,14 @@ Built by Creator, for Creators
 - update Bluesky password to follow specific format
 
 
-- update frame rate for MP4 videos too
-
-
-- Always refresh "This week", now I have to click on it to see the changes
-
-
-- LAUNCH!
-- Reach out to all emails from waitlist and userbase and invite them to participate in FREE BETA.
 
 
 
-- I have some ref that I use in one case but don't use in other. Need to remember wtf is this and fix it :C
+
+
+
+
 - add validations for image & video specificions for IG & TikTok  (https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media#reel-specifications)
-- add support for mastodon
-- Make validations show up in a nicer way & refactor them
 - Feature: add ability to select server (region) from where the post will be made (use Lambda?)
 - Mobile Supportc   
 
@@ -138,14 +132,9 @@ Built by Creator, for Creators
 - Add ability to trigger post NOW
 - Add ability to edit a failed post from a single platform
 - Add ability to create different variations of a post for different platforms
-- Add support of video
-- Add support of emojis
 
-- when I add picture to post, it looks weird on preview
-- also when i add picture t post, there becomes little space left for text
 - Add post detail view from calendar (pop-up)
 - Show actual posts in Published and on Calendar
-- When we click "Create post", slide to the right
 - Think of a better way to show platform on calendar div
 
 - Add *REAL* Facebook support
@@ -154,9 +143,7 @@ Built by Creator, for Creators
 Bugs/enhancements:
 - add video size & length validation (60s max for bluesky)
 - change all file routes to media.brandcraft.art
-- Links and hashtags on mastodon/bluesky are not clickable.
 - Implement YT thumbnail
-- no need to make the user wait until video converts. just add a checkbox in post indicating that conversion is still in process and do not schedule it while it is in process.
 - when user has 2 accounts (e.g. google and github) tied with same email, and if they set password for one or both of them, it will be a problem.
 - wrap Threads calls inside a token refresher in scheduler
 - wrap Tiktok calls inside a token refresher in scheduler

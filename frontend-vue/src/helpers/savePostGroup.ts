@@ -4,13 +4,16 @@ import editorDataStore from '@/utils/editorDataStore';
 import router from '@/router';
 import { errors } from '@/utils/editorValidations';
 
-async function createPostGroup() {
+async function createPostGroup(scheduledTime: string) {
   // If not on editor, navigate first then reset
 
   const formData = new FormData();
   formData.append('status', 'draft');
+  formData.append('scheduledTime', scheduledTime);
 
   const newPostGroup = await apiSavePostGroup(formData);
+
+  console.log(newPostGroup);
 
   console.log(newPostGroup);
   await postsStore.getAllPostGroups();
@@ -22,6 +25,7 @@ async function createPostGroup() {
   // Update just the timestamp fields without affecting other properties
   if (editorDataStore.selectedPost.value?._id) {
     editorDataStore.updateTimestamps(editorDataStore.selectedPost.value._id);
+    editorDataStore.selectedPost.value.scheduledTime = scheduledTime;
   }
 }
 

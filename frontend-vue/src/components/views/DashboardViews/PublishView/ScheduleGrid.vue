@@ -8,6 +8,7 @@
   import { useThemeStore } from '@/utils/themeStore';
   import editorDataStore from '@/utils/editorDataStore';
   import { useRouter } from 'vue-router';
+  import { createPostGroup } from '@/helpers/savePostGroup';
 
   const themeStore = useThemeStore();
   const router = useRouter();
@@ -345,10 +346,11 @@
       targetDate.setHours(hours, minutes, 0, 0);
     }
     editorDataStore.reset();
-    editorDataStore.selectedPost.value.scheduledTime = targetDate.toISOString();
-    editorDataStore.isUserEdit.value = true;
-    await nextTick();
-    router.push('/dashboard/editor');
+    await createPostGroup(targetDate.toISOString());
+    // editorDataStore.isUserEdit.value = true;
+    // editorDataStore.selectedPost.value.scheduledTime = targetDate.toISOString();
+
+    // router.push('/dashboard/editor');
   }
 </script>
 
@@ -453,9 +455,9 @@
                         v-tooltip.top="post.content"
                         @click="
                           !isTimeSlotInPast(slot.time, day) &&
-                            (post.status === 'draft' ||
-                              post.status === 'scheduled') &&
-                            handlePostClick(post)
+                          (post.status === 'draft' ||
+                            post.status === 'scheduled') &&
+                          handlePostClick(post)
                         "
                       >
                         <div
@@ -550,7 +552,7 @@
                         ]"
                         @click="
                           !isTimeSlotInPast(slot.time, day) &&
-                            handleTimeSlotClick(slot.time, day)
+                          handleTimeSlotClick(slot.time, day)
                         "
                       >
                         <SquarePlus
