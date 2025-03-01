@@ -9,7 +9,7 @@ async function createPostGroup(scheduledTime: string) {
 
   const formData = new FormData();
   formData.append('status', 'draft');
-  formData.append('scheduledTime', scheduledTime);
+  if (scheduledTime) formData.append('scheduledTime', scheduledTime);
 
   const newPostGroup = await apiSavePostGroup(formData);
 

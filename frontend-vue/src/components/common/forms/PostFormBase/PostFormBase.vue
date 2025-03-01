@@ -419,13 +419,13 @@
                         class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       ></Video>
                     </button>
-                    <button
+                    <!-- <button
                       class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
                     >
                       <MoreHorizontal
                         class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       />
-                    </button>
+                    </button> -->
 
                     <!-- Emoji Picker -->
                     <div

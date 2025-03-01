@@ -49,8 +49,8 @@
     for (let hour = 0; hour < 24; hour++) {
       const isPastNoon = hour >= 12;
       const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-      const period = isPastNoon ? 'pm' : 'am';
-      const display = `${displayHour}:00${period}`;
+      const period = isPastNoon ? 'AM' : 'PM';
+      const display = `${displayHour} ${period}`;
 
       slots.push({
         time: `${hour.toString().padStart(2, '0')}:00`,
@@ -355,7 +355,7 @@
 </script>
 
 <template>
-  <div class="schedule-grid mt-8 rounded-lg py-4">
+  <div class="schedule-grid rounded-lg">
     <div class="mb-4 flex items-center">
       <div class="flex items-center gap-2">
         <button
@@ -386,9 +386,9 @@
     <!-- Weekly View -->
     <div
       v-if="publishViewDataStore.viewType.value === 'week'"
-      class="relative h-auto overflow-hidden"
+      class="relative h-auto overflow-hidden rounded-[10px] border border-[#e4e4e4]"
     >
-      <div class="relative rounded-[10px] border border-[transparent]">
+      <div class="calendar-header relative border-b border-[#e4e4e4]">
         <table class="box-border w-full min-w-full table-fixed">
           <thead>
             <tr>
@@ -412,7 +412,7 @@
 
       <div
         ref="scrollContainer"
-        class="scrollbar-thin border-1 relative h-[calc(100vh-300px)] max-h-fit min-h-[500px] overflow-y-auto overflow-x-hidden rounded-[10px] border border-[#c1c1c1] bg-[white] dark:bg-[#464646]"
+        class="scrollbar-thin border-1 relative h-[calc(100vh-140px)] max-h-fit min-h-[500px] overflow-y-auto overflow-x-hidden bg-[white] dark:bg-[#464646]"
       >
         <div class="relative">
           <table class="w-full min-w-full table-fixed border-collapse">
@@ -428,7 +428,11 @@
                   class="w-[70px] border-r text-center text-[12px] dark:border-[#9c9c9c82]"
                 >
                   <div class="h-[50px]">
-                    {{ slot.isHourStart ? slot.display : '' }}
+                    <p
+                      class="pr-2 text-end text-[14px] font-normal text-[#000000b2]"
+                    >
+                      {{ slot.isHourStart ? slot.display : '' }}
+                    </p>
                   </div>
                 </td>
                 <template
@@ -440,7 +444,7 @@
                     :class="[
                       isTodayColumn(weekDatesWithDays[index]) ? '' : '',
                       isTimeSlotInPast(slot.time, day)
-                        ? 'bg-[#00000007] dark:bg-[#5a5a5a]'
+                        ? 'bg-[#aa95a713] dark:bg-[#5a5a5a]'
                         : 'hover:bg-gray-50 dark:hover:bg-[#5a5a5a]',
                     ]"
                   >
@@ -580,7 +584,6 @@
     background: #f1f1f1;
     width: 10px;
     height: 10px;
-    border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
   }
 
@@ -614,5 +617,10 @@
   .dark .add-post:hover {
     border: 1px solid #ececec82;
     opacity: 100%;
+  }
+
+  .calendar-header {
+    z-index: 100;
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
   }
 </style>

@@ -57,7 +57,7 @@
       v-if="!isLoading"
       class="ml-[270px] flex h-auto max-w-[1200px] items-center justify-start bg-[white] p-6 dark:bg-[#121212]"
     >
-      <div class="mx-auto max-w-7xl">
+      <div class="max-w-7xl">
         <div class="flex gap-8">
           <!-- Left Column: Connected Accounts -->
           <div class="shrink-0">
