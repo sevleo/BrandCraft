@@ -35,7 +35,7 @@
           <AlertCircle
             class="h-4 w-4 stroke-red-700 text-red-700 dark:text-red-400"
           />
-          <span class="text-sm font-medium text-red-700 dark:text-red-400">
+          <span class="text-sm font-normal text-red-700 dark:text-red-400">
             {{ errors.length }}
             {{ errors.length === 1 ? 'issue' : 'issues' }}
           </span>
@@ -82,7 +82,7 @@
           <AlertTriangle
             class="h-4 w-4 stroke-amber-600 text-amber-600 dark:text-amber-400"
           />
-          <span class="text-sm font-medium text-amber-600 dark:text-amber-400">
+          <span class="text-sm font-normal text-amber-600 dark:text-amber-400">
             {{ warnings.length }}
             {{ warnings.length === 1 ? 'warning' : 'warnings' }}
           </span>
