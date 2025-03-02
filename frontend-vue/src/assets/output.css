@@ -1352,6 +1352,14 @@ video {
   width: 300px;
 }
 
+.w-\[130px\] {
+  width: 130px;
+}
+
+.w-\[150px\] {
+  width: 150px;
+}
+
 .min-w-\[45px\] {
   min-width: 45px;
 }

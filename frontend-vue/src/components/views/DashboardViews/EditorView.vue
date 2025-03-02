@@ -417,7 +417,7 @@
                 editorDataStore.isSaving.value
               "
               :class="[
-                'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all',
+                'ml-2 flex h-[38px] w-[130px] items-center justify-center gap-2 rounded-md border px-2 py-2 text-sm font-medium transition-all',
                 hasValidationErrors ||
                 isStatusChanging ||
                 editorDataStore.isSaving.value
@@ -447,7 +447,7 @@
               @click="() => togglePostStatus('draft')"
               :disabled="isStatusChanging"
               :class="[
-                'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all',
+                'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-2 py-2 text-sm font-medium transition-all',
                 isStatusChanging
                   ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
                   : 'border-amber-500 bg-[#fff8e6] text-amber-700 hover:bg-[#ffefc7] dark:border-amber-700 dark:bg-[#332a14] dark:text-amber-400 dark:hover:bg-[#473b1d]',
