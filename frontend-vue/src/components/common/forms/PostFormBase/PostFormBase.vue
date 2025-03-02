@@ -41,6 +41,9 @@
       const files = Array.from(input.files);
       const isVideo = input.accept.includes('video');
 
+      // Set uploading state immediately
+      editorDataStore.isUploading.value = true;
+
       // If it's a video, only allow one video per post
       if (isVideo) {
         if (editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0) {
@@ -50,6 +53,7 @@
             detail: 'You can only add one video per post',
             life: 3000,
           });
+          editorDataStore.isUploading.value = false;
           return;
         }
         const videoFile = files[0];
@@ -61,6 +65,7 @@
             detail: 'Video file size must be less than 512MB',
             life: 3000,
           });
+          editorDataStore.isUploading.value = false;
           return;
         }
 
@@ -72,7 +77,6 @@
         try {
           // Start upload to S3
           editorDataStore.uploadProgress.value = 0;
-          editorDataStore.isUploading.value = true;
           editorDataStore.isSaving.value = true;
 
           await uploadVideoToS3(
@@ -103,7 +107,6 @@
             detail: 'Failed to upload video. Please try again.',
             life: 3000,
           });
-          return;
         } finally {
           editorDataStore.isUploading.value = false;
           editorDataStore.isSaving.value = false;
@@ -124,6 +127,7 @@
           detail: 'You can only add up to 4 media files per post',
           life: 3000,
         });
+        editorDataStore.isUploading.value = false;
         return;
       }
 
@@ -164,8 +168,8 @@
           life: 3000,
         });
       } finally {
-        editorDataStore.isSaving.value = false;
         editorDataStore.isUploading.value = false;
+        editorDataStore.isSaving.value = false;
       }
     }
   }
@@ -513,14 +517,10 @@
                   class="preview-container overflow-hidden rounded-[10px] bg-[white] dark:bg-[#313131]"
                 >
                   <PreviewComponent
-                    :key="
-                      editorDataStore.selectedPost.value.mediaPreviewUrls.join(
-                        ''
-                      )
-                    "
                     v-if="
                       editorDataStore.selectedPost.value.mediaPreviewUrls
-                        .length > 0
+                        .length > 0 ||
+                      editorDataStore.selectedMedia.value.length > 0
                     "
                     :media-preview-urls="
                       editorDataStore.selectedPost.value.mediaPreviewUrls

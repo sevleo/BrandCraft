@@ -246,18 +246,30 @@
     if (videoElement && videoElement.readyState >= 2) {
       clearInterval(retryInterval.value!); // Stop retrying
       retryInterval.value = null;
-      // componentKey.value = Date.now();
     } else {
-      componentKey.value = Date.now();
+      componentKey.value = Date.now(); // Force re-render
     }
   };
 
   onMounted(() => {
-    if (editorDataStore.videoRef.value) {
-      // Retry loading every 3 seconds
-      retryInterval.value = setInterval(checkVideoAvailability, 2000);
-    }
+    // Start checking video availability
+    retryInterval.value = setInterval(checkVideoAvailability, 1000);
   });
+
+  // Watch for changes in media type to restart video checks
+  watch(
+    () => props.currentMediaType,
+    (newType) => {
+      if (newType === 'video') {
+        // Clear any existing interval
+        if (retryInterval.value) {
+          clearInterval(retryInterval.value);
+        }
+        // Start new interval
+        retryInterval.value = setInterval(checkVideoAvailability, 1000);
+      }
+    }
+  );
 
   // Cleanup interval when unmounted
   onUnmounted(() => {
@@ -432,7 +444,9 @@
 
       <!-- Loading Spinner -->
       <div
-        v-else-if="editorDataStore.isUploading.value"
+        v-if="
+          editorDataStore.isUploading.value || editorDataStore.isSaving.value
+        "
         class="flex flex-col items-center justify-center py-8"
       >
         <Loader2 class="mb-2 h-10 w-10 animate-spin text-blue-500" />
@@ -446,11 +460,6 @@
             :style="{ width: `${editorDataStore.uploadProgress.value}%` }"
           ></div>
         </div>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else class="flex flex-col items-center justify-center py-8">
-        <p class="text-sm text-gray-500">No media selected</p>
       </div>
 
       <div
