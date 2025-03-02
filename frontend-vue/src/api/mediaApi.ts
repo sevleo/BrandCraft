@@ -80,6 +80,8 @@ export async function uploadVideoToS3(
         if (updatedPost) {
           await editorDataStore.selectPost(updatedPost);
         }
+
+        console.log('finished uploading from mediaApi');
         resolve(sessionId);
       }
 

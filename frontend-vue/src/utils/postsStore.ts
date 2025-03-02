@@ -110,7 +110,10 @@ const scheduledPosts = computed(() =>
 );
 
 const publishedPosts = computed(() =>
-  postGroups.value.filter((post) => post.status === 'published')
+  postGroups.value.filter(
+    (post) =>
+      post.status === 'published' || post.status === 'partially_published'
+  )
 );
 
 const failedPosts = computed(() =>

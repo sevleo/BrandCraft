@@ -108,6 +108,8 @@
             life: 3000,
           });
         } finally {
+          console.log('finished uploading from postFormBase');
+
           editorDataStore.isUploading.value = false;
           editorDataStore.isSaving.value = false;
         }
@@ -313,7 +315,7 @@
       await updatePostGroup();
 
       // Refresh the current post data after saving
-      await editorDataStore.refreshCurrentPost();
+      // await editorDataStore.refreshCurrentPost();
 
       // toast.add({
       //   severity: 'success',

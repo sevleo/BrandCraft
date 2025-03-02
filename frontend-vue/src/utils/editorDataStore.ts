@@ -268,8 +268,6 @@ const refreshCurrentPost = async () => {
   );
 
   if (refreshedPost) {
-    console.log('Refreshed post:', refreshedPost);
-
     // Preserve important local state
     const currentContent = selectedPost.value.content;
     const currentStatus = selectedPost.value.status;
@@ -298,12 +296,6 @@ const refreshCurrentPost = async () => {
       selectedPost.value.mediaPreviewUrls = [];
       currentMediaType.value = null;
     }
-
-    console.log('Media files after refresh:', selectedPost.value.mediaFiles);
-    console.log(
-      'Media preview URLs after refresh:',
-      selectedPost.value.mediaPreviewUrls
-    );
   } else {
     console.warn(
       'Could not find refreshed post with ID:',

@@ -40,8 +40,14 @@
   );
 
   // Watch for changes in activeView and save to localStorage
-  watch(activeView, (newValue) => {
+  watch(activeView, async (newValue) => {
     localStorage.setItem('dashboardActiveView', newValue);
+    // Refresh posts when switching tabs
+    try {
+      await postsStore.getAllPostGroups();
+    } catch (error) {
+      console.error('Failed to refresh posts:', error);
+    }
   });
 
   async function handleLogout() {

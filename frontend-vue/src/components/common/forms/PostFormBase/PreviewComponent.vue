@@ -292,9 +292,7 @@
       <div
         v-if="
           !editorDataStore.isUploading.value &&
-          !editorDataStore.isSaving.value &&
-          props.currentMediaType === 'video' &&
-          props.mediaPreviewUrls[0]
+          props.currentMediaType === 'video'
         "
         class="aspect-[9/16] w-[350px] overflow-hidden rounded-lg bg-black"
       >
@@ -348,7 +346,6 @@
       <template
         v-else-if="
           !editorDataStore.isUploading.value &&
-          !editorDataStore.isSaving.value &&
           props.currentMediaType === 'image'
         "
       >
@@ -444,9 +441,7 @@
 
       <!-- Loading Spinner -->
       <div
-        v-if="
-          editorDataStore.isUploading.value || editorDataStore.isSaving.value
-        "
+        v-if="editorDataStore.isUploading.value"
         class="flex flex-col items-center justify-center py-8"
       >
         <Loader2 class="mb-2 h-10 w-10 animate-spin text-blue-500" />
@@ -509,8 +504,7 @@
       <div
         v-if="
           props.currentMediaType === 'video' &&
-          editorDataStore.isUploading.value === false &&
-          editorDataStore.isSaving.value === false
+          editorDataStore.isUploading.value === false
         "
         class="mt-[20px] flex items-center justify-between gap-4"
       >
