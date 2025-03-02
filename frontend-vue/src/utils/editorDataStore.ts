@@ -197,18 +197,23 @@ const selectPost = async (post: any) => {
     videoDurationSeconds.value = null;
 
     isUserEdit.value = false; // Ensure no auto-save triggers
-    
+
     // Set the post first
     selectedPost.value = post;
-    
+
     // Initialize media URLs with proper null checks
-    if (selectedPost.value.mediaFiles && selectedPost.value.mediaFiles.length > 0) {
+    if (
+      selectedPost.value.mediaFiles &&
+      selectedPost.value.mediaFiles.length > 0
+    ) {
       selectedPost.value.mediaPreviewUrls = selectedPost.value.mediaFiles.map(
         (file: any) => file.url
       );
-      
+
       // Set currentMediaType based on first media file
-      currentMediaType.value = selectedPost.value.mediaFiles[0].type as 'image' | 'video';
+      currentMediaType.value = selectedPost.value.mediaFiles[0].type as
+        | 'image'
+        | 'video';
     } else {
       selectedPost.value.mediaPreviewUrls = [];
       currentMediaType.value = null;
@@ -227,10 +232,10 @@ const selectPost = async (post: any) => {
         (videoRef.value as HTMLVideoElement).duration
       );
     }
-    
+
     // Refresh the current post data after selection to ensure we have the latest data
     await refreshCurrentPost();
-    
+
     console.log('Post selected:', selectedPost.value);
     console.log('Media files:', selectedPost.value.mediaFiles);
     console.log('Media preview URLs:', selectedPost.value.mediaPreviewUrls);
@@ -253,46 +258,57 @@ const updateTimestamps = (postId: string) => {
 // Refresh the current post data after media operations
 const refreshCurrentPost = async () => {
   if (!selectedPost.value?._id) return;
-  
+
   // Refresh all posts to get the latest data
   await postsStore.getAllPostGroups();
-  
+
   // Find the current post in the refreshed data
   const refreshedPost = postsStore.postGroups.value.find(
     (group) => group._id === selectedPost.value._id
   );
-  
+
   if (refreshedPost) {
     console.log('Refreshed post:', refreshedPost);
-    
+
     // Preserve important local state
     const currentContent = selectedPost.value.content;
     const currentStatus = selectedPost.value.status;
-    
+
     // Update the entire post with the refreshed data
     selectedPost.value = JSON.parse(JSON.stringify(refreshedPost));
-    
+
     // Restore important local state if needed
     if (currentContent) selectedPost.value.content = currentContent;
     if (currentStatus) selectedPost.value.status = currentStatus;
-    
+
     // Ensure the mediaPreviewUrls are properly set
-    if (selectedPost.value.mediaFiles && selectedPost.value.mediaFiles.length > 0) {
+    if (
+      selectedPost.value.mediaFiles &&
+      selectedPost.value.mediaFiles.length > 0
+    ) {
       selectedPost.value.mediaPreviewUrls = selectedPost.value.mediaFiles.map(
         (file: any) => file.url
       );
-      
+
       // Set currentMediaType based on first media file
-      currentMediaType.value = selectedPost.value.mediaFiles[0].type as 'image' | 'video';
+      currentMediaType.value = selectedPost.value.mediaFiles[0].type as
+        | 'image'
+        | 'video';
     } else {
       selectedPost.value.mediaPreviewUrls = [];
       currentMediaType.value = null;
     }
-    
+
     console.log('Media files after refresh:', selectedPost.value.mediaFiles);
-    console.log('Media preview URLs after refresh:', selectedPost.value.mediaPreviewUrls);
+    console.log(
+      'Media preview URLs after refresh:',
+      selectedPost.value.mediaPreviewUrls
+    );
   } else {
-    console.warn('Could not find refreshed post with ID:', selectedPost.value._id);
+    console.warn(
+      'Could not find refreshed post with ID:',
+      selectedPost.value._id
+    );
   }
 };
 

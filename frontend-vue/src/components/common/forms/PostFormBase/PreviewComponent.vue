@@ -176,7 +176,7 @@
         try {
           // Set deleting state to true to show spinner
           isDeletingMedia.value = true;
-          
+
           // Delete the media file via API
           await deleteMedia(mediaToDelete._id);
 
@@ -278,7 +278,12 @@
     >
       <!-- Video Preview -->
       <div
-        v-if="!editorDataStore.isUploading.value && !editorDataStore.isSaving.value && props.currentMediaType === 'video' && props.mediaPreviewUrls[0]"
+        v-if="
+          !editorDataStore.isUploading.value &&
+          !editorDataStore.isSaving.value &&
+          props.currentMediaType === 'video' &&
+          props.mediaPreviewUrls[0]
+        "
         class="aspect-[9/16] w-[350px] overflow-hidden rounded-lg bg-black"
       >
         <div
@@ -310,7 +315,10 @@
             class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
             :disabled="isDeletingMedia"
           >
-            <Loader2 v-if="isDeletingMedia" class="h-5 w-5 animate-spin text-blue-500" />
+            <Loader2
+              v-if="isDeletingMedia"
+              class="h-5 w-5 animate-spin text-blue-500"
+            />
             <component
               v-else
               :is="deletingMediaIndex === 0 ? Check : Trash2"
@@ -325,7 +333,13 @@
         </div>
       </div>
       <!-- Image Preview -->
-      <template v-else-if="!editorDataStore.isUploading.value && !editorDataStore.isSaving.value && props.currentMediaType === 'image'">
+      <template
+        v-else-if="
+          !editorDataStore.isUploading.value &&
+          !editorDataStore.isSaving.value &&
+          props.currentMediaType === 'image'
+        "
+      >
         <!-- Navigation Arrows -->
         <div
           v-if="props.mediaPreviewUrls.length > 1"
@@ -393,7 +407,10 @@
             class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
             :disabled="isDeletingMedia"
           >
-            <Loader2 v-if="isDeletingMedia" class="h-5 w-5 animate-spin text-blue-500" />
+            <Loader2
+              v-if="isDeletingMedia"
+              class="h-5 w-5 animate-spin text-blue-500"
+            />
             <component
               v-else
               :is="deletingMediaIndex === currentImageIndex ? Check : Trash2"
@@ -414,25 +431,25 @@
       </template>
 
       <!-- Loading Spinner -->
-      <div 
-        v-else-if="editorDataStore.isUploading.value || editorDataStore.isSaving.value" 
+      <div
+        v-else-if="editorDataStore.isUploading.value"
         class="flex flex-col items-center justify-center py-8"
       >
-        <Loader2 class="h-10 w-10 animate-spin text-blue-500 mb-2" />
+        <Loader2 class="mb-2 h-10 w-10 animate-spin text-blue-500" />
         <p class="text-sm text-gray-500">Uploading media...</p>
-        <div v-if="editorDataStore.uploadProgress.value > 0" class="w-64 bg-gray-200 rounded-full h-2.5 mt-2">
-          <div 
-            class="bg-blue-600 h-2.5 rounded-full" 
+        <div
+          v-if="editorDataStore.uploadProgress.value > 0"
+          class="mt-2 h-2.5 w-64 rounded-full bg-gray-200"
+        >
+          <div
+            class="h-2.5 rounded-full bg-blue-600"
             :style="{ width: `${editorDataStore.uploadProgress.value}%` }"
           ></div>
         </div>
       </div>
 
       <!-- Empty State -->
-      <div
-        v-else
-        class="flex flex-col items-center justify-center py-8"
-      >
+      <div v-else class="flex flex-col items-center justify-center py-8">
         <p class="text-sm text-gray-500">No media selected</p>
       </div>
 
