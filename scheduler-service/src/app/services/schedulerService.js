@@ -43,6 +43,7 @@ class SchedulerService {
       // Step 1: Find post groups that need media processing
       const postGroups = await ScheduledPostGroup.find({
         status: "scheduled",
+        processingStatus: "pending",
         scheduledTime: { $lte: now },
       });
 
@@ -62,7 +63,7 @@ class SchedulerService {
 
       // Filter posts to ensure they belong to a processing group
       const validPosts = postsToProcess.filter(
-        (post) => post.postGroupId.status === "processing"
+        (post) => post?.postGroupId?.processingStatus === "processing"
       );
 
       console.log(`Found ${validPosts.length} posts to process.`);
@@ -89,8 +90,8 @@ class SchedulerService {
     // Step 1: Populate mediaFiles to access full media details
     await group.populate("mediaFiles");
 
-    // Step 2: Update status to "processing"
-    group.status = "processing";
+    // Step 2: Update processingStatus to "processing"
+    group.processingStatus = "processing";
     await group.save();
 
     // Step 3: Download media if filePath is missing
@@ -242,10 +243,13 @@ class SchedulerService {
 
           if (publishedPosts === totalPosts) {
             group.status = "published";
+            group.processingStatus = "finished";
           } else if (totalPosts === failedPosts) {
             group.status = "failed";
+            group.processingStatus = "finished";
           } else if (totalPosts === publishedPosts + failedPosts) {
-            group.status = "published";
+            group.status = "partially_published";
+            group.processingStatus = "finished";
           } else {
             return; // Group is still processing, don't update status
           }

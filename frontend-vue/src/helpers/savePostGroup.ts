@@ -1,4 +1,4 @@
-import { apiSavePostGroup } from '@/api/postApi';
+import { apiSavePostGroup, uploadMedia, deleteMedia } from '@/api/postApi';
 import postsStore from '@/utils/postsStore';
 import editorDataStore from '@/utils/editorDataStore';
 import router from '@/router';
@@ -25,12 +25,14 @@ async function createPostGroup(scheduledTime: string) {
   }
 }
 
-async function updatePostGroup(selectedMedia: File[]) {
-  const keptMediaUrls =
-    editorDataStore.selectedPost.value?.mediaPreviewUrls?.filter((url) =>
-      editorDataStore.selectedPost.value?.initialMediaUrls?.includes(url)
-    );
+async function updatePostGroup() {
+  const postId = editorDataStore.selectedPost.value?._id;
+  if (!postId) {
+    console.error('No post ID available');
+    return false;
+  }
 
+  // Step 3: Update the post group data
   const formData = new FormData();
 
   // Add common post details
@@ -47,16 +49,6 @@ async function updatePostGroup(selectedMedia: File[]) {
       'platforms',
       JSON.stringify(editorDataStore.selectedPost.value?.platforms)
     );
-  }
-
-  if (keptMediaUrls) {
-    formData.append('keptMediaUrls', JSON.stringify(keptMediaUrls));
-  }
-
-  if (editorDataStore.currentMediaType.value === 'image') {
-    selectedMedia.forEach((file) => {
-      formData.append('media', file);
-    });
   }
 
   if (editorDataStore.selectedPost.value?.platformSettings) {
@@ -81,9 +73,6 @@ async function updatePostGroup(selectedMedia: File[]) {
   } else {
     formData.append('status', editorDataStore.selectedPost.value?.status);
   }
-
-  // Save the post ID before saving
-  const postId = editorDataStore.selectedPost.value?._id;
 
   await apiSavePostGroup(formData, postId);
 

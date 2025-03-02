@@ -9,6 +9,7 @@ const multer = require("multer");
 const axios = require("axios");
 const MediaFile = require("../models/mediaFile");
 const ScheduledPostGroup = require("../models/scheduledPostGroup");
+const mediaController = require("../controllers/mediaController");
 
 const router = express.Router();
 
@@ -26,6 +27,39 @@ const upload = multer({
     }
   },
 });
+
+// Configure multer for post media uploads
+const postMediaUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 512 * 1024 * 1024, // 512MB limit for videos
+    files: 4, // Max 4 files
+  },
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype.startsWith("image/") ||
+      file.mimetype.startsWith("video/")
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image and video files are allowed"));
+    }
+  },
+});
+
+// New routes for post media management
+router.post(
+  "/post/:postGroupId/upload",
+  authenticateWithRefresh,
+  postMediaUpload.fields([{ name: "media", maxCount: 4 }]),
+  mediaController.uploadMedia
+);
+
+router.delete(
+  "/post/media/:mediaId",
+  authenticateWithRefresh,
+  mediaController.deleteMedia
+);
 
 router.post(
   "/generate-upload-url",

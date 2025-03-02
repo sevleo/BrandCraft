@@ -185,9 +185,7 @@
   async function handleSave() {
     try {
       editorDataStore.isSaving.value = true;
-      const statusChangedDueToErrors = await updatePostGroup(
-        editorDataStore.selectedMedia.value
-      );
+      const statusChangedDueToErrors = await updatePostGroup();
 
       // If the status was changed due to validation errors, show a notification
       if (statusChangedDueToErrors) {
@@ -200,13 +198,6 @@
           life: 4000,
         });
       }
-
-      // toast.add({
-      //   severity: 'success',
-      //   summary: 'Success',
-      //   detail: 'Post saved successfully',
-      //   life: 3000,
-      // });
     } catch (error: any) {
       console.error('Save error:', error);
       toast.add({
@@ -444,10 +435,16 @@
             <button
               v-if="scheduleButtonState === 'draft'"
               @click="() => togglePostStatus('schedule')"
-              :disabled="hasValidationErrors || isStatusChanging"
+              :disabled="
+                hasValidationErrors ||
+                isStatusChanging ||
+                editorDataStore.isSaving.value
+              "
               :class="[
                 'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium transition-all',
-                hasValidationErrors || isStatusChanging
+                hasValidationErrors ||
+                isStatusChanging ||
+                editorDataStore.isSaving.value
                   ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
                   : 'text-green-700 dark:text-green-400 border-green-500 bg-[#f0f9f0] hover:bg-[#e6f7e6] dark:border-green-700 dark:bg-[#0a1f0a] dark:hover:bg-[#1a331a]',
               ]"

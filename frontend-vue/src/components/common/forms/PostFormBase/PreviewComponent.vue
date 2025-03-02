@@ -9,6 +9,7 @@
   } from 'lucide-vue-next';
   import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
+  import { deleteMedia } from '@/api/postApi';
 
   const isHoveringVideo = ref(false);
   const isVideoPlaying = ref(false);
@@ -155,23 +156,51 @@
     }
   };
 
-  function removeMedia(index: number) {
+  async function removeMedia(index: number) {
     if (deletingMediaIndex.value === index) {
+      const mediaToDelete =
+        editorDataStore.selectedPost.value.mediaFiles[index];
+
+      // If this is a server-stored media file (has an _id)
+      if (mediaToDelete && mediaToDelete._id) {
+        try {
+          // Delete the media file via API
+          await deleteMedia(mediaToDelete._id);
+          console.log('Media deleted successfully:', mediaToDelete._id);
+
+          // Don't update local state here - just refresh the post data
+          await editorDataStore.refreshCurrentPost();
+
+          deletingMediaIndex.value = null;
+
+          // No need to call handleSave here as we've already refreshed the data
+          return;
+        } catch (error) {
+          console.error('Error deleting media:', error);
+          deletingMediaIndex.value = null;
+          return;
+        }
+      }
+
+      // Only for locally added files that don't have an _id yet
       // Remove URL from preview
       URL.revokeObjectURL(
         editorDataStore.selectedPost.value.mediaPreviewUrls[index]
       );
+
+      // Update local state
       editorDataStore.selectedPost.value.mediaPreviewUrls.splice(index, 1);
       editorDataStore.selectedPost.value.mediaFiles.splice(index, 1);
-      editorDataStore.selectedMedia.value.splice(index, 1);
 
       // Reset currentMediaType if no media left
       if (editorDataStore.selectedPost.value.mediaPreviewUrls.length === 0) {
         editorDataStore.currentMediaType.value = null;
         editorDataStore.selectedPost.value.videoTimestamp = 0;
       }
+
       deletingMediaIndex.value = null;
-      // props.debouncedSave();
+
+      // Save changes to update the post without the deleted media
       props.handleSave();
     } else {
       // First click - show confirmation
@@ -279,6 +308,23 @@
       </div>
       <!-- Image Preview -->
       <template v-else-if="props.currentMediaType === 'image'">
+        <p>
+          selected media
+
+          {{ editorDataStore.selectedMedia.value }}
+        </p>
+
+        <p>
+          media files
+
+          {{ editorDataStore.selectedPost.value.mediaFiles }}
+        </p>
+        <p>
+          media preview urls
+
+          {{ editorDataStore.selectedPost.value.mediaPreviewUrls }}
+        </p>
+
         <!-- Navigation Arrows -->
         <div
           v-if="props.mediaPreviewUrls.length > 1"

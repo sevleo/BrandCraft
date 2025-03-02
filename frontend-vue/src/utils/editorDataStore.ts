@@ -10,7 +10,6 @@ type SelectedPost = {
   scheduledTime: string | null;
   mediaFiles: { url: string; type: 'image' | 'video' }[];
   mediaPreviewUrls: string[];
-  initialMediaUrls: string[];
   videoTimestamp: number;
   posts?: any[];
   platformSettings: {
@@ -50,7 +49,6 @@ const defaultPost: SelectedPost = {
   scheduledTime: null,
   mediaFiles: [],
   mediaPreviewUrls: [],
-  initialMediaUrls: [],
   videoTimestamp: 0,
   posts: [],
   platformSettings: {
@@ -87,6 +85,7 @@ const currentMediaType = ref<'image' | 'video' | null>(null);
 const isUploading = ref<boolean>(false);
 const isUserEdit = ref<boolean>(false);
 const selectedMedia = ref<File[]>([]); // this is newly selected media
+const filesToDelete = ref<string[]>([]); // track files to delete
 const uploadProgress = ref<number>(0);
 const processingProgress = ref<number>(0);
 const isPanelVisible = ref<boolean>(true); // Track right panel visibility
@@ -183,6 +182,7 @@ const reset = () => {
   isUploading.value = false;
   isUserEdit.value = false;
   selectedMedia.value = [];
+  filesToDelete.value = [];
   uploadProgress.value = 0;
   processingProgress.value = 0;
   isPanelVisible.value = true;
@@ -197,25 +197,20 @@ const selectPost = async (post: any) => {
     videoDurationSeconds.value = null;
 
     isUserEdit.value = false; // Ensure no auto-save triggers
+    
+    // Set the post first
     selectedPost.value = post;
-
+    
     // Initialize media URLs with proper null checks
-    selectedPost.value.initialMediaUrls = selectedPost?.value?.mediaFiles?.map(
-      (file: any) => file.url
-    );
-    selectedPost.value.mediaPreviewUrls = selectedPost?.value?.mediaFiles?.map(
-      (file: any) => file.url
-    );
-
-    // Set currentMediaType based on first media file
-    if (
-      selectedPost.value.mediaFiles &&
-      selectedPost.value.mediaFiles.length > 0
-    ) {
-      currentMediaType.value = selectedPost.value.mediaFiles[0].type as
-        | 'image'
-        | 'video';
+    if (selectedPost.value.mediaFiles && selectedPost.value.mediaFiles.length > 0) {
+      selectedPost.value.mediaPreviewUrls = selectedPost.value.mediaFiles.map(
+        (file: any) => file.url
+      );
+      
+      // Set currentMediaType based on first media file
+      currentMediaType.value = selectedPost.value.mediaFiles[0].type as 'image' | 'video';
     } else {
+      selectedPost.value.mediaPreviewUrls = [];
       currentMediaType.value = null;
     }
 
@@ -232,6 +227,13 @@ const selectPost = async (post: any) => {
         (videoRef.value as HTMLVideoElement).duration
       );
     }
+    
+    // Refresh the current post data after selection to ensure we have the latest data
+    await refreshCurrentPost();
+    
+    console.log('Post selected:', selectedPost.value);
+    console.log('Media files:', selectedPost.value.mediaFiles);
+    console.log('Media preview URLs:', selectedPost.value.mediaPreviewUrls);
   }
 };
 
@@ -243,9 +245,54 @@ const updateTimestamps = (postId: string) => {
   );
 
   if (refreshedPost && selectedPost.value) {
-    // Only update the timestamp fields
     selectedPost.value.createdAt = refreshedPost.createdAt;
     selectedPost.value.updatedAt = refreshedPost.updatedAt;
+  }
+};
+
+// Refresh the current post data after media operations
+const refreshCurrentPost = async () => {
+  if (!selectedPost.value?._id) return;
+  
+  // Refresh all posts to get the latest data
+  await postsStore.getAllPostGroups();
+  
+  // Find the current post in the refreshed data
+  const refreshedPost = postsStore.postGroups.value.find(
+    (group) => group._id === selectedPost.value._id
+  );
+  
+  if (refreshedPost) {
+    console.log('Refreshed post:', refreshedPost);
+    
+    // Preserve important local state
+    const currentContent = selectedPost.value.content;
+    const currentStatus = selectedPost.value.status;
+    
+    // Update the entire post with the refreshed data
+    selectedPost.value = JSON.parse(JSON.stringify(refreshedPost));
+    
+    // Restore important local state if needed
+    if (currentContent) selectedPost.value.content = currentContent;
+    if (currentStatus) selectedPost.value.status = currentStatus;
+    
+    // Ensure the mediaPreviewUrls are properly set
+    if (selectedPost.value.mediaFiles && selectedPost.value.mediaFiles.length > 0) {
+      selectedPost.value.mediaPreviewUrls = selectedPost.value.mediaFiles.map(
+        (file: any) => file.url
+      );
+      
+      // Set currentMediaType based on first media file
+      currentMediaType.value = selectedPost.value.mediaFiles[0].type as 'image' | 'video';
+    } else {
+      selectedPost.value.mediaPreviewUrls = [];
+      currentMediaType.value = null;
+    }
+    
+    console.log('Media files after refresh:', selectedPost.value.mediaFiles);
+    console.log('Media preview URLs after refresh:', selectedPost.value.mediaPreviewUrls);
+  } else {
+    console.warn('Could not find refreshed post with ID:', selectedPost.value._id);
   }
 };
 
@@ -253,21 +300,24 @@ export default {
   selectedPost,
   currentMediaType,
   isUploading,
-  isSaving,
-  viewMode,
   isUserEdit,
   selectedMedia,
+  filesToDelete,
   uploadProgress,
   processingProgress,
   isPanelVisible,
-  reset,
-  selectPost,
-  contentStats,
-  updateTimestamps,
+  viewMode,
+  isSaving,
   videoRef,
   videoDuration,
   videoDurationSeconds,
   videoMetadata,
+  contentStats,
+  reset,
+  selectPost,
+  updateTimestamps,
+  refreshCurrentPost,
+  getAccurateCharacterCount,
 };
 
 /**

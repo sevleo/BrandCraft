@@ -18,6 +18,8 @@
   import PreviewComponent from '@/components/common/forms/PostFormBase/PreviewComponent.vue';
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
   import ValidationMessages from '@/components/editor/ValidationMessages.vue';
+  import { uploadMedia } from '@/api/postApi';
+  import { getPostGroups } from '@/api/postApi';
 
   const toast = useToast();
   // const videoRef = ref<HTMLVideoElement | null>(null);
@@ -117,26 +119,51 @@
       }
 
       const newFiles = files.slice(0, remainingSlots);
-      editorDataStore.selectedMedia.value.push(...newFiles);
+      editorDataStore.selectedMedia.value = newFiles;
       editorDataStore.currentMediaType.value = 'image';
 
-      // Create preview URLs
-      newFiles.forEach((file) => {
-        const url = URL.createObjectURL(file);
-        editorDataStore.selectedPost.value.mediaPreviewUrls.push(url);
-      });
+      try {
+        editorDataStore.isSaving.value = true;
 
-      debouncedSave();
+        // Get the post ID
+        const postId = editorDataStore.selectedPost.value._id;
+        const selectedMedia = editorDataStore.selectedMedia.value;
+
+        // Upload the media files
+        const uploadedFiles = await uploadMedia(postId, selectedMedia);
+        console.log('Uploaded files:', uploadedFiles);
+
+        // Don't update local state here - just refresh the post data
+        await editorDataStore.refreshCurrentPost();
+
+        // Clear the selected media array
+        editorDataStore.selectedMedia.value = [];
+
+        toast.add({
+          severity: 'success',
+          summary: 'Media uploaded',
+          detail: 'Media files uploaded successfully',
+          life: 3000,
+        });
+      } catch (error) {
+        console.error('Error uploading media:', error);
+        toast.add({
+          severity: 'error',
+          summary: 'Upload failed',
+          detail: 'Failed to upload media files. Please try again.',
+          life: 3000,
+        });
+      } finally {
+        editorDataStore.isSaving.value = false;
+      }
     }
   }
 
   const handlePhotoUpload = () => {
     if (editorDataStore.currentMediaType.value === 'video') {
       toast.add({
-        severity: 'warn',
-        summary: 'Media type mismatch',
-        detail:
-          'Cannot add photos when a video is present. Remove the video first.',
+        severity: 'error',
+        detail: 'Remove the video first.',
         life: 3000,
       });
       return;
@@ -152,10 +179,8 @@
   const handleVideoUpload = () => {
     if (editorDataStore.currentMediaType.value === 'image') {
       toast.add({
-        severity: 'warn',
-        summary: 'Media type mismatch',
-        detail:
-          'Cannot add a video when photos are present. Remove the photos first.',
+        severity: 'error',
+        detail: 'Remove the images first.',
         life: 3000,
       });
       return;
@@ -270,7 +295,11 @@
   async function handleSave() {
     try {
       editorDataStore.isSaving.value = true;
-      await updatePostGroup(editorDataStore.selectedMedia.value);
+      await updatePostGroup();
+
+      // Refresh the current post data after saving
+      await editorDataStore.refreshCurrentPost();
+
       // toast.add({
       //   severity: 'success',
       //   summary: 'Success',
@@ -359,13 +388,6 @@
           class="scheduling-form border-greenBG mb-5 flex h-fit max-w-[600px] flex-grow rounded-[10px] bg-[white] dark:bg-[#121212]"
         >
           <div class="flex h-auto w-full flex-col gap-2 p-2">
-            <!-- <div>{{ currentMediaType }}</div>
-          <div>
-            {{ editorDataStore.selectedPost.value.mediaFiles }}
-          </div>
-          <div>{{ editorDataStore.selectedPost.value.initialMediaUrls }}</div>
-          <div>{{ editorDataStore.selectedPost.value.mediaPreviewUrls }}</div> -->
-
             <div class="flex h-full w-full gap-8">
               <!-- Form Panel -->
               <div class="flex w-full flex-1 flex-col">

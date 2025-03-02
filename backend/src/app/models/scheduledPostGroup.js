@@ -8,7 +8,7 @@ const ScheduledPostGroupSchema = new mongoose.Schema(
       ref: "User",
     },
     scheduledTime: {
-      type: String,
+      type: Date,
     },
     platforms: [
       {
@@ -36,13 +36,17 @@ const ScheduledPostGroupSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
-        "pending",
         "draft",
         "scheduled",
         "published",
         "failed",
         "partially_published",
       ],
+    },
+    processingStatus: {
+      type: String,
+      enum: ["pending", "processing", "finished"],
+      default: "pending",
     },
     posts: [
       {

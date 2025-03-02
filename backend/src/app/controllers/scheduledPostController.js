@@ -1,9 +1,9 @@
 const ScheduledPost = require("../models/scheduledPost");
 const ScheduledPostGroup = require("../models/scheduledPostGroup");
 const { uploadFileToS3, deleteFileFromS3 } = require("../services/s3Service");
-const MediaFile = require("../models/mediaFile");
 const platformConnection = require("../models/platformConnection");
 const axios = require("axios");
+const MediaFile = require("../models/mediaFile");
 
 exports.createPostGroup = async (req, res) => {
   try {
@@ -39,7 +39,6 @@ exports.updatePostGroup = async (req, res) => {
       platforms,
       sameContent,
       status,
-      keptMediaUrls,
       videoTimestamp,
       platformSettings,
     } = req.body;
@@ -73,10 +72,8 @@ exports.updatePostGroup = async (req, res) => {
       !content &&
       !platforms &&
       !scheduledTime &&
-      !keptMediaUrls &&
       !videoTimestamp &&
-      !platformSettings &&
-      !req.files?.media
+      !platformSettings
     ) {
       return res.json({ success: true, postGroup });
     }
@@ -84,66 +81,6 @@ exports.updatePostGroup = async (req, res) => {
     // Parse arrays from form data
     const parsedPlatforms =
       typeof platforms === "string" ? JSON.parse(platforms) : platforms;
-    const parsedKeptMediaUrls =
-      typeof keptMediaUrls === "string"
-        ? JSON.parse(keptMediaUrls)
-        : keptMediaUrls;
-
-    // Step 1: Identify and delete removed media files
-    const mediaToDelete = await MediaFile.find({
-      postGroupId: postGroup._id,
-      url: { $nin: parsedKeptMediaUrls }, // Find media that is NOT in keptMediaUrls
-    });
-
-    console.log("media to delete");
-    console.log(mediaToDelete);
-
-    await Promise.all(
-      mediaToDelete.map(async (media) => {
-        try {
-          await deleteFileFromS3(media.url); // Delete from S3
-          await media.deleteOne(); // Remove from DB
-          await ScheduledPostGroup.updateOne(
-            { _id: postGroup._id },
-            { $pull: { mediaFiles: media._id } }
-          );
-        } catch (error) {
-          console.error("Error deleting media:", error);
-        }
-      })
-    );
-
-    // Step 2: Keep media files that are still being used
-    const keptMedia = await MediaFile.find({
-      postGroupId: postGroup._id,
-      url: { $in: parsedKeptMediaUrls },
-    });
-
-    let newMediaFiles = [];
-
-    // Handle image uploads
-    if (req.files?.media?.length > 0) {
-      const uploadedFiles = [];
-      const imageFiles = await handleImageUpload(req.files, userId);
-      uploadedFiles.push(...imageFiles);
-
-      // Step 4: Save new media files to the database
-      newMediaFiles = await Promise.all(
-        uploadedFiles.map(async (file) => {
-          const newMediaFile = new MediaFile({
-            userId: userId,
-            postGroupId: postGroup._id,
-            url: file.url,
-            fileName: file.filename,
-            mimeType: file.mimeType,
-            size: file.size,
-            type: file.type,
-          });
-          await newMediaFile.save();
-          return newMediaFile._id;
-        })
-      );
-    }
 
     // Step 6: Get all existing posts for this group
     const existingPosts = await ScheduledPost.find({
@@ -205,6 +142,7 @@ exports.updatePostGroup = async (req, res) => {
     if (scheduledTime && scheduledTime !== undefined) {
       const validatedTime = await validateScheduledTime(scheduledTime);
       if (validatedTime) updateData.scheduledTime = validatedTime;
+      console.log("validatedTime", validatedTime);
     } else {
       updateData.scheduledTime = null;
     }
@@ -214,10 +152,6 @@ exports.updatePostGroup = async (req, res) => {
     if (videoTimestamp !== undefined)
       updateData.videoTimestamp = parseFloat(videoTimestamp);
     if (status !== undefined) updateData.status = status || postGroup.status;
-
-    // Update mediaFiles and posts if they exist
-    const allMediaFiles = [...keptMedia.map((m) => m._id), ...newMediaFiles];
-    if (allMediaFiles.length > 0) updateData.mediaFiles = allMediaFiles;
 
     if (updatedPosts && updatedPosts.length > 0) {
       updateData.posts = updatedPosts.map((post) => post._id);
@@ -235,19 +169,6 @@ exports.updatePostGroup = async (req, res) => {
     }
 
     res.json({ success: true, postGroup });
-
-    // await postGroup.updateOne({
-    //   content: content,
-    //   scheduledTime: await validateScheduledTime(scheduledTime),
-    //   platforms: parsedPlatforms,
-    //   sameContent: sameContent === "true",
-    //   videoTimestamp: videoTimestamp ? parseFloat(videoTimestamp) : 0,
-    //   status: status || postGroup.status,
-    //   mediaFiles: [...keptMedia.map((m) => m._id), ...newMediaFiles],
-    //   posts: updatedPosts.map((post) => post._id),
-    // });
-
-    // res.json({ success: true, postGroup });
   } catch (error) {
     console.error("Update scheduled post error:", error);
     res.status(500).json({ error: "Failed to update scheduled post" });
@@ -385,39 +306,6 @@ exports.getAllScheduledPostsStats = async (req, res) => {
     res.status(500).json({ error: "Failed to get scheduled posts stats" });
   }
 };
-
-async function handleImageUpload(files, userId) {
-  const uploadedFiles = [];
-  if (!files?.media?.length) return uploadedFiles;
-
-  const mediaFiles = Array.isArray(files.media) ? files.media : [files.media];
-  const timestamp = Date.now().toString();
-
-  for (let i = 0; i < mediaFiles.length; i++) {
-    const file = mediaFiles[i];
-    const s3FileName = `${timestamp}-${i}-${userId}`;
-
-    try {
-      const fileUrl = await uploadFileToS3(
-        file.buffer,
-        s3FileName,
-        file.mimetype
-      );
-      uploadedFiles.push({
-        filename: s3FileName,
-        url: fileUrl,
-        mimetype: file.mimetype,
-        type: "image",
-        size: file.size,
-      });
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      continue;
-    }
-  }
-
-  return uploadedFiles;
-}
 
 async function validateScheduledTime(scheduledTime) {
   const date = new Date(scheduledTime);

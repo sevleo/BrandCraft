@@ -5,8 +5,24 @@ const axiosInstance = axios.create({
   withCredentials: true, // Important for sessions to work
 });
 
+const mediaAxiosInstance = axios.create({
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/media`,
+  withCredentials: true, // Important for sessions to work
+});
+
 // Add auth token to requests
 axiosInstance.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (accessToken && refreshToken) {
+    config.headers.authorization = accessToken;
+    config.headers.refreshToken = refreshToken;
+  }
+  return config;
+});
+
+// Add auth token to media requests
+mediaAxiosInstance.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem('accessToken');
   const refreshToken = localStorage.getItem('refreshToken');
   if (accessToken && refreshToken) {
@@ -68,4 +84,46 @@ async function getPostsStats() {
   }
 }
 
-export { apiSavePostGroup, getPostGroups, deleteScheduledPost, getPostsStats };
+async function uploadMedia(postGroupId: string, mediaFiles: File[]) {
+  try {
+    const formData = new FormData();
+    mediaFiles.forEach((file) => {
+      formData.append('media', file);
+    });
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+
+    const response = await mediaAxiosInstance.post(
+      `/post/${postGroupId}/upload`,
+      formData,
+      config
+    );
+    return response.data.mediaFiles;
+  } catch (error) {
+    console.error('Failed to upload media:', error);
+    throw error;
+  }
+}
+
+async function deleteMedia(mediaId: string) {
+  try {
+    const response = await mediaAxiosInstance.delete(`/post/media/${mediaId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete media:', error);
+    throw error;
+  }
+}
+
+export { 
+  apiSavePostGroup, 
+  getPostGroups, 
+  deleteScheduledPost, 
+  getPostsStats,
+  uploadMedia,
+  deleteMedia
+};
