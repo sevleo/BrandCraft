@@ -175,25 +175,44 @@
 
   const sortedScheduledPosts = computed(() => {
     const now = new Date().getTime();
-    return [...postsStore.scheduledPosts.value].sort((a, b) => {
-      const timeA = new Date(a.scheduledTime).getTime();
-      const timeB = new Date(b.scheduledTime).getTime();
 
-      // Sort by scheduled time, putting closest upcoming posts first
-      // If both posts are in the future, sort by closest first
-      // If both posts are in the past, sort by most recent first
-      // If one is past and one is future, put future first
-      const aIsFuture = timeA > now;
-      const bIsFuture = timeB > now;
+    // First, separate posts into future and past
+    const futurePosts = [];
+    const pastPosts = [];
 
-      if (aIsFuture && bIsFuture) {
-        return timeA - timeB; // Closest future post first
-      } else if (!aIsFuture && !bIsFuture) {
-        return timeB - timeA; // Most recent past post first
-      } else {
-        return bIsFuture ? 1 : -1; // Future posts before past posts
+    for (const post of postsStore.scheduledPosts.value) {
+      // Handle potential null scheduledTime
+      if (!post.scheduledTime) {
+        pastPosts.push(post);
+        continue;
       }
+
+      const postTime = new Date(post.scheduledTime).getTime();
+      if (postTime > now) {
+        futurePosts.push(post);
+      } else {
+        pastPosts.push(post);
+      }
+    }
+
+    // Sort future posts by closest first (ascending)
+    futurePosts.sort((a, b) => {
+      return (
+        new Date(a.scheduledTime).getTime() -
+        new Date(b.scheduledTime).getTime()
+      );
     });
+
+    // Sort past posts by most recent first (descending)
+    pastPosts.sort((a, b) => {
+      return (
+        new Date(b.scheduledTime).getTime() -
+        new Date(a.scheduledTime).getTime()
+      );
+    });
+
+    // Combine the arrays: past posts first, then future posts
+    return [...pastPosts, ...futurePosts];
   });
 
   const sortedPublishedPosts = computed(() => {
@@ -782,7 +801,7 @@
 
   .post-list-enter-active,
   .post-list-leave-active {
-    transition: all 0.5s ease;
+    transition: all 0.2s ease;
     max-height: 200px; /* Approximate max height of a post */
     overflow: hidden;
   }

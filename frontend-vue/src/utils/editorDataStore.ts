@@ -6,7 +6,7 @@ type SelectedPost = {
   _id: string;
   content: string;
   platforms: string[];
-  status: 'draft' | 'scheduled';
+  status: 'draft' | 'scheduled' | 'published' | 'partially_published';
   scheduledTime: string | null;
   mediaFiles: { url: string; type: 'image' | 'video' }[];
   mediaPreviewUrls: string[];

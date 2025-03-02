@@ -3,7 +3,7 @@ Built by Creator, for Creators
 
 
 
-
+- add Posted View for PostBaseForm
 
 - add Posted view (read only)
 - add List view

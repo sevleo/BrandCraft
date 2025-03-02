@@ -2,13 +2,7 @@
   import { ref, computed, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
   import editorDataStore from '@/utils/editorDataStore';
-  import {
-    Loader2,
-    Smile,
-    MoreHorizontal,
-    Image as ImageIcon,
-    Video,
-  } from 'lucide-vue-next';
+  import { Loader2, Smile, Image as ImageIcon, Video } from 'lucide-vue-next';
   import { updatePostGroup } from '@/helpers/savePostGroup';
   import 'emoji-picker-element';
   import { uploadVideoToS3 } from '@/api/mediaApi';
@@ -19,15 +13,11 @@
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
   import ValidationMessages from '@/components/editor/ValidationMessages.vue';
   import { uploadMedia } from '@/api/postApi';
-  import { getPostGroups } from '@/api/postApi';
 
   const toast = useToast();
   // const videoRef = ref<HTMLVideoElement | null>(null);
 
   const isLoading = ref(true);
-  const postKey = computed(
-    () => editorDataStore.selectedPost?.value._id || 'new'
-  );
 
   const replicatedValue = ref('');
 

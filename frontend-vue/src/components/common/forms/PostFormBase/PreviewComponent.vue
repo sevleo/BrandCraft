@@ -39,6 +39,7 @@
     initialVideoTimestamp?: number;
     debouncedSave: () => void;
     handleSave: () => void;
+    readonly?: boolean;
   }>();
 
   // Handle video load
@@ -319,7 +320,7 @@
           ></video>
           <!-- Remove Button -->
           <button
-            v-if="!editorDataStore.isSaving.value"
+            v-if="!editorDataStore.isSaving.value && !props.readonly"
             @click="removeMedia(0)"
             @mouseleave="handleMouseLeave"
             class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
@@ -411,6 +412,7 @@
         <div class="h-full w-full">
           <!-- Remove Button -->
           <button
+            v-if="!editorDataStore.isSaving.value && !props.readonly"
             @click="removeMedia(currentImageIndex)"
             @mouseleave="handleMouseLeave"
             class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
@@ -504,7 +506,8 @@
       <div
         v-if="
           props.currentMediaType === 'video' &&
-          editorDataStore.isUploading.value === false
+          editorDataStore.isUploading.value === false &&
+          !props.readonly
         "
         class="mt-[20px] flex items-center justify-between gap-4"
       >
@@ -521,7 +524,7 @@
 
   <!-- Cover Image Modal -->
   <div
-    v-if="showCoverModal"
+    v-if="showCoverModal && !props.readonly"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
   >
     <div class="w-[800px] rounded-lg bg-white p-8 dark:bg-gray-800">

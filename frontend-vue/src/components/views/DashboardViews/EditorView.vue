@@ -6,14 +6,19 @@
   import PostFormBase from '@/components/common/forms/PostFormBase/PostFormBase.vue';
   import { useThemeStore } from '@/utils/themeStore';
   import editorDataStore from '@/utils/editorDataStore';
-  import { Loader2, PanelRight, PanelRightClose } from 'lucide-vue-next';
+  import {
+    Loader2,
+    PanelRight,
+    PanelRightClose,
+    CheckCheck,
+  } from 'lucide-vue-next';
   import ToggleSlider from '@/components/common/buttons/ToggleSlider.vue';
   import { useToast } from 'primevue';
   import { updatePostGroup } from '@/helpers/savePostGroup';
   import { getCreatorInfo } from '@api/tiktokApi';
   import DatePicker from 'primevue/datepicker';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
-  import { FileEdit, SendHorizonal, Check } from 'lucide-vue-next';
+  import { FileEdit, SendHorizonal } from 'lucide-vue-next';
   import {
     formatDistanceToNow,
     format,
@@ -23,6 +28,7 @@
     parseISO,
   } from 'date-fns';
   import { errors } from '@/utils/editorValidations';
+  import PostFormReadOnly from '@/components/common/forms/PostFormBase/PostFormReadOnly.vue';
 
   const toast = useToast();
 
@@ -87,7 +93,7 @@
     return timezone.replace(/_/g, ' ');
   });
 
-  const getScheduledDate = computed({
+  const getScheduledDate = computed<any>({
     get: () => {
       return editorDataStore.selectedPost.value.scheduledTime
         ? new Date(editorDataStore.selectedPost.value.scheduledTime)
@@ -297,6 +303,29 @@
 
   // Check if there are any validation errors
   const hasValidationErrors = computed(() => errors.value.length > 0);
+
+  // Helper function to get account object from platform ID
+  const getPlatformAccountFromId = (platformId: string) => {
+    const match = platformId.match(/^([a-zA-Z]+)-(.+)$/);
+
+    if (!match) {
+      return { id: '', platform: 'Unknown', username: 'Unknown' };
+    }
+
+    const [, platform, id] = match;
+
+    const account = connectionsDataStore.connectedAccounts.value.find(
+      (acc: any) => acc.platform === platform && acc.id === id
+    );
+
+    return (
+      account || {
+        id,
+        platform,
+        username: platform.charAt(0).toUpperCase() + platform.slice(1),
+      }
+    );
+  };
 </script>
 
 <template>
@@ -368,107 +397,167 @@
             <div class="mr-[30px] flex items-center self-end">
               <!-- Platform buttons container with conditional flex-wrap -->
               <div class="flex flex-wrap gap-2">
-                <PlatformButton
-                  v-for="account in connectionsDataStore.connectedAccounts
-                    .value"
-                  :key="account.id"
-                  :account="account"
-                  :show-username="editorDataStore.viewMode.value === 'full'"
-                  :is-selected="
-                    editorDataStore.selectedPost.value?.platforms.includes(
-                      account.platform === 'twitter'
-                        ? `twitter-${account.id}`
-                        : account.platform === 'threads'
-                          ? `threads-${account.id}`
-                          : account.platform === 'bluesky'
-                            ? `bluesky-${account.id}`
-                            : account.platform === 'mastodon'
-                              ? `mastodon-${account.id}`
-                              : account.platform === 'tiktok'
-                                ? `tiktok-${account.id}`
-                                : account.platform === 'instagram'
-                                  ? `instagram-${account.id}`
-                                  : account.platform === 'youtube'
-                                    ? `youtube-${account.id}`
-                                    : account.platform
-                    )
+                <!-- For editable posts (draft/scheduled) - show all platforms with toggle functionality -->
+                <template
+                  v-if="
+                    editorDataStore.selectedPost.value.status === 'draft' ||
+                    editorDataStore.selectedPost.value.status === 'scheduled'
                   "
-                  :onClick="() => togglePlatform(account)"
-                />
+                >
+                  <PlatformButton
+                    v-for="account in connectionsDataStore.connectedAccounts
+                      .value"
+                    :key="account.id"
+                    :account="account"
+                    :show-username="editorDataStore.viewMode.value === 'full'"
+                    :is-selected="
+                      editorDataStore.selectedPost.value?.platforms.includes(
+                        account.platform === 'twitter'
+                          ? `twitter-${account.id}`
+                          : account.platform === 'threads'
+                            ? `threads-${account.id}`
+                            : account.platform === 'bluesky'
+                              ? `bluesky-${account.id}`
+                              : account.platform === 'mastodon'
+                                ? `mastodon-${account.id}`
+                                : account.platform === 'tiktok'
+                                  ? `tiktok-${account.id}`
+                                  : account.platform === 'instagram'
+                                    ? `instagram-${account.id}`
+                                    : account.platform === 'youtube'
+                                      ? `youtube-${account.id}`
+                                      : account.platform
+                      )
+                    "
+                    :onClick="() => togglePlatform(account)"
+                  />
+                </template>
+                <!-- For read-only posts (published/partially_published) - show only selected platforms without toggle functionality -->
+                <template v-else>
+                  <PlatformButton
+                    v-for="platform in editorDataStore.selectedPost.value
+                      ?.platforms"
+                    :key="platform"
+                    :account="getPlatformAccountFromId(platform)"
+                    :show-username="editorDataStore.viewMode.value === 'full'"
+                    :is-selected="true"
+                    :onClick="() => {}"
+                  />
+                </template>
               </div>
             </div>
             <div class="ml-auto flex h-[38px] items-start justify-start">
-              <DatePicker
-                v-model="getScheduledDate"
-                @hide="handleDateChange"
-                showTime
-                showIcon
-                :showSeconds="false"
-                hourFormat="12"
-                class=""
-              />
+              <!-- Date picker - read-only for published posts -->
+              <template
+                v-if="
+                  editorDataStore.selectedPost.value.status === 'draft' ||
+                  editorDataStore.selectedPost.value.status === 'scheduled'
+                "
+              >
+                <DatePicker
+                  v-model="getScheduledDate"
+                  @hide="handleDateChange"
+                  showTime
+                  showIcon
+                  :showSeconds="false"
+                  hourFormat="12"
+                  class=""
+                />
+              </template>
             </div>
-            <button
-              v-if="scheduleButtonState === 'draft'"
-              @click="() => togglePostStatus('schedule')"
-              :disabled="
-                hasValidationErrors ||
-                isStatusChanging ||
-                editorDataStore.isSaving.value
+            <!-- Only show action buttons for draft/scheduled posts -->
+            <template
+              v-if="
+                editorDataStore.selectedPost.value.status === 'draft' ||
+                editorDataStore.selectedPost.value.status === 'scheduled'
               "
-              :class="[
-                'ml-2 flex h-[38px] w-[130px] items-center justify-center gap-2 rounded-md border px-2 py-2 text-sm font-medium transition-all',
-                hasValidationErrors ||
-                isStatusChanging ||
-                editorDataStore.isSaving.value
-                  ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
-                  : 'text-green-700 dark:text-green-400 border-green-500 bg-[#f0f9f0] hover:bg-[#e6f7e6] dark:border-green-700 dark:bg-[#0a1f0a] dark:hover:bg-[#1a331a]',
-              ]"
             >
-              <span class="font-normal">Set Live</span>
-              <span v-if="isStatusChanging">
-                <Loader2
-                  class="h-4 w-4 animate-spin text-gray-400 dark:text-gray-500"
-                />
-              </span>
-              <SendHorizonal
-                v-else
+              <button
+                v-if="scheduleButtonState === 'draft'"
+                @click="() => togglePostStatus('schedule')"
+                :disabled="
+                  hasValidationErrors ||
+                  isStatusChanging ||
+                  editorDataStore.isSaving.value
+                "
                 :class="[
-                  'h-4 w-4',
-                  hasValidationErrors || isStatusChanging
-                    ? 'text-gray-400 dark:text-gray-500'
-                    : 'text-green-600 dark:text-green-400',
+                  'ml-2 flex h-[38px] w-[130px] items-center justify-center gap-2 rounded-md border px-2 py-2 text-sm font-medium transition-all',
+                  hasValidationErrors ||
+                  isStatusChanging ||
+                  editorDataStore.isSaving.value
+                    ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
+                    : 'text-green-700 dark:text-green-400 border-green-500 bg-[#f0f9f0] hover:bg-[#e6f7e6] dark:border-green-700 dark:bg-[#0a1f0a] dark:hover:bg-[#1a331a]',
                 ]"
-              />
-            </button>
+              >
+                <span class="font-normal">Set Live</span>
+                <span v-if="isStatusChanging">
+                  <Loader2
+                    class="h-4 w-4 animate-spin text-gray-400 dark:text-gray-500"
+                  />
+                </span>
+                <SendHorizonal
+                  v-else
+                  :class="[
+                    'h-4 w-4',
+                    hasValidationErrors || isStatusChanging
+                      ? 'text-gray-400 dark:text-gray-500'
+                      : 'text-green-600 dark:text-green-400',
+                  ]"
+                />
+              </button>
 
-            <button
-              v-else-if="scheduleButtonState === 'scheduled'"
-              @click="() => togglePostStatus('draft')"
-              :disabled="isStatusChanging"
-              :class="[
-                'ml-2 flex h-[38px] w-[120px] items-center justify-center gap-2 rounded-md border px-2 py-2 text-sm font-medium transition-all',
-                isStatusChanging
-                  ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
-                  : 'border-amber-500 bg-[#fff8e6] text-amber-700 hover:bg-[#ffefc7] dark:border-amber-700 dark:bg-[#332a14] dark:text-amber-400 dark:hover:bg-[#473b1d]',
-              ]"
-            >
-              <span class="font-normal">Revoke</span>
-              <span v-if="isStatusChanging">
-                <Loader2
-                  class="h-4 w-4 animate-spin text-gray-400 dark:text-gray-500"
-                />
-              </span>
-              <FileEdit
-                v-else
+              <button
+                v-else-if="scheduleButtonState === 'scheduled'"
+                @click="() => togglePostStatus('draft')"
+                :disabled="isStatusChanging"
                 :class="[
-                  'h-4 w-4',
+                  'ml-2 flex h-[38px] w-[130px] items-center justify-center gap-2 rounded-md border px-2 py-2 text-sm font-medium transition-all',
                   isStatusChanging
-                    ? 'text-gray-400 dark:text-gray-500'
-                    : 'text-amber-600 dark:text-amber-400',
+                    ? 'cursor-not-allowed border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500'
+                    : 'border-amber-500 bg-[#fff8e6] text-amber-700 hover:bg-[#ffefc7] dark:border-amber-700 dark:bg-[#332a14] dark:text-amber-400 dark:hover:bg-[#473b1d]',
                 ]"
-              />
-            </button>
+              >
+                <span class="font-normal">Revoke</span>
+                <span v-if="isStatusChanging">
+                  <Loader2
+                    class="h-4 w-4 animate-spin text-gray-400 dark:text-gray-500"
+                  />
+                </span>
+                <FileEdit
+                  v-else
+                  :class="[
+                    'h-4 w-4',
+                    isStatusChanging
+                      ? 'text-gray-400 dark:text-gray-500'
+                      : 'text-amber-600 dark:text-amber-400',
+                  ]"
+                />
+              </button>
+            </template>
+            <!-- For published posts, show a status badge instead of action buttons -->
+            <template v-else>
+              <div
+                class="flex h-[38px] w-fit items-center justify-center gap-2 rounded-md border bg-[#1d5b40] px-4 py-2 text-sm font-medium transition-all"
+              >
+                <CheckCheck
+                  class="text-green-600 dark:text-green-400 h-4 w-4 stroke-[white]"
+                />
+                <span class="font-medium text-[#d7d7d7]">
+                  {{
+                    editorDataStore.selectedPost.value.status === 'published'
+                      ? 'Posted'
+                      : 'Partially Posted'
+                  }}
+                  on
+
+                  {{
+                    getScheduledDate
+                      ? format(getScheduledDate, 'MMM d, h:mm a') // Formats like "Mar 2, 3:34 PM"
+                      : 'No date set'
+                  }}
+                </span>
+              </div>
+            </template>
           </div>
           <div
             v-if="!isLoading"
@@ -555,7 +644,13 @@
                 <!-- Section 5: Validation Errors -->
               </div>
             </div>
-            <PostFormBase />
+            <PostFormBase
+              v-if="
+                editorDataStore.selectedPost.value.status === 'draft' ||
+                editorDataStore.selectedPost.value.status === 'scheduled'
+              "
+            />
+            <PostFormReadOnly v-else />
           </div>
         </div>
         <div v-else class="flex h-[500px] w-full items-center justify-center">
