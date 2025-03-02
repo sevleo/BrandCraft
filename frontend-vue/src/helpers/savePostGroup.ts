@@ -4,7 +4,7 @@ import editorDataStore from '@/utils/editorDataStore';
 import router from '@/router';
 import { errors } from '@/utils/editorValidations';
 
-async function createPostGroup(scheduledTime: string) {
+async function createPostGroup(scheduledTime?: string) {
   // If not on editor, navigate first then reset
 
   const formData = new FormData();
@@ -19,7 +19,7 @@ async function createPostGroup(scheduledTime: string) {
   router.push('/dashboard/editor');
 
   // Update just the timestamp fields without affecting other properties
-  if (editorDataStore.selectedPost.value?._id) {
+  if (editorDataStore.selectedPost.value?._id && scheduledTime) {
     editorDataStore.updateTimestamps(editorDataStore.selectedPost.value._id);
     editorDataStore.selectedPost.value.scheduledTime = scheduledTime;
   }

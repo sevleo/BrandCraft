@@ -174,11 +174,25 @@
   });
 
   const sortedScheduledPosts = computed(() => {
+    const now = new Date().getTime();
     return [...postsStore.scheduledPosts.value].sort((a, b) => {
-      return (
-        new Date(b.scheduledTime).getTime() -
-        new Date(a.scheduledTime).getTime()
-      );
+      const timeA = new Date(a.scheduledTime).getTime();
+      const timeB = new Date(b.scheduledTime).getTime();
+
+      // Sort by scheduled time, putting closest upcoming posts first
+      // If both posts are in the future, sort by closest first
+      // If both posts are in the past, sort by most recent first
+      // If one is past and one is future, put future first
+      const aIsFuture = timeA > now;
+      const bIsFuture = timeB > now;
+
+      if (aIsFuture && bIsFuture) {
+        return timeA - timeB; // Closest future post first
+      } else if (!aIsFuture && !bIsFuture) {
+        return timeB - timeA; // Most recent past post first
+      } else {
+        return bIsFuture ? 1 : -1; // Future posts before past posts
+      }
     });
   });
 
