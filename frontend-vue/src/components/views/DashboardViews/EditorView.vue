@@ -29,7 +29,6 @@
   const themeStore = useThemeStore();
 
   const isLoading = ref(true);
-  const showProgress = ref(false);
 
   // Schedule button state
   const scheduleButtonState = ref<'draft' | 'scheduled'>('draft');
@@ -37,29 +36,6 @@
   const isStatusChanging = ref(false);
 
   let saveTimeout: NodeJS.Timeout | null = null;
-
-  // Watch for progress completion
-  watch(
-    [
-      () => editorDataStore.uploadProgress.value,
-      () => editorDataStore.processingProgress.value,
-    ],
-    ([uploadProgress, processingProgress]) => {
-      if (uploadProgress > 0 || processingProgress > 0) {
-        showProgress.value = true;
-      }
-
-      if (uploadProgress === 100 && processingProgress === 100) {
-        // Hide the progress after 1 second
-        setTimeout(() => {
-          showProgress.value = false;
-          // Reset progress in store
-          editorDataStore.uploadProgress.value = 0;
-          editorDataStore.processingProgress.value = 0;
-        }, 1000);
-      }
-    }
-  );
 
   // Watch for selected post changes
   watch(
@@ -498,58 +474,6 @@
             v-if="!isLoading"
             class="relative flex min-h-[100%] w-full flex-grow items-start justify-center"
           >
-            <div
-              v-show="showProgress"
-              class="absolute left-1/2 top-[-100px] z-50 w-[400px] -translate-x-1/2 transform space-y-3 rounded-lg bg-white p-4 shadow-xl ring-1 ring-black/5 dark:bg-gray-800 dark:ring-white/5"
-            >
-              <!-- Upload Progress -->
-              <div class="space-y-2">
-                <div class="flex items-center justify-between text-sm">
-                  <span class="font-medium text-gray-700 dark:text-gray-200"
-                    >Uploading</span
-                  >
-                  <span class="text-gray-600 dark:text-gray-300"
-                    >{{
-                      Math.round(editorDataStore.uploadProgress.value)
-                    }}%</span
-                  >
-                </div>
-                <div
-                  class="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
-                >
-                  <div
-                    class="h-full rounded-full bg-blue-500 transition-all duration-300"
-                    :style="{
-                      width: `${editorDataStore.uploadProgress.value}%`,
-                    }"
-                  ></div>
-                </div>
-              </div>
-
-              <!-- Processing Progress -->
-              <div class="space-y-2">
-                <div class="flex items-center justify-between text-sm">
-                  <span class="font-medium text-gray-700 dark:text-gray-200"
-                    >Processing</span
-                  >
-                  <span class="text-gray-600 dark:text-gray-300"
-                    >{{
-                      Math.round(editorDataStore.processingProgress.value)
-                    }}%</span
-                  >
-                </div>
-                <div
-                  class="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
-                >
-                  <div
-                    class="h-full rounded-full bg-blue-500 transition-all duration-300"
-                    :style="{
-                      width: `${editorDataStore.processingProgress.value}%`,
-                    }"
-                  ></div>
-                </div>
-              </div>
-            </div>
             <div
               :class="
                 editorDataStore.isPanelVisible.value ? 'w-[260px]' : 'w-0'

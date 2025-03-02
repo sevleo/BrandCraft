@@ -452,18 +452,66 @@
         <Loader2 class="mb-2 h-10 w-10 animate-spin text-blue-500" />
         <p class="text-sm text-gray-500">Uploading media...</p>
         <div
-          v-if="editorDataStore.uploadProgress.value > 0"
-          class="mt-2 h-2.5 w-64 rounded-full bg-gray-200"
+          v-if="
+            editorDataStore.uploadProgress.value > 0 &&
+            editorDataStore.currentMediaType.value === 'video'
+          "
+          class="mt-4 w-[300px]"
         >
-          <div
-            class="h-2.5 rounded-full bg-blue-600"
-            :style="{ width: `${editorDataStore.uploadProgress.value}%` }"
-          ></div>
+          <!-- Upload Progress -->
+          <div class="mb-[20px] space-y-2">
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium text-gray-700 dark:text-gray-200"
+                >Uploading</span
+              >
+              <span class="text-gray-600 dark:text-gray-300"
+                >{{ Math.round(editorDataStore.uploadProgress.value) }}%</span
+              >
+            </div>
+            <div
+              class="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+            >
+              <div
+                class="h-full rounded-full bg-blue-500 transition-all duration-300"
+                :style="{
+                  width: `${editorDataStore.uploadProgress.value}%`,
+                }"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Processing Progress -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium text-gray-700 dark:text-gray-200"
+                >Processing</span
+              >
+              <span class="text-gray-600 dark:text-gray-300"
+                >{{
+                  Math.round(editorDataStore.processingProgress.value)
+                }}%</span
+              >
+            </div>
+            <div
+              class="h-1.5 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+            >
+              <div
+                class="h-full rounded-full bg-blue-500 transition-all duration-300"
+                :style="{
+                  width: `${editorDataStore.processingProgress.value}%`,
+                }"
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div
-        v-if="props.currentMediaType === 'video'"
+        v-if="
+          props.currentMediaType === 'video' &&
+          editorDataStore.isUploading.value === false &&
+          editorDataStore.isSaving.value === false
+        "
         class="mt-[20px] flex items-center justify-between gap-4"
       >
         <button
