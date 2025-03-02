@@ -661,49 +661,51 @@
       </div>
     </div>
     <div
-      class="navigation-box sticky bottom-0 z-[1] h-[250px] w-full border-t border-layoutSoft bg-lightWhite pl-2"
+      class="navigation-box sticky bottom-0 z-[1] w-full border-t border-layoutSoft bg-lightWhite"
     >
-      <div class="flex flex-col gap-[5px] pt-4">
+      <div class="flex flex-col py-[20px]">
         <router-link
           to="/dashboard/calendar"
-          class="flex items-center rounded-md text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          class="flex items-center rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
         >
-          <Calendar class="mr-2 h-5 w-5" />
-          Calendar
+          <Calendar class="ml-4 mr-2 h-5 w-5" />
+          <span class="text-[18px] font-normal"> Calendar </span>
         </router-link>
-        <router-link
+        <!-- <router-link
           to="/dashboard/list"
           class="flex items-center rounded-md text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
         >
           <List class="mr-2 h-5 w-5" />
           List
-        </router-link>
+        </router-link> -->
         <router-link
           to="/dashboard/accounts"
-          class="flex items-center rounded-md text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          class="flex items-center rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
         >
-          <Users class="mr-2 h-5 w-5" />
-          Accounts
+          <Users class="ml-4 mr-2 h-5 w-5" />
+          <span class="text-[18px] font-normal"> Accounts </span>
         </router-link>
 
         <a
           href="https://insigh.to/b/brandcraftart"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center rounded-md text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          class="flex items-center rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
         >
-          <MessageCircle class="mr-2 h-5 w-5" />
-          Feedback
+          <MessageCircle class="ml-4 mr-2 h-5 w-5" />
+          <span class="text-[18px] font-normal"> Feedback </span>
         </a>
         <button
           @click="showDropdown = !showDropdown"
-          class="flex items-center justify-between rounded-md text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          class="flex items-center justify-between rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
         >
           <div class="flex items-center">
-            <User class="mr-2 h-5 w-5" />
-            <span>{{ authData.displayName }}</span>
+            <User class="ml-4 mr-2 h-5 w-5" />
+            <span class="text-[18px] font-normal">
+              {{ authData.displayName }}
+            </span>
           </div>
-          <ChevronDown class="h-5 w-5" />
+          <ChevronDown class="mr-4 h-5 w-5" />
         </button>
       </div>
     </div>
