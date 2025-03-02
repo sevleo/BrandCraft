@@ -1150,6 +1150,10 @@ video {
   height: 100vh;
 }
 
+.h-2\.5 {
+  height: 0.625rem;
+}
+
 .max-h-0 {
   max-height: 0px;
 }
@@ -3182,6 +3186,11 @@ body {
   color: rgb(168 240 194 / var(--tw-text-opacity, 1));
 }
 
+.hover\:text-black:hover {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
+}
+
 .hover\:underline:hover {
   text-decoration-line: underline;
 }
@@ -3576,6 +3585,11 @@ body {
 
 .dark\:hover\:stroke-white:hover:is(.dark *) {
   stroke: #fff;
+}
+
+.dark\:hover\:text-white:hover:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
 .group:hover .dark\:group-hover\:border-\[\#ffffff4d\]:is(.dark *) {

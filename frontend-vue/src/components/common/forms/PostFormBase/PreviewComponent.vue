@@ -6,6 +6,7 @@
     X,
     Trash2,
     Check,
+    Loader2,
   } from 'lucide-vue-next';
   import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
@@ -24,6 +25,7 @@
   const videoCurrentTime = ref(0);
   const currentImageIndex = ref(0);
   const deletingMediaIndex = ref<number | null>(null);
+  const isDeletingMedia = ref<boolean>(false);
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -156,17 +158,27 @@
     }
   };
 
+  interface MediaFileWithId {
+    _id?: string;
+    fileName?: string;
+    mimeType?: string;
+    type: 'image' | 'video';
+    url: string;
+  }
+
   async function removeMedia(index: number) {
     if (deletingMediaIndex.value === index) {
-      const mediaToDelete =
+      const mediaToDelete: MediaFileWithId =
         editorDataStore.selectedPost.value.mediaFiles[index];
 
       // If this is a server-stored media file (has an _id)
       if (mediaToDelete && mediaToDelete._id) {
         try {
+          // Set deleting state to true to show spinner
+          isDeletingMedia.value = true;
+          
           // Delete the media file via API
           await deleteMedia(mediaToDelete._id);
-          console.log('Media deleted successfully:', mediaToDelete._id);
 
           // Don't update local state here - just refresh the post data
           await editorDataStore.refreshCurrentPost();
@@ -179,6 +191,9 @@
           console.error('Error deleting media:', error);
           deletingMediaIndex.value = null;
           return;
+        } finally {
+          // Reset deleting state
+          isDeletingMedia.value = false;
         }
       }
 
@@ -259,15 +274,15 @@
     class="flex h-fit min-h-[150px] flex-1 flex-col justify-center rounded-[15px] border border-dashed border-gray-300 bg-[#ffffff] p-4 dark:bg-[#121212]"
   >
     <div
-      class="preview-container flex h-full w-full flex-col items-center justify-center"
+      class="preview-container relative flex h-full w-full flex-col items-center justify-center"
     >
       <!-- Video Preview -->
       <div
-        v-if="props.currentMediaType === 'video' && props.mediaPreviewUrls[0]"
-        class="relative aspect-[9/16] w-[350px] overflow-hidden rounded-lg bg-black"
+        v-if="!editorDataStore.isUploading.value && !editorDataStore.isSaving.value && props.currentMediaType === 'video' && props.mediaPreviewUrls[0]"
+        class="aspect-[9/16] w-[350px] overflow-hidden rounded-lg bg-black"
       >
         <div
-          class="relative h-full w-full"
+          class="h-full w-full"
           @mouseenter="isHoveringVideo = true"
           @mouseleave="isHoveringVideo = false"
         >
@@ -292,39 +307,25 @@
             v-if="!editorDataStore.isSaving.value"
             @click="removeMedia(0)"
             @mouseleave="handleMouseLeave"
-            class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
+            class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
+            :disabled="isDeletingMedia"
           >
+            <Loader2 v-if="isDeletingMedia" class="h-5 w-5 animate-spin text-blue-500" />
             <component
+              v-else
               :is="deletingMediaIndex === 0 ? Check : Trash2"
-              class="h-7 w-7 rounded-full p-1 transition-all duration-200"
+              class="h-5 w-5 rounded-full p-0.5 transition-all duration-200"
               :class="[
                 deletingMediaIndex === 0
-                  ? 'bg-red-100 stroke-red-500'
-                  : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                  ? 'bg-red-100 text-red-500'
+                  : 'bg-[#c5c5c5] text-black hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white',
               ]"
             />
           </button>
         </div>
       </div>
       <!-- Image Preview -->
-      <template v-else-if="props.currentMediaType === 'image'">
-        <p>
-          selected media
-
-          {{ editorDataStore.selectedMedia.value }}
-        </p>
-
-        <p>
-          media files
-
-          {{ editorDataStore.selectedPost.value.mediaFiles }}
-        </p>
-        <p>
-          media preview urls
-
-          {{ editorDataStore.selectedPost.value.mediaPreviewUrls }}
-        </p>
-
+      <template v-else-if="!editorDataStore.isUploading.value && !editorDataStore.isSaving.value && props.currentMediaType === 'image'">
         <!-- Navigation Arrows -->
         <div
           v-if="props.mediaPreviewUrls.length > 1"
@@ -384,21 +385,23 @@
             </button>
           </div>
         </div>
-        <div class="relative h-full w-full">
+        <div class="h-full w-full">
           <!-- Remove Button -->
           <button
-            v-if="!editorDataStore.isSaving.value"
             @click="removeMedia(currentImageIndex)"
             @mouseleave="handleMouseLeave"
-            class="absolute right-2 top-2 z-10 rounded-full p-0.5 text-gray-400"
+            class="absolute right-1 top-1 z-10 rounded-full p-0.5 text-gray-400"
+            :disabled="isDeletingMedia"
           >
+            <Loader2 v-if="isDeletingMedia" class="h-5 w-5 animate-spin text-blue-500" />
             <component
+              v-else
               :is="deletingMediaIndex === currentImageIndex ? Check : Trash2"
-              class="h-7 w-7 rounded-full p-1 transition-all duration-200"
+              class="h-5 w-5 rounded-full p-0.5 transition-all duration-200"
               :class="[
                 deletingMediaIndex === currentImageIndex
-                  ? 'bg-red-100 stroke-red-500'
-                  : 'bg-[#c5c5c5] stroke-black hover:bg-gray-200 hover:stroke-black dark:hover:bg-gray-700 dark:hover:stroke-white',
+                  ? 'bg-red-100 text-red-500'
+                  : 'bg-[#c5c5c5] text-black hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white',
               ]"
             />
           </button>
@@ -409,6 +412,29 @@
           />
         </div>
       </template>
+
+      <!-- Loading Spinner -->
+      <div 
+        v-else-if="editorDataStore.isUploading.value || editorDataStore.isSaving.value" 
+        class="flex flex-col items-center justify-center py-8"
+      >
+        <Loader2 class="h-10 w-10 animate-spin text-blue-500 mb-2" />
+        <p class="text-sm text-gray-500">Uploading media...</p>
+        <div v-if="editorDataStore.uploadProgress.value > 0" class="w-64 bg-gray-200 rounded-full h-2.5 mt-2">
+          <div 
+            class="bg-blue-600 h-2.5 rounded-full" 
+            :style="{ width: `${editorDataStore.uploadProgress.value}%` }"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        v-else
+        class="flex flex-col items-center justify-center py-8"
+      >
+        <p class="text-sm text-gray-500">No media selected</p>
+      </div>
 
       <div
         v-if="props.currentMediaType === 'video'"

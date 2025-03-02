@@ -73,6 +73,8 @@
           // Start upload to S3
           editorDataStore.uploadProgress.value = 0;
           editorDataStore.isUploading.value = true;
+          editorDataStore.isSaving.value = true;
+
           await uploadVideoToS3(
             videoFile,
             (progress) => {
@@ -80,6 +82,12 @@
             },
             editorDataStore.isSaving
           );
+
+          // Refresh the current post data to ensure we have the latest media files
+          await editorDataStore.refreshCurrentPost();
+
+          // Clear the selected media array
+          editorDataStore.selectedMedia.value = [];
 
           toast.add({
             severity: 'success',
@@ -98,6 +106,7 @@
           return;
         } finally {
           editorDataStore.isUploading.value = false;
+          editorDataStore.isSaving.value = false;
         }
         return;
       }
@@ -124,6 +133,7 @@
 
       try {
         editorDataStore.isSaving.value = true;
+        editorDataStore.isUploading.value = true;
 
         // Get the post ID
         const postId = editorDataStore.selectedPost.value._id;
@@ -155,6 +165,7 @@
         });
       } finally {
         editorDataStore.isSaving.value = false;
+        editorDataStore.isUploading.value = false;
       }
     }
   }

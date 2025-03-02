@@ -8,6 +8,7 @@
       url: string;
       fileName: string;
       type: 'image' | 'video';
+      _id?: string;
     }>;
     initialMediaIndex?: number;
   }>();
