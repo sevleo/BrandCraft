@@ -81,7 +81,6 @@ export async function uploadVideoToS3(
           await editorDataStore.selectPost(updatedPost);
         }
 
-        console.log('finished uploading from mediaApi');
         resolve(sessionId);
       }
 

@@ -376,6 +376,7 @@
                   leftValue="compact"
                   rightValue="full"
                 />
+
                 <div class="ml-auto text-sm text-gray-500 dark:text-gray-400">
                   Timezone: {{ userTimezone }}
                 </div>
@@ -432,18 +433,57 @@
                     :onClick="() => togglePlatform(account)"
                   />
                 </template>
-                <!-- For read-only posts (published/partially_published) - show only selected platforms without toggle functionality -->
-                <template v-else>
-                  <PlatformButton
-                    v-for="platform in editorDataStore.selectedPost.value
-                      ?.platforms"
-                    :key="platform"
-                    :account="getPlatformAccountFromId(platform)"
-                    :show-username="editorDataStore.viewMode.value === 'full'"
-                    :is-selected="true"
-                    :onClick="() => {}"
-                  />
-                </template>
+                <div
+                  class="mb-6 flex flex-col gap-[5px]"
+                  v-if="
+                    editorDataStore.selectedPost.value.status === 'published' ||
+                    editorDataStore.selectedPost.value.status ===
+                      'partially_published' ||
+                    editorDataStore.selectedPost.value.status === 'failed'
+                  "
+                >
+                  <div
+                    v-for="post in editorDataStore.selectedPost.value.posts"
+                    :key="post._id"
+                    class="flex items-center justify-start gap-2"
+                  >
+                    <div class="flex items-center gap-3">
+                      <PlatformButton
+                        :account="
+                          getPlatformAccountFromId(
+                            `${post.platform}-${post.platformId}`
+                          )
+                        "
+                        :show-username="
+                          editorDataStore.viewMode.value === 'full'
+                        "
+                        :is-selected="true"
+                        :onClick="() => {}"
+                      />
+                    </div>
+                    <div
+                      class="min-w-[70px] rounded-full px-2 py-1 text-xs font-medium"
+                      :class="{
+                        'bg-[#dcfce7] text-[#166534] dark:bg-[#14532d] dark:text-[#86efac]':
+                          post.status === 'published',
+                        'bg-[#fee2e2] text-[#991b1b] dark:bg-[#7f1d1d] dark:text-[#fca5a5]':
+                          post.status === 'failed',
+                        'bg-[#fef9c3] text-[#854d0e] dark:bg-[#713f12] dark:text-[#fde047]':
+                          post.status === 'pending',
+                        'bg-[#dbeafe] text-[#1e40af] dark:bg-[#1e3a8a] dark:text-[#93c5fd]':
+                          post.status === 'scheduled',
+                      }"
+                    >
+                      {{ post.status }}
+                    </div>
+                    <div
+                      v-if="post.errorMessage"
+                      class="max-w-[250px] text-sm text-red-600 dark:text-red-400"
+                    >
+                      {{ post.errorMessage }}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="ml-auto flex h-[38px] items-start justify-start">
@@ -546,7 +586,10 @@
                   {{
                     editorDataStore.selectedPost.value.status === 'published'
                       ? 'Posted'
-                      : 'Partially Posted'
+                      : editorDataStore.selectedPost.value.status ===
+                          'partially_published'
+                        ? 'Partially Posted'
+                        : 'Failed'
                   }}
                   on
 
@@ -559,6 +602,7 @@
               </div>
             </template>
           </div>
+
           <div
             v-if="!isLoading"
             class="relative flex min-h-[100%] w-full flex-grow items-start justify-center"
@@ -650,7 +694,18 @@
                 editorDataStore.selectedPost.value.status === 'scheduled'
               "
             />
-            <PostFormReadOnly v-else />
+
+            <div
+              class="flex flex-col"
+              v-if="
+                editorDataStore.selectedPost.value.status === 'published' ||
+                editorDataStore.selectedPost.value.status ===
+                  'partially_published' ||
+                editorDataStore.selectedPost.value.status === 'failed'
+              "
+            >
+              <PostFormReadOnly />
+            </div>
           </div>
         </div>
         <div v-else class="flex h-[500px] w-full items-center justify-center">

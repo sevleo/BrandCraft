@@ -68,8 +68,31 @@ exports.postTikTokVideoInternal = async ({
       post.publishId = mediaContainerId;
       await post.save();
     } catch (error) {
-      console.error(error.response.data.error);
-      throw new Error(error.response.data.error || "TikTok API error");
+      console.error(error.response?.data?.error);
+      const errorData = error.response?.data?.error;
+
+      // Format error message more nicely
+      let errorMessage = "TikTok API error";
+
+      if (typeof errorData === "object") {
+        // Check for specific error codes and provide more user-friendly messages
+        if (
+          errorData.code ===
+          "unaudited_client_can_only_post_to_private_accounts"
+        ) {
+          errorMessage =
+            "Your TikTok app is unaudited. Posts can only be made to private accounts.";
+        } else {
+          // For other error types, include code and message in a readable format
+          errorMessage = errorData.code
+            ? `${errorData.code}: ${errorData.message || ""}`
+            : JSON.stringify(errorData);
+        }
+      } else {
+        errorMessage = errorData || "TikTok API error";
+      }
+
+      throw new Error(errorMessage);
     }
   }
 
@@ -116,7 +139,28 @@ const checkMediaStatus = async (publish_id, accessToken, post) => {
     case "FAILED":
       post.status = "failed";
       await post.save();
-      throw new Error(statusResponse.data.data.fail_reason);
+      const failReason = statusResponse.data.data.fail_reason;
+
+      // Format fail reason more nicely
+      let formattedFailReason = failReason;
+
+      if (typeof failReason === "object") {
+        // Check for specific error codes and provide more user-friendly messages
+        if (
+          failReason.code ===
+          "unaudited_client_can_only_post_to_private_accounts"
+        ) {
+          formattedFailReason =
+            "Your TikTok app is unaudited. Posts can only be made to private accounts.";
+        } else {
+          // For other error types, include code and message in a readable format
+          formattedFailReason = failReason.code
+            ? `${failReason.code}: ${failReason.message || ""}`
+            : JSON.stringify(failReason);
+        }
+      }
+
+      throw new Error(formattedFailReason);
 
     default:
       throw new Error("Status: " + status);

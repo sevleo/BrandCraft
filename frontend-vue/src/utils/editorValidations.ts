@@ -57,8 +57,8 @@ const validateTikTok = () => {
     if (editorDataStore.currentMediaType.value === 'video') {
       // const maxDuration = 10;
       const maxDuration =
-        connectionsDataStore.tiktokAccount.value?.creatorInfo
-          .max_video_post_duration_sec || 900;
+        connectionsDataStore.tiktokAccount?.value?.creatorInfo
+          ?.max_video_post_duration_sec || 900;
 
       const currentDuration = editorDataStore.videoDurationSeconds.value;
 

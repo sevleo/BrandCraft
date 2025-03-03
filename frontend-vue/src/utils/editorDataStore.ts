@@ -6,7 +6,12 @@ type SelectedPost = {
   _id: string;
   content: string;
   platforms: string[];
-  status: 'draft' | 'scheduled' | 'published' | 'partially_published';
+  status:
+    | 'draft'
+    | 'scheduled'
+    | 'published'
+    | 'partially_published'
+    | 'failed';
   scheduledTime: string | null;
   mediaFiles: { url: string; type: 'image' | 'video' }[];
   mediaPreviewUrls: string[];
@@ -235,10 +240,6 @@ const selectPost = async (post: any) => {
 
     // Refresh the current post data after selection to ensure we have the latest data
     await refreshCurrentPost();
-
-    console.log('Post selected:', selectedPost.value);
-    console.log('Media files:', selectedPost.value.mediaFiles);
-    console.log('Media preview URLs:', selectedPost.value.mediaPreviewUrls);
   }
 };
 

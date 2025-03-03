@@ -98,8 +98,6 @@
             life: 3000,
           });
         } finally {
-          console.log('finished uploading from postFormBase');
-
           editorDataStore.isUploading.value = false;
           editorDataStore.isSaving.value = false;
         }
@@ -137,7 +135,6 @@
 
         // Upload the media files
         const uploadedFiles = await uploadMedia(postId, selectedMedia);
-        console.log('Uploaded files:', uploadedFiles);
 
         // Don't update local state here - just refresh the post data
         await editorDataStore.refreshCurrentPost();

@@ -104,14 +104,19 @@
 </script>
 
 <template>
-  <div>
+  <main
+    class="ml-[260px] flex h-auto items-start justify-start bg-[white] transition-all duration-300 dark:bg-[#121212]"
+  >
     <DashboardNavigation />
-    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
+    <div class="w-full px-8 py-8">
       <div class="max-w-2xl space-y-6">
         <!-- Page Header -->
         <div>
-          <h1 class="text-2xl font-semibold text-gray-900">Settings</h1>
-          <p class="mt-1 text-sm text-gray-500">
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            Settings
+          </h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage your account settings and preferences
           </p>
         </div>
@@ -120,8 +125,12 @@
           <div
             class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-[#313131] dark:bg-[#121212]"
           >
-            <h2 class="text-lg font-medium">Account Information</h2>
-            <p class="mt-1 text-sm text-gray-500">Your account details</p>
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-200">
+              Account Information
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Your account details
+            </p>
 
             <div class="mt-4 space-y-4">
               <div>
@@ -153,8 +162,10 @@
           <div
             class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-[#313131] dark:bg-[#121212]"
           >
-            <h2 class="text-lg font-medium">Set Password</h2>
-            <p class="mt-1 text-sm text-gray-500">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-200">
+              Set Password
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Use this to set a password if you want to give team members access
               to your Brandcraft account without using magic link or social
               sign-in.
@@ -196,8 +207,13 @@
                 />
               </div>
 
-              <div v-if="error" class="text-sm text-red-600">{{ error }}</div>
-              <div v-if="successMessage" class="text-green-600 text-sm">
+              <div v-if="error" class="text-sm text-red-600 dark:text-red-400">
+                {{ error }}
+              </div>
+              <div
+                v-if="successMessage"
+                class="text-green-600 dark:text-green-400 text-sm"
+              >
                 {{ successMessage }}
               </div>
 
@@ -205,7 +221,7 @@
                 <button
                   type="submit"
                   :disabled="!isSetPasswordFormValid || isLoading"
-                  class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                  class="mt-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-700 dark:hover:bg-indigo-800"
                 >
                   <span v-if="isLoading">Setting password...</span>
                   <span v-else>Set Password</span>
@@ -220,8 +236,10 @@
           <div
             class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-[#313131] dark:bg-[#121212]"
           >
-            <h2 class="text-lg font-medium">Change Password</h2>
-            <p class="mt-1 text-sm text-gray-500">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-200">
+              Change Password
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Update your password to keep your account secure
             </p>
 
@@ -229,7 +247,7 @@
               <div>
                 <label
                   for="currentPassword"
-                  class="block text-sm font-medium text-gray-700"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   Current Password
                 </label>
@@ -246,7 +264,7 @@
               <div>
                 <label
                   for="newPassword"
-                  class="block text-sm font-medium text-gray-700"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   New Password
                 </label>
@@ -263,7 +281,7 @@
               <div>
                 <label
                   for="confirmPassword"
-                  class="block text-sm font-medium text-gray-700"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                 >
                   Confirm New Password
                 </label>
@@ -278,14 +296,14 @@
               </div>
 
               <!-- Error Message -->
-              <div v-if="error" class="text-sm text-red-600">
+              <div v-if="error" class="text-sm text-red-600 dark:text-red-400">
                 {{ error }}
               </div>
 
               <!-- Success Message -->
               <div
                 v-if="successMessage"
-                class="text-green-700 rounded-md bg-green-50 p-4 text-sm"
+                class="text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-900 rounded-md p-4 text-sm"
               >
                 {{ successMessage }}
               </div>
@@ -294,7 +312,7 @@
                 <button
                   type="submit"
                   :disabled="isLoading || !isFormValid"
-                  class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  class="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-700 dark:hover:bg-blue-800"
                 >
                   <span v-if="isLoading">Updating...</span>
                   <span v-else>Update Password</span>
@@ -305,5 +323,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
