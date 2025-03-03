@@ -6,17 +6,13 @@
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import { useThemeStore } from '@/utils/themeStore';
   import {
-    Moon,
-    Sun,
     Settings,
     LogOut,
     MessageSquare,
     ExternalLink,
     Shield,
     ChevronDown,
-    List,
     Link,
-    MessageCircle,
     User,
     PencilLine,
     Trash2,
@@ -66,10 +62,10 @@
     }
   }
 
-  function toggleTheme() {
-    themeStore.toggleTheme();
-    // showDropdown.value = false;
-  }
+  // function toggleTheme() {
+  //   themeStore.toggleTheme();
+  //   // showDropdown.value = false;
+  // }
 
   function goToSettings() {
     router.push('/dashboard/settings');
@@ -337,7 +333,6 @@
         const popup = document.querySelector('.platform-popup') as HTMLElement;
         if (popup) {
           const popupWidth = popup.offsetWidth;
-          const popupHeight = popup.offsetHeight;
 
           // Adjust horizontal position
           popupPosition.value.left = `${initialLeft - popupWidth / 2}px`;
@@ -774,10 +769,6 @@
 </template>
 
 <style scoped>
-  .tabs-shadow {
-    /* box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); */
-  }
-
   /* Platform popup styles - moved outside scoped to affect teleported elements */
   .platform-popup {
     max-height: 80vh;

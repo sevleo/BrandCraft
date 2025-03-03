@@ -2,10 +2,9 @@
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import connectionsDataStore from '@/utils/connectionsDataStore';
 
-  import { onMounted, ref, watch, computed } from 'vue';
+  import { onMounted, ref, watch } from 'vue';
   import SocialAccountCard from '@/components/views/DashboardViews/BrandsView/SocialAccountCard.vue';
   import SocialMediaInfo from '@/components/views/DashboardViews/BrandsView/SocialMediaInfo.vue';
-  import { Layers } from 'lucide-vue-next';
   import { useThemeStore } from '@/utils/themeStore';
 
   const themeStore = useThemeStore();
@@ -37,17 +36,17 @@
   });
 
   // Compute color based on theme and active card
-  const layerIconColor = computed(() => {
-    const isDarkTheme = themeStore.currentTheme === 'dark';
-    const isActive = activeCard.value === 'summary';
+  // const layerIconColor = computed(() => {
+  //   const isDarkTheme = themeStore.currentTheme === 'dark';
+  //   const isActive = activeCard.value === 'summary';
 
-    // Adjust colors based on conditions
-    if (isActive) {
-      return isDarkTheme ? 'black' : 'white';
-    } else {
-      return isDarkTheme ? 'white' : 'black';
-    }
-  });
+  //   // Adjust colors based on conditions
+  //   if (isActive) {
+  //     return isDarkTheme ? 'black' : 'white';
+  //   } else {
+  //     return isDarkTheme ? 'white' : 'black';
+  //   }
+  // });
 </script>
 
 <template>

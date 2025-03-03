@@ -1,4 +1,4 @@
-import { apiSavePostGroup, uploadMedia, deleteMedia } from '@/api/postApi';
+import { apiSavePostGroup } from '@/api/postApi';
 import postsStore from '@/utils/postsStore';
 import editorDataStore from '@/utils/editorDataStore';
 import router from '@/router';

@@ -3,12 +3,11 @@
     Image as ImageIcon,
     ChevronLeft,
     ChevronRight,
-    X,
     Trash2,
     Check,
     Loader2,
   } from 'lucide-vue-next';
-  import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
+  import { ref, watch, onMounted, onUnmounted } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
   import { deleteMedia } from '@/api/postApi';
 

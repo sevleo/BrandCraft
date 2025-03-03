@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed, onMounted, nextTick, watch } from 'vue';
+  import { ref, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
   import editorDataStore from '@/utils/editorDataStore';
   import { Loader2, Smile, Image as ImageIcon, Video } from 'lucide-vue-next';
@@ -134,7 +134,7 @@
         const selectedMedia = editorDataStore.selectedMedia.value;
 
         // Upload the media files
-        const uploadedFiles = await uploadMedia(postId, selectedMedia);
+        await uploadMedia(postId, selectedMedia);
 
         // Don't update local state here - just refresh the post data
         await editorDataStore.refreshCurrentPost();

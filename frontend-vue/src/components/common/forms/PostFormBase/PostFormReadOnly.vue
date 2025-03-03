@@ -9,7 +9,7 @@
   const replicatedValue = ref('');
 
   // Computed property to get platform display names
-  const platformDisplayNames = computed(() => {
+  computed(() => {
     const platforms = editorDataStore.selectedPost.value?.platforms || [];
     return platforms.map((platform: string) => {
       const [type, id] = platform.split('-');
@@ -44,7 +44,7 @@
   }
 
   // Get post status for display
-  const postStatus = computed(() => {
+  computed(() => {
     const status = editorDataStore.selectedPost.value?.status || '';
     if (status === 'published') {
       return 'Posted';
