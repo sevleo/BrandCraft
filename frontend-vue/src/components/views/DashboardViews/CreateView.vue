@@ -5,7 +5,7 @@
   import TimePickerInput from '@/components/common/input/TimePickerInput.vue';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import { Brain, Pencil } from 'lucide-vue-next';
-  import DatePicker from 'primevue/datepicker';
+  // import DatePicker from 'primevue/datepicker';
   import Dropdown from 'primevue/dropdown';
   import PlatformButton from '@/components/common/buttons/PlatformButton.vue';
   import postsStore from '@/utils/postsStore';
@@ -353,7 +353,7 @@
     }
 
     try {
-      let response;
+      // let response;
       if (post.id) {
         // If post has an ID, it's an update
         // Add which initial media URLs we're keeping
@@ -386,14 +386,14 @@
       }
 
       // Update the post with the returned data
-      posts.value[postIndex] = {
-        ...post,
-        id: response.postGroup._id,
-        mediaPreviewUrls: response.postGroup.mediaFiles.map((m: any) => m.url),
-        selectedMedia: [],
-        initialMedia: response.postGroup.mediaFiles,
-        isEditing: false,
-      };
+      // posts.value[postIndex] = {
+      //   ...post,
+      //   id: response.postGroup._id,
+      //   mediaPreviewUrls: response.postGroup.mediaFiles.map((m: any) => m.url),
+      //   selectedMedia: [],
+      //   initialMedia: response.postGroup.mediaFiles,
+      //   isEditing: false,
+      // };
 
       // Revoke any blob URLs
       post.mediaPreviewUrls.forEach((url) => {
@@ -869,7 +869,7 @@
                   </div>
 
                   <!-- Date and Time Picker -->
-                  <div class="mb-4">
+                  <!-- <div class="mb-4">
                     <DatePicker
                       v-model="post.scheduledTime"
                       :showTime="true"
@@ -878,7 +878,7 @@
                       dateFormat="dd/mm/yy"
                       class="w-full"
                     />
-                  </div>
+                  </div> -->
 
                   <!-- Media Preview -->
                   <div v-if="post.mediaPreviewUrls.length > 0" class="mb-4">
