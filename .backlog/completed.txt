@@ -355,3 +355,5 @@ Sat Feb 28 DAY 103
 Sun Feb 29 DAY 104
 - add Posted View for PostBaseForm
 - add Posted view (read only)
+- update dashboard navigation styles
+- update Settings view

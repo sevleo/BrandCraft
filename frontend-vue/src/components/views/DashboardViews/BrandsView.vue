@@ -20,7 +20,7 @@
     | 'youtube'
     | 'mastodon'
     | 'facebook'
-  >((localStorage.getItem('brandcraft_active_card') as any) || 'summary');
+  >((localStorage.getItem('brandcraft_active_card') as any) || 'instagram');
 
   const isLoading = ref(true);
 
@@ -61,7 +61,7 @@
         <div class="flex gap-8">
           <!-- Left Column: Connected Accounts -->
           <div class="shrink-0">
-            <div
+            <!-- <div
               class="add-icon-container flex h-[60px] w-[250px] cursor-pointer items-center justify-start gap-3 rounded-lg border p-2 shadow-sm transition-colors duration-200 dark:border-[#313131]"
               :class="[
                 $attrs.class,
@@ -87,22 +87,19 @@
               >
                 Summary
               </p>
-            </div>
-            <h2 class="mb-2 mt-8 text-base text-gray-700">
-              Connected Accounts
-            </h2>
+            </div> -->
+            <h2 class="mb-2 text-base text-gray-700">Connected Accounts</h2>
             <div class="space-y-3">
               <SocialAccountCard
-                networkName="Twitter"
+                networkName="Instagram"
                 buttonColor="blue"
                 :account="
-                  connectionsDataStore.twitterAccount.value?.[0] ?? null
+                  connectionsDataStore.instagramAccount.value?.[0] ?? null
                 "
-                :isConnecting="connectionsDataStore.isConnectingTwitter.value"
-                @open="activeCard = 'twitter'"
-                :data-active="activeCard === 'twitter'"
+                :isConnecting="connectionsDataStore.isConnectingInstagram.value"
+                @open="activeCard = 'instagram'"
+                :data-active="activeCard === 'instagram'"
               />
-
               <SocialAccountCard
                 networkName="Threads"
                 buttonColor="blue"
@@ -135,14 +132,14 @@
               />
 
               <SocialAccountCard
-                networkName="Instagram"
+                networkName="Twitter"
                 buttonColor="blue"
                 :account="
-                  connectionsDataStore.instagramAccount.value?.[0] ?? null
+                  connectionsDataStore.twitterAccount.value?.[0] ?? null
                 "
-                :isConnecting="connectionsDataStore.isConnectingInstagram.value"
-                @open="activeCard = 'instagram'"
-                :data-active="activeCard === 'instagram'"
+                :isConnecting="connectionsDataStore.isConnectingTwitter.value"
+                @open="activeCard = 'twitter'"
+                :data-active="activeCard === 'twitter'"
               />
 
               <SocialAccountCard

@@ -2,8 +2,6 @@ cBacklog:
 Built by Creator, for Creators
 
 
-- update dashboard navigation styles
-- update Settings view
 
 
 - DEPLOY

@@ -464,6 +464,25 @@
         <div class="sidebar-scrollable mb-[250px] overflow-auto">
           <transition-group name="post-list" tag="div">
             <div
+              v-if="activeView === 'drafts' && sortedDraftPosts.length === 0"
+            >
+              <p class="p-4 text-gray-500">Draft list is empty</p>
+            </div>
+            <div
+              v-if="
+                activeView === 'scheduled' && sortedScheduledPosts.length === 0
+              "
+            >
+              <p class="p-4 text-gray-500">Scheduled list is empty</p>
+            </div>
+            <div
+              v-if="
+                activeView === 'published' && sortedPublishedPosts.length === 0
+              "
+            >
+              <p class="p-4 text-gray-500">Published list is empty</p>
+            </div>
+            <div
               v-for="post in activeView === 'drafts'
                 ? sortedDraftPosts
                 : activeView === 'scheduled'

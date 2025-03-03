@@ -324,7 +324,7 @@
   }
 
   function handlePostClick(post: any) {
-    editorDataStore.selectedPost.value = post;
+    editorDataStore.selectPost(post);
     router.push('/dashboard/editor');
   }
 
