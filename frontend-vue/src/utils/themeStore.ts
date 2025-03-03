@@ -13,10 +13,11 @@ export const useThemeStore = defineStore('theme', {
       if (savedTheme === 'light' || savedTheme === 'dark') {
         this.currentTheme = savedTheme;
       } else {
-        const prefersDark = window.matchMedia(
-          '(prefers-color-scheme: dark)'
-        ).matches;
-        this.currentTheme = prefersDark ? 'dark' : 'light';
+        // const prefersDark = window.matchMedia(
+        //   '(prefers-color-scheme: dark)'
+        // ).matches;
+        // this.currentTheme = prefersDark ? 'dark' : 'light';
+        this.currentTheme = 'light';
       }
       this.applyTheme(this.currentTheme);
     },
