@@ -1,6 +1,5 @@
 import axios from 'axios';
 import editorDataStore from '@/utils/editorDataStore';
-import { updatePostGroup } from '@/helpers/savePostGroup';
 import postsStore from '@/utils/postsStore';
 
 const axiosInstance = axios.create({

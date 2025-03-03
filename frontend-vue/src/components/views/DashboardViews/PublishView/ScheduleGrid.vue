@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+  import { ref, onMounted, onUnmounted } from 'vue';
   import { format } from 'date-fns';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   import postsStore from '@/utils/postsStore';

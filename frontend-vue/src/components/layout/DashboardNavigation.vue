@@ -4,7 +4,7 @@
   import authData from '@/utils/authDataStore';
   import { logout, verifyAuth } from '@/api/authApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
-  import { useThemeStore } from '@/utils/themeStore';
+  // import { useThemeStore } from '@/utils/themeStore';
   import {
     Settings,
     LogOut,
@@ -26,7 +26,7 @@
   import { deleteScheduledPost } from '@/api/postApi';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-  const themeStore = useThemeStore();
+  // const themeStore = useThemeStore();
 
   const router = useRouter();
   const showDropdown = ref(false);

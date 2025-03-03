@@ -48,7 +48,7 @@ async function apiSavePostGroup(postData: FormData, id?: string) {
     }
 
     return response.data.postGroup;
-  } catch (error) {
+  } catch (error: any) {
     console.error('API Error:', error?.response?.data || error);
     throw error;
   }
@@ -119,11 +119,11 @@ async function deleteMedia(mediaId: string) {
   }
 }
 
-export { 
-  apiSavePostGroup, 
-  getPostGroups, 
-  deleteScheduledPost, 
+export {
+  apiSavePostGroup,
+  getPostGroups,
+  deleteScheduledPost,
   getPostsStats,
   uploadMedia,
-  deleteMedia
+  deleteMedia,
 };
