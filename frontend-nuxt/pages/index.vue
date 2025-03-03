@@ -203,10 +203,30 @@ onMounted(async () => {
                 Stop Managing Platforms. Start
                 <span class="text-greenBG">Growing</span> Your Brand.
               </h1>
-              <p class="mb-8 text-xl text-gray-600">
+              <p class="mb-6 text-xl text-gray-600">
                 BrandCraft makes it easy to schedule posts, track performance,
                 and grow your audience across all social platforms.
               </p>
+              <div
+                class="max-sm:w-[93vw] flex justify-center sm:justify-start mb-6 items-center sm:-left-4 sm:-top-4 gap-3 rounded-lg"
+              >
+                <img
+                  v-for="icon in [
+                    state.instagramIcon,
+                    state.tiktokIcon,
+                    state.youtubeIcon,
+                    state.facebookIcon,
+                    state.threadsIcon,
+                    state.blueskyIcon,
+                    state.xIcon,
+                    state.mastodonIcon,
+                  ]"
+                  :key="icon"
+                  :src="icon"
+                  :alt="icon"
+                  class="h-8 w-8 transition-transform hover:scale-110"
+                />
+              </div>
               <div
                 class="flex flex-col gap-4 sm:flex-row items-center justify-center sm:justify-start"
               >
@@ -245,10 +265,10 @@ onMounted(async () => {
               <img
                 :src="state.screenshot1"
                 alt="BrandCraft Platform Preview"
-                class="rounded-lg shadow-xl transition-all duration-300 hover:shadow-2xl"
+                class="rounded-lg custom-shadow"
               />
               <!-- Platform Icons Floating -->
-              <div
+              <!-- <div
                 class="absolute max-sm:w-[93vw] left-[50%] flex justify-center items-center max-sm:translate-x-[-50%] -top-[100px] sm:-left-4 sm:-top-4 gap-3 rounded-lg bg-white p-4 shadow-lg"
               >
                 <img
@@ -267,7 +287,7 @@ onMounted(async () => {
                   :alt="icon"
                   class="h-8 w-8 transition-transform hover:scale-110"
                 />
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -343,14 +363,14 @@ onMounted(async () => {
                   </ul>
                 </div>
               </div>
-              <div class="order-2">
+              <div class="order-2 flex justify-center items-center">
                 <div
-                  class="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
+                  class="max-w-fit flex justify-center items-center bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl"
                 >
                   <img
                     :src="state.click1"
                     alt="Content creation interface"
-                    class="w-full rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                    class="max-h-[500px] h-auto rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 object-contain"
                   />
                 </div>
               </div>
@@ -489,6 +509,16 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.custom-shadow {
+  transition: all 0.3s ease;
+  box-shadow: 0 0px 30px 15px rgba(0, 0, 0, 0.1);
+}
+
+.custom-shadow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0px 30px 15px rgba(0, 0, 0, 0.2);
+}
+
 html,
 body {
   overflow-x: hidden;

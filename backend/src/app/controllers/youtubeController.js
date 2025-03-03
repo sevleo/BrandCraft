@@ -115,7 +115,7 @@ const handleYoutubeCallback = async (req, res) => {
       { new: true }
     );
 
-    res.redirect(process.env.FRONTEND_URL + "/dashboard/brands");
+    res.redirect(process.env.FRONTEND_URL + "/dashboard/accounts");
   } catch (error) {
     console.error("Error handling YouTube callback:", error);
     res.status(500).json({ error: "Failed to handle YouTube callback" });
