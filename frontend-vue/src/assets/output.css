@@ -731,6 +731,50 @@ video {
   top: 100%;
 }
 
+.bottom-\[40px\] {
+  bottom: 40px;
+}
+
+.bottom-\[150px\] {
+  bottom: 150px;
+}
+
+.bottom-\[-150px\] {
+  bottom: -150px;
+}
+
+.top-\[300px\] {
+  top: 300px;
+}
+
+.left-10 {
+  left: 2.5rem;
+}
+
+.top-10 {
+  top: 2.5rem;
+}
+
+.bottom-\[60px\] {
+  bottom: 60px;
+}
+
+.bottom-\[45px\] {
+  bottom: 45px;
+}
+
+.bottom-\[35px\] {
+  bottom: 35px;
+}
+
+.bottom-\[37px\] {
+  bottom: 37px;
+}
+
+.bottom-\[38px\] {
+  bottom: 38px;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -932,6 +976,38 @@ video {
 
 .mr-4 {
   margin-right: 1rem;
+}
+
+.mb-\[270px\] {
+  margin-bottom: 270px;
+}
+
+.mb-\[550px\] {
+  margin-bottom: 550px;
+}
+
+.mb-\[150px\] {
+  margin-bottom: 150px;
+}
+
+.mb-\[300px\] {
+  margin-bottom: 300px;
+}
+
+.mb-\[5000px\] {
+  margin-bottom: 5000px;
+}
+
+.mb-\[500px\] {
+  margin-bottom: 500px;
+}
+
+.mb-\[100px\] {
+  margin-bottom: 100px;
+}
+
+.mb-\[350px\] {
+  margin-bottom: 350px;
 }
 
 .box-border {
@@ -1162,6 +1238,18 @@ video {
   height: 170px;
 }
 
+.h-\[300px\] {
+  height: 300px;
+}
+
+.h-\[600px\] {
+  height: 600px;
+}
+
+.h-\[70px\] {
+  height: 70px;
+}
+
 .max-h-0 {
   max-height: 0px;
 }
@@ -1201,6 +1289,10 @@ video {
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.min-h-\[70px\] {
+  min-height: 70px;
 }
 
 .w-0 {
@@ -1347,6 +1439,10 @@ video {
 .w-fit {
   width: -moz-fit-content;
   width: fit-content;
+}
+
+.w-\[100px\] {
+  width: 100px;
 }
 
 .min-w-\[45px\] {
@@ -1800,6 +1896,10 @@ video {
   border-top-width: 1px;
 }
 
+.border-b-\[1px\] {
+  border-bottom-width: 1px;
+}
+
 .border-dashed {
   border-style: dashed;
 }
@@ -1934,6 +2034,11 @@ video {
   border-color: rgb(0 0 0 / var(--tw-border-opacity, 1));
 }
 
+.border-gray-400 {
+  --tw-border-opacity: 1;
+  border-color: rgb(156 163 175 / var(--tw-border-opacity, 1));
+}
+
 .border-b-transparent {
   border-bottom-color: transparent;
 }
@@ -1949,6 +2054,15 @@ video {
 
 .border-t-transparent {
   border-top-color: transparent;
+}
+
+.border-b-\[gray-50\] {
+  border-bottom-color: gray-50;
+}
+
+.border-b-\[\#efefef\] {
+  --tw-border-opacity: 1;
+  border-bottom-color: rgb(239 239 239 / var(--tw-border-opacity, 1));
 }
 
 .bg-\[\#0000000b\] {
@@ -2226,6 +2340,10 @@ video {
   background-color: rgb(29 91 64 / var(--tw-bg-opacity, 1));
 }
 
+.bg-\[\#8b15150b\] {
+  background-color: #8b15150b;
+}
+
 .stroke-\[gray\] {
   stroke: gray;
 }
@@ -2423,6 +2541,16 @@ video {
   padding-bottom: 20px;
 }
 
+.py-\[0px\] {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.py-\[10px\] {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -2597,6 +2725,10 @@ video {
 
 .font-semibold {
   font-weight: 600;
+}
+
+.font-thin {
+  font-weight: 100;
 }
 
 .uppercase {
@@ -2782,6 +2914,11 @@ video {
   color: rgb(215 215 215 / var(--tw-text-opacity, 1));
 }
 
+.text-\[red\] {
+  --tw-text-opacity: 1;
+  color: rgb(255 0 0 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -2833,6 +2970,12 @@ video {
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.shadow-2xl {
+  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
@@ -3360,6 +3503,10 @@ body {
   stroke: #111827;
 }
 
+.group:hover .group-hover\:stroke-gray-700 {
+  stroke: #374151;
+}
+
 .group:hover .group-hover\:text-gray-600 {
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity, 1));
@@ -3368,6 +3515,11 @@ body {
 .group:hover .group-hover\:text-gray-900 {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity, 1));
+}
+
+.group:hover .group-hover\:text-gray-700 {
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity, 1));
 }
 
 .group:hover .group-hover\:opacity-100 {

@@ -398,7 +398,7 @@
                 :key="dayWithDate"
               >
                 <th
-                  class="border-b border-r border-[transparent] p-2 text-center text-[14px] font-medium"
+                  class="border-b border-r border-[transparent] p-2 text-center text-[14px] font-normal"
                   :class="isTodayColumn(dayWithDate) ? 'bg-[#0000000b]' : ''"
                 >
                   {{ dayWithDate }}

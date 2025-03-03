@@ -15,7 +15,7 @@
     Shield,
     ChevronDown,
     List,
-    Users,
+    Link,
     MessageCircle,
     User,
     PencilLine,
@@ -395,144 +395,69 @@
     class="fixed bottom-0 left-0 top-0 h-screen w-[260px] border-r border-layoutSoft bg-white transition-colors duration-200 dark:border-[#313131] dark:bg-[#121212]"
   >
     <div class="flex h-full flex-col bg-lightWhite">
-      <!-- User Profile Section -->
-      <div class="mb-[10px] p-4">
-        <div class="relative" ref="dropdownRef">
-          <div
-            @click="showDropdown = !showDropdown"
-            class="flex w-full cursor-pointer items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm hover:bg-gray-100 dark:border-[#313131] dark:bg-[#121212] dark:hover:bg-[#d9d9d9]/10"
+      <div
+        @click="handleCreateDraft"
+        class="group flex min-h-[70px] cursor-pointer items-center border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-200 hover:bg-white"
+      >
+        <div class="flex items-center">
+          <component
+            :is="isCreatingDraft ? Loader2 : PencilLine"
+            class="mr-[5px] h-4 w-4 transition-all duration-200"
+            :class="
+              isCreatingDraft
+                ? 'animate-spin stroke-blue-500'
+                : 'stroke-gray-500 group-hover:stroke-gray-900'
+            "
+          />
+          <p
+            class="italic transition-all duration-200"
+            :class="
+              isCreatingDraft
+                ? 'text-blue-500'
+                : 'text-gray-500 group-hover:text-gray-900'
+            "
           >
-            <p class="text-gray-700 dark:text-gray-300">
-              {{ authData.displayName }}
-            </p>
-            <ChevronDown
-              class="ml-2 h-4 w-4 text-gray-500 dark:text-gray-400"
-            />
-          </div>
-
-          <!-- Custom Dropdown Menu -->
-          <transition name="dropdown">
-            <div
-              v-if="showDropdown"
-              class="absolute left-0 top-[40px] z-10 w-full rounded-md border border-gray-300 bg-white py-1 shadow-lg ring-opacity-5 dark:border-[#313131] dark:bg-[#121212]"
-            >
-              <div
-                v-if="authData.isAdmin.value === true"
-                @click="goToAdmin"
-                class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
-              >
-                <Shield class="mr-2 h-4 w-4" :strokeWidth="2" />
-                Admin Panel
-              </div>
-              <div
-                @click="toggleTheme"
-                class="flex w-full cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
-              >
-                <Moon
-                  v-if="themeStore.currentTheme === 'light'"
-                  class="mr-2 h-4 w-4"
-                  :strokeWidth="2"
-                />
-                <Sun v-else class="mr-2 h-4 w-4" :strokeWidth="2" />
-                {{
-                  themeStore.currentTheme === 'dark'
-                    ? 'Light Mode'
-                    : 'Dark Mode'
-                }}
-              </div>
-              <div
-                @click="goToSettings"
-                class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
-              >
-                <Settings class="mr-2 h-4 w-4" :strokeWidth="2" />
-                Settings
-              </div>
-              <a
-                href="https://insigh.to/b/brandcraftart"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex w-full cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
-              >
-                <MessageSquare class="mr-2 h-4 w-4" :strokeWidth="2" />
-                Feedback
-                <ExternalLink class="ml-auto h-3 w-3" :strokeWidth="2" />
-              </a>
-              <div
-                @click="handleLogout"
-                class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
-              >
-                <LogOut class="mr-2 h-4 w-4" :strokeWidth="2" />
-                Sign out
-              </div>
-            </div>
-          </transition>
+            {{ isCreatingDraft ? 'Creating...' : 'New draft' }}
+          </p>
         </div>
       </div>
-      <!-- Navigation Links -->
-
       <!-- Posts -->
       <div class="flex flex-col">
         <!-- View Switcher -->
-        <div class="flex">
+        <div class="tabs-shadow z-10 flex bg-white">
           <button
             @click="activeView = 'drafts'"
-            class="flex-1 border-b-[2px] px-4 py-2 text-sm font-medium transition-all"
+            class="flex-1 border-b-[2px] py-2 text-sm transition-all"
             :class="
               activeView === 'drafts'
-                ? 'border-gray-300 text-gray-900 dark:text-gray-100'
-                : 'border-b-transparent text-gray-500'
+                ? 'border-gray-400 font-medium text-gray-900 dark:text-gray-100'
+                : 'border-b-[#efefef] font-normal text-gray-500'
             "
           >
             Drafts
           </button>
           <button
             @click="activeView = 'scheduled'"
-            class="flex-1 border-b-[2px] px-4 py-2 text-sm font-medium transition-all"
+            class="flex-1 border-b-[2px] py-2 text-sm transition-all"
             :class="
               activeView === 'scheduled'
-                ? 'border-gray-300 text-gray-900 dark:text-gray-100'
-                : 'border-b-transparent text-gray-500'
+                ? 'border-gray-400 font-medium text-gray-900 dark:text-gray-100'
+                : 'border-b-[#efefef] font-normal text-gray-500'
             "
           >
             Scheduled
           </button>
           <button
             @click="activeView = 'published'"
-            class="flex-1 border-b-[2px] px-4 py-2 text-sm font-medium transition-all"
+            class="flex-1 border-b-[2px] py-2 text-sm transition-all"
             :class="
               activeView === 'published'
-                ? 'border-gray-300 text-gray-900 dark:text-gray-100'
-                : 'border-b-transparent text-gray-500'
+                ? 'border-gray-400 font-medium text-gray-900 dark:text-gray-100'
+                : 'border-b-[#efefef] font-normal text-gray-500'
             "
           >
             Posted
           </button>
-        </div>
-        <div
-          @click="handleCreateDraft"
-          class="group flex h-[50px] cursor-pointer items-center border-b border-t border-layoutSoft bg-white px-4 py-2 transition-all duration-200 hover:bg-white"
-        >
-          <div class="flex items-center">
-            <component
-              :is="isCreatingDraft ? Loader2 : PencilLine"
-              class="mr-[5px] h-4 w-4 transition-all duration-200"
-              :class="
-                isCreatingDraft
-                  ? 'animate-spin stroke-blue-500'
-                  : 'stroke-gray-500 group-hover:stroke-gray-900'
-              "
-            />
-            <p
-              class="italic transition-all duration-200"
-              :class="
-                isCreatingDraft
-                  ? 'text-blue-500'
-                  : 'text-gray-500 group-hover:text-gray-900'
-              "
-            >
-              {{ isCreatingDraft ? 'Creating...' : 'New draft' }}
-            </p>
-          </div>
         </div>
 
         <!-- Posts List -->
@@ -580,7 +505,7 @@
                   <!-- Platforms -->
                   <div class="ml-2 flex items-center gap-1">
                     <div
-                      v-for="(platformId, index) in post.platforms.slice(0, 3)"
+                      v-for="(platformId, _) in post.platforms.slice(0, 3)"
                       :key="platformId"
                       class="relative"
                     >
@@ -661,15 +586,21 @@
       </div>
     </div>
     <div
-      class="navigation-box sticky bottom-0 z-[1] w-full border-t border-layoutSoft bg-lightWhite"
+      class="navigation-box sticky bottom-0 z-[1] w-full border-t border-layoutSoft bg-white py-[10px]"
     >
-      <div class="flex flex-col py-[20px]">
+      <div class="flex flex-col py-[0px]">
         <router-link
           to="/dashboard/calendar"
-          class="flex items-center rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          class="group flex items-center rounded-md py-1 text-[16px] hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
         >
-          <Calendar class="ml-4 mr-2 h-5 w-5" />
-          <span class="text-[18px] font-normal"> Calendar </span>
+          <Calendar
+            class="ml-4 mr-2 h-5 w-5 stroke-gray-500 group-hover:stroke-gray-700"
+          />
+          <span
+            class="text-[18px] font-normal text-gray-500 group-hover:text-gray-700"
+          >
+            Calendar
+          </span>
         </router-link>
         <!-- <router-link
           to="/dashboard/list"
@@ -680,33 +611,99 @@
         </router-link> -->
         <router-link
           to="/dashboard/accounts"
-          class="flex items-center rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
+          class="group flex items-center rounded-md py-1 text-[16px] hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
         >
-          <Users class="ml-4 mr-2 h-5 w-5" />
-          <span class="text-[18px] font-normal"> Accounts </span>
+          <Link
+            class="ml-4 mr-2 h-5 w-5 stroke-gray-500 group-hover:stroke-gray-700"
+          />
+          <span
+            class="text-[18px] font-normal text-gray-500 group-hover:text-gray-700"
+          >
+            Connections
+          </span>
         </router-link>
 
-        <a
-          href="https://insigh.to/b/brandcraftart"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex items-center rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
-        >
-          <MessageCircle class="ml-4 mr-2 h-5 w-5" />
-          <span class="text-[18px] font-normal"> Feedback </span>
-        </a>
-        <button
+        <!-- User Profile Section -->
+        <div
+          class="relative"
+          ref="dropdownRef"
           @click="showDropdown = !showDropdown"
-          class="flex items-center justify-between rounded-md py-1 text-[16px] font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#d9d9d9]/10"
         >
-          <div class="flex items-center">
-            <User class="ml-4 mr-2 h-5 w-5" />
-            <span class="text-[18px] font-normal">
-              {{ authData.displayName }}
-            </span>
-          </div>
-          <ChevronDown class="mr-4 h-5 w-5" />
-        </button>
+          <button
+            class="group flex w-full items-center justify-between rounded-md py-1 text-[16px] hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
+          >
+            <div class="flex items-center">
+              <User
+                class="ml-4 mr-2 h-5 w-5 stroke-gray-500 group-hover:stroke-gray-700"
+              />
+              <span
+                class="text-[18px] font-normal text-gray-500 group-hover:text-gray-700"
+              >
+                {{ authData.displayName }}
+              </span>
+            </div>
+            <ChevronDown
+              class="mr-4 h-5 w-5 stroke-gray-500 group-hover:stroke-gray-700"
+            />
+          </button>
+
+          <!-- Custom Dropdown Menu -->
+          <transition name="dropdown">
+            <div
+              v-if="showDropdown"
+              class="absolute bottom-[38px] left-0 z-10 w-full rounded-md border border-gray-300 bg-white py-1 shadow-lg ring-opacity-5 dark:border-[#313131] dark:bg-[#121212]"
+            >
+              <div
+                v-if="authData.isAdmin.value === true"
+                @click="goToAdmin"
+                class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
+              >
+                <Shield class="mr-2 h-4 w-4" :strokeWidth="2" />
+                Admin Panel
+              </div>
+              <!-- <div
+                @click="toggleTheme"
+                class="flex w-full cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
+              >
+                <Moon
+                  v-if="themeStore.currentTheme === 'light'"
+                  class="mr-2 h-4 w-4"
+                  :strokeWidth="2"
+                />
+                <Sun v-else class="mr-2 h-4 w-4" :strokeWidth="2" />
+                {{
+                  themeStore.currentTheme === 'dark'
+                    ? 'Light Mode'
+                    : 'Dark Mode '
+                }}
+              </div> -->
+              <div
+                @click="goToSettings"
+                class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
+              >
+                <Settings class="mr-2 h-4 w-4" :strokeWidth="2" />
+                Settings
+              </div>
+              <a
+                href="https://insigh.to/b/brandcraftart"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex w-full cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
+              >
+                <MessageSquare class="mr-2 h-4 w-4" :strokeWidth="2" />
+                Feedback
+                <ExternalLink class="ml-auto h-3 w-3" :strokeWidth="2" />
+              </a>
+              <div
+                @click="handleLogout"
+                class="flex cursor-pointer items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-[#d9d9d9]/10"
+              >
+                <LogOut class="mr-2 h-4 w-4" :strokeWidth="2" />
+                Sign out
+              </div>
+            </div>
+          </transition>
+        </div>
       </div>
     </div>
   </nav>
@@ -758,6 +755,10 @@
 </template>
 
 <style scoped>
+  .tabs-shadow {
+    /* box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); */
+  }
+
   /* Platform popup styles - moved outside scoped to affect teleported elements */
   .platform-popup {
     max-height: 80vh;
@@ -765,7 +766,7 @@
   }
 
   .sidebar-scrollable {
-    max-height: calc(100vh - 417px);
+    max-height: calc(100vh - 238px);
     overflow-y: auto;
   }
 
@@ -792,13 +793,13 @@
 
   .dropdown-enter-active,
   .dropdown-leave-active {
-    transition: all 0.2s ease;
+    transition: all 0.1s ease;
   }
 
   .dropdown-enter-from,
   .dropdown-leave-to {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(20px);
   }
 
   .post-list-enter-active,
