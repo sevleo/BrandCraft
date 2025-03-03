@@ -357,3 +357,6 @@ Sun Feb 29 DAY 104
 - add Posted view (read only)
 - update dashboard navigation styles
 - update Settings view
+
+Mon Mar 1 DAY 105
+- DEPLOY
