@@ -2,9 +2,14 @@
 import HomeNavigation from "~/components/HomeNavigation.vue";
 import FooterSection from "~/components/FooterSection.vue";
 import FeaturesGrid from "~/components/FeaturesGrid.vue";
-import { commonFeatures } from '@/config/features';
+import { commonFeatures } from "@/config/features";
 import { redirectToSignup } from "@/utils/redirects";
-import { generateOrganizationLD, generateSoftwareApplicationLD, defaultOrganization, defaultSoftwareApplication } from '@/utils/jsonld';
+import {
+  generateOrganizationLD,
+  generateSoftwareApplicationLD,
+  defaultOrganization,
+  defaultSoftwareApplication,
+} from "@/utils/jsonld";
 
 definePageMeta({
   title: "YouTube Management - BrandCraft",
@@ -27,7 +32,8 @@ useHead({
     },
     {
       property: "og:title",
-      content: "YouTube Management Platform | Schedule & Analyze Videos | BrandCraft",
+      content:
+        "YouTube Management Platform | Schedule & Analyze Videos | BrandCraft",
     },
     {
       property: "og:description",
@@ -49,18 +55,20 @@ useHead({
   ],
   script: [
     {
-      type: 'application/ld+json',
+      type: "application/ld+json",
       children: JSON.stringify([
         generateOrganizationLD(defaultOrganization),
         generateSoftwareApplicationLD({
           ...defaultSoftwareApplication,
-          name: 'BrandCraft - YouTube Management Platform',
-          description: 'Professional YouTube management platform for scheduling videos, analyzing performance, and growing your channel.',
-          applicationCategory: 'SocialNetworkingApplication,BusinessApplication,VideoApplication'
-        })
-      ])
-    }
-  ]
+          name: "BrandCraft - YouTube Management Platform",
+          description:
+            "Professional YouTube management platform for scheduling videos, analyzing performance, and growing your channel.",
+          applicationCategory:
+            "SocialNetworkingApplication,BusinessApplication,VideoApplication",
+        }),
+      ]),
+    },
+  ],
 });
 </script>
 
@@ -86,7 +94,7 @@ useHead({
     </div>
 
     <!-- Features Grid -->
-    <FeaturesGrid 
+    <FeaturesGrid
       :features="commonFeatures"
       iconBgColor="bg-red-100"
       iconColor="text-red-600"
@@ -94,12 +102,17 @@ useHead({
 
     <!-- Call to Action -->
     <div class="bg-white">
-      <div class="max-w-7xl mx-auto text-center py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+      <div
+        class="max-w-7xl mx-auto text-center py-12 px-4 sm:px-6 lg:py-16 lg:px-8"
+      >
+        <h2
+          class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+        >
           Ready to grow your YouTube channel?
         </h2>
         <p class="mt-4 text-lg text-gray-500">
-          Join content creators using BrandCraft to manage their YouTube presence.
+          Join content creators using BrandCraft to manage their YouTube
+          presence.
         </p>
         <div class="mt-8">
           <a

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import birdLogoIcon from "@/public/perfect_logo_full.svg";
+import birdLogoIcon from "@/public/perfect_logo_full_white.svg";
 import { ref } from "vue";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-vue-next";
 import { redirectToLogin, redirectToSignup } from "@/utils/redirects";
@@ -29,7 +29,7 @@ onMounted(() => {});
 
 <template>
   <nav
-    class="fixed left-0 top-0 z-50 w-full bg-white flex justify-center items-center"
+    class="fixed left-0 top-0 z-50 w-full flex justify-center items-center bg-[#0a0a0a]"
   >
     <div class="">
       <div
@@ -68,13 +68,13 @@ onMounted(() => {});
         <div class="flex items-center gap-4 space-x-4 max-xsm:hidden">
           <button
             @click="redirectToLogin()"
-            class="font-medium text-gray-600 hover:text-gray-900 cursor-pointer"
+            class="font-medium text-gray-100 hover:text-gray-300 cursor-pointer"
           >
             Log in
           </button>
           <button
             @click="redirectToSignup()"
-            class="inline-flex cursor-pointer items-center justify-center rounded-full bg-greenBG px-6 py-2 text-base font-medium text-white hover:bg-greenLightBG"
+            class="inline-flex cursor-pointer items-center justify-center rounded-full bg-green-900 px-6 py-2 text-base font-medium text-white hover:bg-greenLightBG"
           >
             Sign Up
           </button>

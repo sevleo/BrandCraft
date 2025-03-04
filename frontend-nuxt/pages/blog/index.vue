@@ -96,17 +96,17 @@ const formatDate = (dateString: string) => {
 
 <template>
   <HomeNavigation />
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[#191919]">
     <!-- Header Section -->
-    <div class="py-16 bg-white">
+    <div class="py-16 bg-[#0a0a0a]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <h1
-            class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl"
+            class="text-4xl font-extrabold text-gray-100 sm:text-5xl sm:tracking-tight lg:text-6xl"
           >
-            Our Blog
+            Blog
           </h1>
-          <p class="mt-5 max-w-xl mx-auto text-xl text-gray-500">
+          <p class="mt-5 max-w-xl mx-auto text-xl text-gray-300">
             Latest insights, tips, and strategies for social media management
           </p>
         </div>
@@ -140,16 +140,16 @@ const formatDate = (dateString: string) => {
                 class="h-48 w-full object-cover"
               />
             </div>
-            <div class="flex-1 flex-col justify-between bg-white p-6">
+            <div class="flex-1 flex-col justify-between bg-[#0a0a0a] p-6">
               <div class="flex-1">
                 <p class="text-sm font-medium text-primary-600">
                   {{ article.category.title }}
                 </p>
                 <div class="mt-2 block">
-                  <p class="text-xl font-semibold text-gray-900">
+                  <p class="text-xl font-semibold text-gray-100">
                     {{ article.headline }}
                   </p>
-                  <p class="mt-3 text-base text-gray-500">
+                  <p class="mt-3 text-base text-gray-400">
                     {{ article.metaDescription }}
                   </p>
                   <div class="mt-5 flex flex-wrap gap-2">

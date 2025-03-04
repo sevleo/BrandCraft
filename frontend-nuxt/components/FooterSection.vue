@@ -2,7 +2,7 @@
 
 <template>
   <footer
-    class="privacy justify-center items-center flex flex-col pt-[60px] px-[50px] w-full"
+    class="privacy justify-center items-center flex flex-col pt-[60px] px-[50px] w-full bg-[#191919]"
   >
     <div
       class="w-full max-w-[1000px] flex gap-4 flex-col lg:flex-row lg:w-[80%]"
@@ -12,17 +12,17 @@
       >
         <div class="flex flex-col justify-center items-start">
           <img
-            src="@/public/perfect_logo_full.svg"
+            src="@/public/perfect_logo_full_white.svg"
             alt="BrandCraft Logo"
             class="w-[200px] mb-[10px] self-center lg:self-start"
           />
           <p
-            class="text-gray-600 text-[14px] leading-relaxed w-[300px] text-center lg:text-start"
+            class="text-gray-400 text-[14px] leading-relaxed w-[300px] text-center lg:text-start"
           >
             Open-source social media scheduler.
           </p>
           <p
-            class="text-gray-600 text-[14px] leading-relaxed w-[300px] text-center lg:text-start"
+            class="text-gray-400 text-[14px] leading-relaxed w-[300px] text-center lg:text-start"
           >
             Join us on
             <a
@@ -34,7 +34,7 @@
             >.
           </p>
           <p
-            class="text-gray-600 text-[14px] leading-relaxed w-[300px] text-center lg:text-start"
+            class="text-gray-400 text-[14px] leading-relaxed w-[300px] text-center lg:text-start"
           >
             Submit a bug or request a feature
             <a

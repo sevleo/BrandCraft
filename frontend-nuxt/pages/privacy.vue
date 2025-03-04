@@ -254,7 +254,7 @@ const router = useRouter();
 
 <style scoped>
 .privacy-policy-container {
-  color: #374151;
+  color: #f3f4f6;
   line-height: 1.6;
 }
 

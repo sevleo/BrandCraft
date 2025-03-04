@@ -15,24 +15,24 @@ const toggleQuestion = (index: number) => {
 
 <template>
   <section aria-labelledby="faq" class="w-full mt-[150px] mb-[100px]">
-    <h2 class="text-center text-[32px] font-bold tracking-tight text-gray-900">
+    <h2 class="text-center text-[32px] font-bold tracking-tight text-gray-100">
       Frequently Asked Questions
     </h2>
-    <p class="text-center text-gray-600 text-lg mb-[60px]">
+    <p class="text-center text-gray-300 text-lg mb-[60px]">
       Everything you need to know about BrandCraft
     </p>
     <div class="max-w-[800px] mx-auto flex flex-col gap-4 px-3 lg:px-0">
       <div
         v-for="(question, index) in [4, 0, 1, 2, 3]"
         :key="question"
-        class="group bg-white cursor-pointer rounded-xl border border-gray-200 overflow-hidden transition-all duration-200 hover:border-emerald-500 hover:shadow-md"
+        class="group bg-[#0a0a0a] cursor-pointer rounded-xl border border-gray-700 overflow-hidden transition-all duration-200 hover:border-emerald-500 hover:shadow-md"
         @click="toggleQuestion(question)"
       >
         <button
           class="w-full cursor-pointer p-6 text-left flex justify-between items-center group-hover:text-emerald-600"
         >
           <h3
-            class="text-[17px] font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors duration-200"
+            class="text-[17px] font-semibold text-gray-100 group-hover:text-emerald-600 transition-colors duration-200"
           >
             {{
               [
@@ -45,7 +45,7 @@ const toggleQuestion = (index: number) => {
             }}
           </h3>
           <ChevronDown
-            class="transform transition-transform duration-200 w-5 h-5 text-gray-400 group-hover:text-emerald-500"
+            class="transform transition-transform duration-200 w-5 h-5 text-gray-200 group-hover:text-emerald-500"
             :class="{ 'rotate-180': openQuestions.includes(question) }"
           />
         </button>
@@ -57,7 +57,7 @@ const toggleQuestion = (index: number) => {
           "
         >
           <div class="px-6">
-            <p class="text-gray-600 text-[15px] leading-relaxed">
+            <p class="text-gray-400 text-[15px] leading-relaxed">
               <span v-if="question === 4">
                 Yes! It's totally free. You can use all functionality without
                 limitations. At some point however we will add paid plans for

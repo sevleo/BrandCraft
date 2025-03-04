@@ -173,7 +173,7 @@ useHead({
 <style scoped>
 .article-page {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #f0f0f0;
 }
 
 /* Loading Styles */
@@ -218,12 +218,12 @@ useHead({
 
 .error-content h1 {
   font-size: 2rem;
-  color: #1f2937;
+  color: #f0f0f0;
   margin-bottom: 1rem;
 }
 
 .error-content p {
-  color: #6b7280;
+  color: #f0f0f0;
   margin-bottom: 2rem;
 }
 
@@ -231,7 +231,7 @@ useHead({
 .article-container {
   max-width: 100%;
   margin: 0 auto;
-  background: #ffffff;
+  background: #191919;
 }
 
 .hero-image {
@@ -261,7 +261,7 @@ useHead({
   margin: -100px auto 0;
   position: relative;
   padding: 2rem;
-  background: #ffffff;
+  background: #141414;
   border-radius: 1rem;
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -279,13 +279,13 @@ useHead({
 .article-body {
   font-size: 1.125rem;
   line-height: 1.8;
-  color: #1f2937;
+  color: #f0f0f0;
 }
 
 .article-body :deep(h1) {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #1f2937;
+  color: #f0f0f0;
   line-height: 1.2;
   margin-bottom: 1rem;
 }
@@ -294,7 +294,7 @@ useHead({
   font-size: 1.875rem;
   font-weight: 700;
   margin: 2rem 0 1rem;
-  color: #1f2937;
+  color: #f0f0f0;
   line-height: 1.3;
 }
 
@@ -302,7 +302,7 @@ useHead({
   font-size: 1.5rem;
   font-weight: 600;
   margin: 2rem 0 1rem;
-  color: #1f2937;
+  color: #f0f0f0;
   line-height: 1.3;
 }
 
@@ -337,22 +337,24 @@ useHead({
   width: 100%;
   margin: 2rem 0;
   border-collapse: collapse;
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  background-color: white;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+  background-color: black;
+  border: 1px solid #000000;
 }
 
 .article-body :deep(thead) {
-  background-color: #f8fafc;
-  border-bottom: 2px solid #e2e8f0;
+  background-color: black;
+  border-bottom: 2px solid #000000;
 }
 
 .article-body :deep(th) {
   padding: 1rem;
   text-align: left;
   font-weight: 600;
-  color: #475569;
+  color: #f0f0f0;
   text-transform: uppercase;
   font-size: 0.875rem;
   letter-spacing: 0.05em;
@@ -360,8 +362,8 @@ useHead({
 
 .article-body :deep(table) td {
   padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
-  color: #1f2937;
+  border-bottom: 1px solid #000000;
+  color: #f0f0f0;
   vertical-align: middle;
 }
 
@@ -369,16 +371,20 @@ useHead({
   border-bottom: none;
 }
 
+.article-body :deep(table) tr {
+  background-color: #434343;
+}
+
 .article-body :deep(table) tr:hover {
-  background-color: #f8fafc;
+  background-color: #303030;
 }
 
 .article-body :deep(blockquote) {
   margin: 2rem 0;
   padding: 1rem 2rem;
-  border-left: 4px solid #e2e8f0;
-  background-color: #f8fafc;
-  color: #475569;
+  border-left: 4px solid #a3a3a3;
+  background-color: #060606;
+  color: #f0f0f0;
   font-size: 1.1rem;
   font-style: italic;
 }
@@ -406,11 +412,11 @@ useHead({
 
 /* Zebra striping for better readability */
 .article-body :deep(table) tbody tr:nth-child(even) {
-  background-color: #f8fafc;
+  background-color: #242424;
 }
 
 .article-body :deep(table) tbody tr:nth-child(even):hover {
-  background-color: #f1f5f9;
+  background-color: #181818;
 }
 
 /* Tags Styles */
@@ -429,8 +435,8 @@ useHead({
 .tag {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: #f3f4f6;
-  color: #4b5563;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -439,7 +445,7 @@ useHead({
 }
 
 .tag:hover {
-  background-color: #e5e7eb;
+  background-color: #0f0f0f;
 }
 
 /* Related Posts Styles */
@@ -452,7 +458,7 @@ useHead({
 .related-posts h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #f0f0f0;
   margin-bottom: 1.5rem;
 }
 
@@ -464,7 +470,7 @@ useHead({
 
 .related-post-card {
   padding: 1.5rem;
-  background: #f9fafb;
+  background: #2d2d2d;
   border-radius: 0.75rem;
   border: none;
   cursor: pointer;
@@ -473,14 +479,14 @@ useHead({
 }
 
 .related-post-card:hover {
-  background: #f3f4f6;
+  background: #3d3d3d;
   transform: translateY(-2px);
 }
 
 .related-post-card :deep(h3) {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f0f0f0;
   margin-bottom: 0.5rem;
 }
 
@@ -496,7 +502,7 @@ useHead({
   align-items: center;
   padding: 0.75rem 1.5rem;
   background-color: #f3f4f6;
-  color: #4b5563;
+  color: #f0f0f0;
   border: none;
   border-radius: 0.5rem;
   font-weight: 500;
@@ -506,7 +512,7 @@ useHead({
 
 .back-button:hover {
   background-color: #e5e7eb;
-  color: #1f2937;
+  color: #f0f0f0;
 }
 
 .back-arrow {

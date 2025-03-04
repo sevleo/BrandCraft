@@ -94,10 +94,10 @@ const testimonials = ref([
 
 <template>
   <section class="mx-auto mt-[150px] max-w-7xl px-4 sm:px-6 lg:px-8">
-    <h2 class="text-center text-[32px] font-bold tracking-tight text-gray-900">
+    <h2 class="text-center text-[32px] font-bold tracking-tight text-gray-100">
       See what others say
     </h2>
-    <p class="mb-[60px] text-center text-[18px] text-gray-600">
+    <p class="mb-[60px] text-center text-[18px] text-gray-300">
       What people are saying about BrandCraft
     </p>
     <div
@@ -106,7 +106,7 @@ const testimonials = ref([
       <div
         v-for="testimonial in testimonials"
         :key="testimonial.handle"
-        class="flex flex-col gap-4 rounded-lg bg-white p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 max-w-[320px]"
+        class="flex flex-col gap-4 rounded-lg bg-[#0a0a0a] p-6 shadow-lg border border-gray-700 hover:shadow-xl transition-shadow duration-300 max-w-[320px]"
       >
         <div class="flex items-start gap-2">
           <img
@@ -115,7 +115,7 @@ const testimonials = ref([
             class="h-5 w-5 text-[#2E53DA]"
           />
           <p
-            class="whitespace-pre-line text-[15px] text-gray-700 leading-relaxed"
+            class="whitespace-pre-line text-[15px] text-gray-200 leading-relaxed"
           >
             <template v-for="(line, index) in testimonial.content" :key="index">
               {{ line }}
@@ -125,7 +125,7 @@ const testimonials = ref([
         </div>
 
         <div
-          class="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100"
+          class="flex items-center gap-3 mt-auto pt-4 border-t border-gray-700"
         >
           <img
             :src="testimonial.avatar"
@@ -133,16 +133,16 @@ const testimonials = ref([
             class="h-10 w-10 rounded-full object-cover"
           />
           <div class="flex-1">
-            <h3 class="font-semibold text-gray-900 text-sm">
+            <h3 class="font-semibold text-gray-300 text-sm">
               {{ testimonial.name }}
             </h3>
-            <p class="text-sm text-gray-500">{{ testimonial.handle }}</p>
+            <p class="text-sm text-gray-400">{{ testimonial.handle }}</p>
           </div>
           <a
             :href="testimonial.tweetUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-[#2E53DA] hover:text-[#1E3BB8] transition-colors duration-200"
+            class="text-[#cacaca] hover:text-[#34da2e] transition-colors duration-200"
           >
             View
           </a>

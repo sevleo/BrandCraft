@@ -217,25 +217,25 @@ onMounted(async () => {
 
 <template>
   <div v-if="state.isLoaded" class="home-view">
-    <HomeNavigation />
     <main class="main w-full">
       <!-- Hero Section -->
       <section
-        class="hero-section bg-gradient-to-b from-white to-gray-50 mt-[50px] sm:mt-[200px]"
+        class="hero-section relative bg-gradient-to-b from-[] to-[] min-h-[100vh] flex justify-center items-center"
       >
+        <HomeNavigation />
         <div class="container mx-auto max-w-7xl px-4 sm:px-6">
           <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <!-- Left Column: Text Content -->
             <div class="flex flex-col justify-center">
               <h1
-                class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-4xl lg:text-5xl"
+                class="mb-6 text-4xl font-bold leading-tight tracking-tight text-gray-100 sm:text-4xl lg:text-5xl"
               >
                 Stop Managing Platforms. Start
                 <span class="text-greenBG">Growing</span> Your Brand.
               </h1>
-              <p class="mb-6 text-xl text-gray-600">
-                BrandCraft makes it easy to schedule posts, track performance,
-                and grow your audience across all social platforms.
+              <p class="mb-6 text-xl text-gray-300">
+                A powerful hub to create, manage, and grow your brand. All in
+                one place.
               </p>
               <div
                 class="max-sm:w-[93vw] flex justify-center sm:justify-start mb-6 items-center sm:-left-4 sm:-top-4 gap-3 rounded-lg"
@@ -263,7 +263,7 @@ onMounted(async () => {
                 <button
                   @click="redirectToSignup"
                   type="submit"
-                  class="inline-flex items-center max-sm:w-[300px] justify-center cursor-pointer rounded-full bg-greenBG px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
+                  class="inline-flex items-center max-sm:w-[300px] justify-center cursor-pointer rounded-full bg-green-900 px-8 py-3 text-lg font-semibold text-white transition hover:bg-greenLightBG"
                 >
                   Get for free
                 </button>
@@ -279,13 +279,13 @@ onMounted(async () => {
               <div class="mt-8 flex flex-wrap items-center gap-4">
                 <div class="flex items-center gap-2">
                   <Check :size="20" color="#22c55e" />
-                  <span class="text-sm text-gray-600"
+                  <span class="text-sm text-gray-400"
                     >No credit card required</span
                   >
                 </div>
                 <div class="flex items-center gap-2">
                   <Check :size="20" color="#22c55e" />
-                  <span class="text-sm text-gray-600">Free forever plan</span>
+                  <span class="text-sm text-gray-400">Free forever plan</span>
                 </div>
               </div>
             </div>
@@ -320,41 +320,37 @@ onMounted(async () => {
               </div> -->
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- Stats Section -->
-      <section class="bg-gray-50 py-20">
-        <div class="container mx-auto max-w-7xl px-4 sm:px-6">
-          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="text-center">
-              <div class="text-4xl font-bold text-greenBG">100+</div>
-              <div class="mt-2 text-gray-600">Active Users</div>
-            </div>
-            <div class="text-center">
-              <div class="text-4xl font-bold text-greenBG">8+</div>
-              <div class="mt-2 text-gray-600">Supported Platforms</div>
-            </div>
-            <div class="text-center">
-              <div class="text-4xl font-bold text-greenBG">1000+</div>
-              <div class="mt-2 text-gray-600">Posts Scheduled</div>
-            </div>
-            <div class="text-center">
-              <div class="text-4xl font-bold text-greenBG">24/7</div>
-              <div class="mt-2 text-gray-600">Support</div>
+          <div class="mt-[80px] container mx-auto max-w-7xl px-4 sm:px-6">
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              <div class="text-center">
+                <div class="text-4xl font-bold text-greenBG">100+</div>
+                <div class="mt-2 text-gray-400">Active Users</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl font-bold text-greenBG">8+</div>
+                <div class="mt-2 text-gray-400">Supported Platforms</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl font-bold text-greenBG">1000+</div>
+                <div class="mt-2 text-gray-400">Posts Scheduled</div>
+              </div>
+              <div class="text-center">
+                <div class="text-4xl font-bold text-greenBG">24/7</div>
+                <div class="mt-2 text-gray-400">Support</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       <!-- How it works section -->
-      <section id="how-it-works" class="w-full py-24 bg-gray-50">
+      <section id="how-it-works" class="w-full py-24 bg-[#242525]">
         <div class="container mx-auto max-w-7xl px-4 sm:px-6">
           <div class="text-center mb-6">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-100">
               How it works?
             </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
               Schedule content in 3 simple steps
             </p>
           </div>
@@ -369,24 +365,24 @@ onMounted(async () => {
                   >
                     Step 1
                   </span>
-                  <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 class="text-2xl font-bold text-gray-100 mb-4">
                     Craft your perfect post
                   </h3>
-                  <p class="text-lg text-gray-600 leading-relaxed">
+                  <p class="text-lg text-gray-400 leading-relaxed">
                     Create compelling content that resonates with your audience.
                     Our AI-powered editor helps you optimize your posts for each
                     platform, ensuring maximum engagement.
                   </p>
                   <ul class="mt-6 space-y-3">
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Smart text formatting for each platform</span>
                     </li>
-                    <!-- <li class="flex items-center text-gray-600">
+                    <!-- <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Built-in hashtag suggestions</span>
                     </li> -->
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Media optimization tools</span>
                     </li>
@@ -426,24 +422,24 @@ onMounted(async () => {
                   >
                     Step 2
                   </span>
-                  <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 class="text-2xl font-bold text-gray-100 mb-4">
                     Connect your platforms
                   </h3>
-                  <p class="text-lg text-gray-600 leading-relaxed">
+                  <p class="text-lg text-gray-400 leading-relaxed">
                     Manage all your social media accounts from one central
                     dashboard. Connect once, publish everywhere, and save hours
                     of manual work.
                   </p>
                   <ul class="mt-6 space-y-3">
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>One-click platform connection</span>
                     </li>
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Support for 8+ social networks</span>
                     </li>
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Unified content calendar</span>
                     </li>
@@ -461,10 +457,10 @@ onMounted(async () => {
                   >
                     Step 3
                   </span>
-                  <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                  <h3 class="text-2xl font-bold text-gray-100 mb-4">
                     Schedule strategically
                   </h3>
-                  <p class="text-lg text-gray-600 leading-relaxed">
+                  <p class="text-lg text-gray-400 leading-relaxed">
                     Maximize your reach with intelligent scheduling. Our AI
                     analyzes your audience's behavior to recommend the best
                     posting times.
@@ -474,11 +470,11 @@ onMounted(async () => {
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>AI-powered optimal timing</span>
                     </li> -->
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Bulk scheduling features</span>
                     </li>
-                    <li class="flex items-center text-gray-600">
+                    <li class="flex items-center text-gray-400">
                       <Check class="h-5 w-5 text-greenBG mr-2" />
                       <span>Draft management</span>
                     </li>
@@ -509,7 +505,7 @@ onMounted(async () => {
       <FaqSection />
       <!-- Bottom CTA Section -->
       <section
-        class="w-full py-20 bg-gradient-to-br bg-green-100 h-[500px] flex justify-center items-center"
+        class="w-full py-20 bg-gradient-to-br bg-green-900 h-[500px] flex justify-center items-center"
       >
         <div
           class="max-w-[800px] mx-auto text-center flex flex-col justify-center items-center px-[50px]"
@@ -519,10 +515,10 @@ onMounted(async () => {
           >
             Ready to streamline your social media?
           </h2>
-          <p class="text-xl text-gray-600">
+          <p class="text-xl text-gray-300">
             Schedule all your content in minutes, not hours.
           </p>
-          <p class="text-xl text-gray-600">
+          <p class="text-xl text-gray-300">
             Post consistently across all platforms.
           </p>
           <button
@@ -539,14 +535,25 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.hero-section {
+  background-image: linear-gradient(
+    to bottom,
+    #0a0a0a,
+    #121313,
+    #191919,
+    #1e1f1f,
+    #242525
+  );
+}
+
 .custom-shadow {
   transition: all 0.3s ease;
-  box-shadow: 0 0px 30px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0px 30px 15px rgba(255, 255, 255, 0.1);
 }
 
 .custom-shadow:hover {
   transform: scale(1.05);
-  box-shadow: 0 0px 30px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 30px 15px rgba(255, 255, 255, 0.2);
 }
 
 html,
@@ -560,6 +567,7 @@ body {
   overflow-x: hidden;
   position: relative;
   width: 100%;
+  background-color: #242525;
 }
 
 .waitlist-container {
