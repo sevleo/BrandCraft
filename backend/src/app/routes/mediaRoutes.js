@@ -242,10 +242,19 @@ router.post(
       } else {
         tempOutputPath = tempInputPath;
         if (clients[sessionId]) {
+          // clients[sessionId].write(
+          //   `data: ${JSON.stringify({ percent: 100, completed: true })}\n\n`
+          // );
+          // clients[sessionId].end();
+
+          console.log("Sending final event...");
           clients[sessionId].write(
             `data: ${JSON.stringify({ percent: 100, completed: true })}\n\n`
           );
-          clients[sessionId].end();
+          clients[sessionId].flushHeaders();
+          setTimeout(() => {
+            clients[sessionId]?.end();
+          }, 1000);
         }
       }
 

@@ -72,6 +72,7 @@ export async function uploadVideoToS3(
         editorDataStore.processingProgress.value = 100;
         eventSource.close();
         await postsStore.getAllPostGroups();
+
         // Refresh the selected post in editor store with updated data
         const updatedPost = postsStore.postGroups.value.find(
           (post) => post._id === editorDataStore.selectedPost.value?._id
@@ -94,6 +95,15 @@ export async function uploadVideoToS3(
       eventSource.close();
       reject(new Error('Processing connection failed'));
     };
+    // **Fallback timeout to prevent the frontend from getting stuck**
+    // Fallback timeout to detect if SSE never starts
+    setTimeout(() => {
+      if (editorDataStore.processingProgress.value === 0) {
+        console.warn('No SSE progress received, assuming SSE failed.');
+        eventSource.close();
+        reject(new Error('Processing connection failed: No SSE updates.'));
+      }
+    }, 5000); // If no updates after 5s, assume SSE failed
   });
 }
 
