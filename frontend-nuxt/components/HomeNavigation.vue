@@ -83,7 +83,7 @@ onMounted(() => {});
         <!-- Mobile Menu Button -->
         <button
           @click="toggleMenu"
-          class="hidden text-gray-600 hover:text-gray-900 max-xsm:block"
+          class="hidden text-gray-300 hover:text-gray-900 max-xsm:block"
         >
           <Menu v-if="!isMenuOpen" class="h-6 w-6" />
           <X v-else class="h-6 w-6" />
@@ -93,7 +93,7 @@ onMounted(() => {});
 
     <!-- Mobile Menu -->
     <Transition name="fade" mode="out-in">
-      <div v-if="isMenuOpen" class="fixed inset-0 top-16 z-50 bg-white">
+      <div v-if="isMenuOpen" class="fixed inset-0 top-16 z-50 bg-[#0b0b0b]">
         <div
           class="h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain px-4 py-6"
           @touchmove.stop
@@ -104,7 +104,7 @@ onMounted(() => {});
             <div>
               <button
                 @click="toggleItem('features')"
-                class="flex w-full items-center justify-between py-2 text-lg font-medium text-gray-900"
+                class="flex w-full items-center justify-between py-2 text-lg font-medium text-gray-100"
               >
                 <span>Features</span>
                 <ChevronDown
@@ -118,15 +118,15 @@ onMounted(() => {});
                 class="ml-4 mt-2 space-y-2"
               >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Smart Scheduling</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Analytics</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Content Management</span
                 >
               </div>
@@ -136,7 +136,7 @@ onMounted(() => {});
             <div>
               <button
                 @click="toggleItem('channels')"
-                class="flex w-full items-center justify-between py-2 text-lg font-medium text-gray-900"
+                class="flex w-full items-center justify-between py-2 text-lg font-medium text-gray-100"
               >
                 <span>Channels</span>
                 <ChevronDown
@@ -150,39 +150,39 @@ onMounted(() => {});
                 class="ml-4 mt-2 space-y-2"
               >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Instagram</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >TikTok</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Bluesky</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Threads</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Mastodon</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Twitter</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >Facebook</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >LinkedIn</span
                 >
                 <span
-                  class="block cursor-not-allowed py-2 text-gray-400 opacity-50"
+                  class="block cursor-not-allowed py-2 text-gray-200 opacity-50"
                   >YouTube</span
                 >
               </div>
@@ -190,7 +190,7 @@ onMounted(() => {});
 
             <!-- Blog -->
             <span
-              class="cursor-not-allowed py-2 text-lg font-medium text-gray-400 opacity-50"
+              class="cursor-not-allowed py-2 text-lg font-medium text-gray-100"
             >
               Blog
             </span>
@@ -198,14 +198,14 @@ onMounted(() => {});
               href="https://discord.gg/KYZGsH7Mfb"
               target="_blank"
               rel="noopener noreferrer"
-              class="py-2 text-lg font-medium text-gray-900"
+              class="py-2 text-lg font-medium text-gray-100"
               >Join Discord</a
             >
             <a
               href="https://insigh.to/b/brandcraftart"
               target="_blank"
               rel="noopener noreferrer"
-              class="py-2 text-lg font-medium text-gray-900"
+              class="py-2 text-lg font-medium text-gray-100"
               >Request a feature</a
             >
 
