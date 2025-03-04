@@ -137,9 +137,6 @@ router.post(
   authenticateWithRefresh,
   upload.single("video"),
   async (req, res) => {
-    console.log(req.body);
-    console.log(req.body.postGroupId);
-
     let tempInputPath;
     let tempOutputPath;
 
@@ -151,7 +148,9 @@ router.post(
       const sessionId = Date.now().toString();
       res.json({ sessionId });
 
-      const fileExtension = path.extname(req.file.originalname) || ".mp4"; // Default to .mp4 if not found
+      const fileName = sanitizeFileName(req.file.originalname);
+
+      const fileExtension = path.extname(fileName) || ".mp4"; // Default to .mp4 if not found
 
       // Dynamically set the temp input path
       tempInputPath = path.join(
@@ -251,8 +250,8 @@ router.post(
 
       // Get presigned URL for the processed MP4 file
       const outputFilename = `${path.basename(
-        req.file.originalname,
-        path.extname(req.file.originalname)
+        fileName,
+        path.extname(fileName)
       )}.mp4`;
 
       const { uploadUrl, key } = await generatePresignedUploadUrl(
