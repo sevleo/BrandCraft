@@ -189,11 +189,9 @@ onMounted(() => {});
             </div>
 
             <!-- Blog -->
-            <span
-              class="cursor-not-allowed py-2 text-lg font-medium text-gray-100"
-            >
+            <a class="py-2 text-lg font-medium text-gray-100" href="/blog">
               Blog
-            </span>
+            </a>
             <a
               href="https://discord.gg/KYZGsH7Mfb"
               target="_blank"
