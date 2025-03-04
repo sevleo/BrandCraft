@@ -31,6 +31,8 @@ useHead({
       content:
         "social media management, content scheduling, analytics, automation, Instagram, Twitter, Facebook, LinkedIn, social media marketing, social media tools",
     },
+
+    // ✅ Open Graph Meta Tags (Facebook, LinkedIn, Twitter)
     {
       property: "og:title",
       content: "BrandCraft - The Ultimate Social Media Management Platform",
@@ -40,13 +42,19 @@ useHead({
       content:
         "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
     },
-
-    {
-      property: "og:url",
-      content: "https://brandcraft.art",
-    },
+    { property: "og:url", content: "https://brandcraft.art" },
     { property: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary" },
+
+    // ✅ Add Open Graph Image (Must be absolute URL)
+    {
+      property: "og:image",
+      content: "https://brandcraft.art/brandcraft-preview.png",
+    },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+
+    // ✅ Twitter Card Meta Tags
+    { name: "twitter:card", content: "summary_large_image" }, // Use large preview
     {
       name: "twitter:title",
       content: "BrandCraft - The Ultimate Social Media Management Platform",
@@ -56,7 +64,13 @@ useHead({
       content:
         "Save time and get real results on social media. Schedule posts, track performance, and grow your audience across all social platforms.",
     },
+    {
+      name: "twitter:image",
+      content: "https://brandcraft.art/brandcraft-preview.png",
+    },
+    { name: "twitter:site", content: "@yourtwitterhandle" }, // Replace with your Twitter handle
 
+    // ✅ Favicon & Misc
     { name: "robots", content: "index, follow" },
     { name: "viewport", content: "width=device-width, initial-scale=1" },
     { name: "format-detection", content: "telephone=no" },
