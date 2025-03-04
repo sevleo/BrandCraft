@@ -67,6 +67,22 @@ useHead({
       href: "https://brandcraft.art",
     },
   ],
+  script: [
+    {
+      src: "https://www.googletagmanager.com/gtag/js?id=G-VHPLXRGRB6",
+      async: true,
+      defer: true, // Loads after other critical resources
+    },
+    {
+      children: `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'G-VHPLXRGRB6');
+      `,
+    },
+  ],
 });
 
 // Import Assets (Nuxt auto-handles static files)
