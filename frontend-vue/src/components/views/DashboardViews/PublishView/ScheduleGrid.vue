@@ -49,7 +49,7 @@
     for (let hour = 0; hour < 24; hour++) {
       const isPastNoon = hour >= 12;
       const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-      const period = isPastNoon ? 'AM' : 'PM';
+      const period = isPastNoon ? 'PM' : 'AM';
       const display = `${displayHour} ${period}`;
 
       slots.push({
