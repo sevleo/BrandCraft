@@ -93,6 +93,7 @@
           <NuxtLink href="/bluesky" class="hover:underline">Bluesky</NuxtLink>
           <NuxtLink href="/x" class="hover:underline">X (Twitter)</NuxtLink>
           <NuxtLink href="/mastodon" class="hover:underline">Mastodon</NuxtLink>
+          <NuxtLink href="/linkedin" class="hover:underline">LinkedIn</NuxtLink>
         </div>
       </div>
       <div

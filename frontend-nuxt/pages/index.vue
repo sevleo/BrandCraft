@@ -131,6 +131,7 @@ interface ComponentState {
   blueskyIcon: string;
   xIcon: string;
   mastodonIcon: string;
+  linkedinIcon: string;
   screenshot1: string;
   screenshot2: string;
   click1: string;
@@ -156,6 +157,7 @@ const useComponentState = (): ComponentState => {
     blueskyIcon,
     xIcon,
     mastodonIcon,
+    linkedinIcon,
     screenshot1,
     screenshot2,
     click1,
@@ -250,6 +252,7 @@ onMounted(async () => {
                     state.blueskyIcon,
                     state.xIcon,
                     state.mastodonIcon,
+                    state.linkedinIcon,
                   ]"
                   :key="icon"
                   :src="icon"
