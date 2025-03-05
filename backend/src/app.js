@@ -32,12 +32,13 @@ app.use(
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: "none",
     },
-    proxy: true,
+    // proxy: true,
+    proxy: false,
   })
 );
 
 if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1);
+  // app.set("trust proxy", 1);
 }
 
 const port = process.env.PORT || 3000;

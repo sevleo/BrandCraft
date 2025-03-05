@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const User = require("../models/user");
 
 const waitlistRoutes = require("./waitlistRoutes");
 const authRoutes = require("./authRoutes");
@@ -33,5 +34,45 @@ router.use("/auth/youtube", youtubeRoutes);
 router.use("/auth/mastodon", mastodonRoutes);
 router.use("/auth/linkedin", linkedinRoutes);
 router.use("/admin", adminRoutes);
+
+router.use("/performance-test", async (req, res) => {
+  try {
+    const reqStart = Date.now();
+    console.log(`[${new Date().toISOString()}] Performance test started`);
+
+    const start = Date.now();
+    const user = await User.findOne({ username: "seva.leonov@hotmail.com" });
+    const queryTime = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] DB Query Time: ${queryTime}ms`);
+
+    res.json({
+      message: "Performance test complete",
+      queryTime: queryTime,
+    });
+
+    console.log(
+      `[${new Date().toISOString()}] Response sent, total time: ${
+        Date.now() - reqStart
+      }ms`
+    );
+  } catch (error) {
+    console.error("Error in performance test:", error);
+    res.status(500).json({ error: "Database query failed" });
+  }
+});
+
+router.use("/performance-test-2", async (req, res) => {
+  console.log("Performance test 2 started");
+  res.json({
+    message: "Performance test 2 complete",
+  });
+});
+
+router.use("/performance-test-2", async (req, res) => {
+  console.log("Performance test 2 started");
+  res.json({
+    message: "Performance test 2 complete",
+  });
+});
 
 module.exports = router;
