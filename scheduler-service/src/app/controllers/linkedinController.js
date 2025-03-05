@@ -61,8 +61,6 @@ exports.postToLinkedinInternal = async ({
       author,
       accessToken: connection.accessToken,
     });
-
-    console.log(publishedPost);
   }
 };
 
