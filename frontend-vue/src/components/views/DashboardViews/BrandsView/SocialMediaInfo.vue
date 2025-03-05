@@ -7,6 +7,7 @@
   import YoutubeCard from '@/components/views/DashboardViews/BrandsView/PlatformCards/YoutubeCard.vue';
   import InstagramCard from '@/components/views/DashboardViews/BrandsView/PlatformCards/InstagramCard.vue';
   import MastodonCard from '@/components/views/DashboardViews/BrandsView/PlatformCards/MastodonCard.vue';
+  import LinkedinCard from '@/components/views/DashboardViews/BrandsView/PlatformCards/LinkedinCard.vue';
   import FacebookCard from '@/components/views/DashboardViews/BrandsView/PlatformCards/FacebookCard.vue';
 
   defineProps<{
@@ -18,8 +19,9 @@
       | 'instagram'
       | 'youtube'
       | 'mastodon'
-      | 'summary'
-      | 'facebook';
+      | 'linkedin'
+      | 'facebook'
+      | 'summary';
   }>();
 </script>
 
@@ -59,6 +61,10 @@
 
       <div v-else-if="type === 'mastodon'" class="w-full max-w-2xl">
         <MastodonCard />
+      </div>
+
+      <div v-else-if="type === 'linkedin'" class="w-full max-w-2xl">
+        <LinkedinCard />
       </div>
 
       <div v-else-if="type === 'summary'" class="w-full max-w-2xl">

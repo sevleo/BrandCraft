@@ -45,6 +45,8 @@
         return ['fab', 'mastodon'];
       case 'Facebook':
         return ['fab', 'facebook'];
+      case 'Linkedin':
+        return ['fab', 'linkedin'];
       default:
         return ['fas', 'link'];
     }

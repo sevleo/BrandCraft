@@ -23,6 +23,10 @@ const mastodonAccount = ref<any>(
   JSON.parse(localStorage.getItem('brandcraft_mastodon_account') || 'null')
 );
 
+const linkedinAccount = ref<any>(
+  JSON.parse(localStorage.getItem('brandcraft_linkedin_account') || 'null')
+);
+
 const isConnectingTwitter = ref<boolean>(false);
 const isConnectingThreads = ref<boolean>(false);
 const isConnectingBluesky = ref<boolean>(false);
@@ -30,6 +34,7 @@ const isConnectingTikTok = ref<boolean>(false);
 const isConnectingYoutube = ref<boolean>(false);
 const isConnectingInstagram = ref<boolean>(false);
 const isConnectingMastodon = ref<boolean>(false);
+const isConnectingLinkedin = ref<boolean>(false);
 
 // Watch for changes and update localStorage
 watch(twitterAccount, (newValue) => {
@@ -63,6 +68,10 @@ watch(mastodonAccount, (newValue) => {
   localStorage.setItem('brandcraft_mastodon_account', JSON.stringify(newValue));
 });
 
+watch(linkedinAccount, (newValue) => {
+  localStorage.setItem('brandcraft_linkedin_account', JSON.stringify(newValue));
+});
+
 async function getAllAccounts() {
   try {
     const { accounts } = await getAllConnectedAccounts();
@@ -91,6 +100,7 @@ async function getAllAccounts() {
     youtubeAccount.value = accountsByPlatform.youtube || null;
     instagramAccount.value = accountsByPlatform.instagram || null;
     mastodonAccount.value = accountsByPlatform.mastodon || null;
+    linkedinAccount.value = accountsByPlatform.linkedin || null;
   } catch (error) {
     console.error('Error fetching accounts:', error);
   }
@@ -106,6 +116,7 @@ function clearAccountData() {
   youtubeAccount.value = null;
   instagramAccount.value = null;
   mastodonAccount.value = null;
+  linkedinAccount.value = null;
 
   // Clear localStorage
   localStorage.removeItem('brandcraft_twitter_account');
@@ -115,6 +126,7 @@ function clearAccountData() {
   localStorage.removeItem('brandcraft_youtube_account');
   localStorage.removeItem('brandcraft_instagram_account');
   localStorage.removeItem('brandcraft_mastodon_account');
+  localStorage.removeItem('brandcraft_linkedin_account');
 }
 
 const connectedAccounts = computed(() => {
@@ -197,6 +209,17 @@ const connectedAccounts = computed(() => {
       });
     }
   }
+  if (linkedinAccount.value) {
+    for (const account of linkedinAccount.value) {
+      accounts.push({
+        id: account.platformId,
+        platform: 'linkedin',
+        username: account.username,
+        profileImageUrl: account.profileImageUrl,
+        platformIcon: ['fab', 'linkedin'],
+      });
+    }
+  }
 
   return accounts;
 });
@@ -209,6 +232,7 @@ export default {
   youtubeAccount,
   instagramAccount,
   mastodonAccount,
+  linkedinAccount,
   isConnectingTwitter,
   isConnectingThreads,
   isConnectingBluesky,
@@ -216,6 +240,7 @@ export default {
   isConnectingYoutube,
   isConnectingInstagram,
   isConnectingMastodon,
+  isConnectingLinkedin,
   getAllAccounts,
   clearAccountData,
   connectedAccounts,

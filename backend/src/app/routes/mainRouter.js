@@ -12,6 +12,8 @@ const tiktokRoutes = require("./tiktokRoutes");
 const instagramRoutes = require("./instagramRoutes");
 const youtubeRoutes = require("./youtubeRoutes");
 const mastodonRoutes = require("./mastodonRoutes");
+const linkedinRoutes = require("./linkedinRoutes");
+
 const adminRoutes = require("./adminRoutes");
 const connectedAccountsRoutes = require("./connectedAccountsRoutes");
 
@@ -29,6 +31,7 @@ router.use("/auth/tiktok", tiktokRoutes);
 router.use("/auth/instagram", instagramRoutes);
 router.use("/auth/youtube", youtubeRoutes);
 router.use("/auth/mastodon", mastodonRoutes);
+router.use("/auth/linkedin", linkedinRoutes);
 router.use("/admin", adminRoutes);
 
 module.exports = router;

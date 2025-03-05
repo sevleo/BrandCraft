@@ -19,6 +19,7 @@
     | 'youtube'
     | 'mastodon'
     | 'facebook'
+    | 'linkedin'
   >((localStorage.getItem('brandcraft_active_card') as any) || 'instagram');
 
   const isLoading = ref(true);
@@ -170,6 +171,17 @@
                 :isConnecting="connectionsDataStore.isConnectingMastodon.value"
                 @open="activeCard = 'mastodon'"
                 :data-active="activeCard === 'mastodon'"
+              />
+
+              <SocialAccountCard
+                networkName="Linkedin"
+                buttonColor="blue"
+                :account="
+                  connectionsDataStore.linkedinAccount.value?.[0] ?? null
+                "
+                :isConnecting="connectionsDataStore.isConnectingLinkedin.value"
+                @open="activeCard = 'linkedin'"
+                :data-active="activeCard === 'linkedin'"
               />
             </div>
           </div>

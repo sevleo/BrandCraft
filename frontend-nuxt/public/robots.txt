@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /_nuxt/
 
 # Sitemap
-Sitemap: https://brandcraft.art/api/sitemap.xml
+Sitemap: https://brandcraft.art/sitemap.xml
