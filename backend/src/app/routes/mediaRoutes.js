@@ -10,6 +10,7 @@ const axios = require("axios");
 const MediaFile = require("../models/mediaFile");
 const ScheduledPostGroup = require("../models/scheduledPostGroup");
 const mediaController = require("../controllers/mediaController");
+const WebSocket = require('ws');
 
 const router = express.Router();
 
@@ -115,21 +116,32 @@ const sanitizeFileName = (fileName) => {
 
 const clients = {}; // Store SSE clients
 
-// SSE route for processing progress
-router.get("/processing-progress/:id", (req, res) => {
-  const { id } = req.params;
+const wss = new WebSocket.Server({ noServer: true });
 
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-  res.flushHeaders();
-
-  clients[id] = res;
-
-  req.on("close", () => {
-    delete clients[id];
+// Upgrade HTTP server to WebSocket
+router.server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
   });
 });
+
+// WebSocket connection for processing progress
+wss.on('connection', (ws, req) => {
+  const id = req.url.split('/').pop();
+  
+  ws.on('message', (message) => {
+    console.log('Received:', message);
+  });
+
+  ws.on('close', () => {
+    console.log(`Connection closed for session: ${id}`);
+  });
+});
+
+// Function to send progress updates
+function sendProgressUpdate(id, data) {
+  // Logic to send data to the specific client
+}
 
 // Process and upload MOV video
 router.post(

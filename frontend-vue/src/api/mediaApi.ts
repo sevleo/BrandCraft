@@ -21,7 +21,7 @@ axiosInstance.interceptors.request.use((config) => {
 export async function uploadVideoToS3(
   file: File,
   onProgress?: (progress: number) => void,
-  isSaving?: any
+  isSaving?: { value: boolean }
 ): Promise<string> {
   editorDataStore.uploadProgress.value = 0;
   editorDataStore.processingProgress.value = 0;
@@ -30,38 +30,28 @@ export async function uploadVideoToS3(
   formData.append('video', file);
   formData.append('postGroupId', editorDataStore.selectedPost.value?._id);
 
-  isSaving.value = true;
-  await postsStore.getAllPostGroups();
-
+  if (isSaving) {
+    isSaving.value = true;
+  }
+  
   const response = await axiosInstance.post(
     `${import.meta.env.VITE_BACKEND_URL}/media/process-video`,
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      onUploadProgress: (progressEvent) => {
-        if (progressEvent.total) {
-          const progress = (progressEvent.loaded / progressEvent.total) * 100;
-          editorDataStore.uploadProgress.value = progress;
-          if (onProgress) {
-            onProgress(progress);
-          }
-        }
-      },
-    }
+    formData
   );
 
   const { sessionId } = response.data;
-  isSaving.value = false;
 
-  // Step 2: Connect to SSE for processing progress
+  // Step 2: Connect to WebSocket for processing progress
   return new Promise((resolve, reject) => {
-    const eventSource = new EventSource(
+    const socket = new WebSocket(
       `${import.meta.env.VITE_BACKEND_URL}/media/processing-progress/${sessionId}`
     );
 
-    eventSource.onmessage = async (event) => {
+    socket.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    socket.onmessage = async (event) => {
       const data = JSON.parse(event.data);
       if (data.percent !== undefined) {
         editorDataStore.processingProgress.value = data.percent;
@@ -70,40 +60,30 @@ export async function uploadVideoToS3(
       if (data.completed) {
         editorDataStore.uploadProgress.value = 100;
         editorDataStore.processingProgress.value = 100;
-        eventSource.close();
+        socket.close();
         await postsStore.getAllPostGroups();
-
-        // Refresh the selected post in editor store with updated data
-        const updatedPost = postsStore.postGroups.value.find(
-          (post) => post._id === editorDataStore.selectedPost.value?._id
-        );
-        if (updatedPost) {
-          await editorDataStore.selectPost(updatedPost);
-        }
-
         resolve(sessionId);
       }
 
       if (data.error) {
-        eventSource.close();
+        socket.close();
         reject(new Error(data.error));
       }
     };
 
-    eventSource.onerror = (err) => {
-      console.error('SSE Error:', err);
-      eventSource.close();
+    socket.onerror = (err) => {
+      console.error('WebSocket Error:', err);
+      socket.close();
       reject(new Error('Processing connection failed'));
     };
-    // **Fallback timeout to prevent the frontend from getting stuck**
-    // Fallback timeout to detect if SSE never starts
+
     setTimeout(() => {
       if (editorDataStore.processingProgress.value === 0) {
-        console.warn('No SSE progress received, assuming SSE failed.');
-        eventSource.close();
-        reject(new Error('Processing connection failed: No SSE updates.'));
+        console.warn('No WebSocket progress received, assuming connection failed.');
+        socket.close();
+        reject(new Error('Processing connection failed: No updates.'));
       }
-    }, 5000); // If no updates after 5s, assume SSE failed
+    }, 5000);
   });
 }
 
