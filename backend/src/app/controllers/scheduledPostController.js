@@ -6,6 +6,7 @@ const axios = require("axios");
 const MediaFile = require("../models/mediaFile");
 
 exports.createPostGroup = async (req, res) => {
+  console.log("creating a new post");
   try {
     const { status, scheduledTime } = req.body;
     const userId = req.user._id;
