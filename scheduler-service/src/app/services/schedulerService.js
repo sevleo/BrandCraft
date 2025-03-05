@@ -101,7 +101,7 @@ class SchedulerService {
     await Promise.all(
       group.mediaFiles.map(async (media) => {
         if (!media.filePath) {
-          const sanitizedFilename = media.fileName.replace(/\//g, "_");
+          const sanitizedFilename = sanitizeFileName(media.fileName);
           const tempPath = path.join("/tmp", sanitizedFilename);
 
           console.log(`Downloading media for group ${group._id}: ${tempPath}`);
@@ -391,3 +391,10 @@ class SchedulerService {
 // Create and export a singleton instance
 const schedulerService = new SchedulerService();
 module.exports = schedulerService;
+
+const sanitizeFileName = (fileName) => {
+  return fileName
+    .trim()
+    .replace(/\s+/g, "_") // Replace spaces with underscores
+    .replace(/[^\w.-]/g, ""); // Remove special characters except dots and hyphens
+};
