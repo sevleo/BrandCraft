@@ -49,6 +49,7 @@ exports.postToLinkedinInternal = async ({
       media: uploadedMedia,
       author,
       accessToken: connection.accessToken,
+      mediaType: media[0].type,
     });
 
     console.log("✅ Post published:", publishedPost);
@@ -150,13 +151,31 @@ const uploadMediaToLinkedIn = async (
   console.log(`✅ Uploaded media, asset: ${asset}`);
 
   // ✅ Directly return the asset ID instead of checking processing status
-  return mediaType === "video"
-    ? await checkMediaProcessing(asset, accessToken)
-    : asset;
+  //   return mediaType === "video"
+  //     ? await checkMediaProcessing(asset, accessToken)
+  //     : asset;
+  return asset;
 };
 
-const publishLinkedInPost = async ({ content, media, author, accessToken }) => {
+const publishLinkedInPost = async ({
+  content,
+  media,
+  author,
+  accessToken,
+  mediaType = null,
+}) => {
   console.log("📢 Publishing LinkedIn post with media:", media);
+
+  // Determine the media category
+  let shareMediaCategory = "NONE"; // Default to text-only
+  if (mediaType && mediaType === "video") {
+    shareMediaCategory = "VIDEO";
+  } else if (mediaType && mediaType === "image") {
+    shareMediaCategory = "IMAGE";
+  }
+
+  console.log(media);
+  console.log(shareMediaCategory);
 
   const postBody = {
     author: author,
@@ -164,7 +183,7 @@ const publishLinkedInPost = async ({ content, media, author, accessToken }) => {
     specificContent: {
       "com.linkedin.ugc.ShareContent": {
         shareCommentary: { text: content },
-        shareMediaCategory: media.length > 0 ? "IMAGE" : "NONE", // ✅ Always include this field
+        shareMediaCategory: shareMediaCategory, // ✅ Always include this field
       },
     },
     visibility: {
