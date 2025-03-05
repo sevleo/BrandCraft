@@ -3,6 +3,8 @@ Built by Creator, for Creators
 
 
 
+- add LinkedIn
+- when image/video uploads, it overrides the date/time
 
 - MARKET
 - DEMO

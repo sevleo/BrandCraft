@@ -124,6 +124,8 @@
           return `instagram-${account.id}`;
         case 'youtube':
           return `youtube-${account.id}`;
+        case 'linkedin':
+          return `linkedin-${account.id}`;
         default:
           return account.platform;
       }
@@ -427,7 +429,9 @@
                                     ? `instagram-${account.id}`
                                     : account.platform === 'youtube'
                                       ? `youtube-${account.id}`
-                                      : account.platform
+                                      : account.platform === 'linkedin'
+                                        ? `linkedin-${account.id}`
+                                        : account.platform
                       )
                     "
                     :onClick="() => togglePlatform(account)"

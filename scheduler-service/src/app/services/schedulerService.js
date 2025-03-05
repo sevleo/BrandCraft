@@ -9,6 +9,7 @@ const tiktokController = require("../controllers/tiktokController");
 const instagramController = require("../controllers/instagramController");
 const mastodonController = require("../controllers/mastodonController");
 const youtubeController = require("../controllers/youtubeController");
+const linkedinController = require("../controllers/linkedinController");
 
 const ScheduledPost = require("../models/scheduledPost");
 const ScheduledPostGroup = require("../models/scheduledPostGroup");
@@ -212,6 +213,13 @@ class SchedulerService {
       });
     } else if (post.platform === "youtube") {
       await youtubeController.postToYoutubeInternal({
+        content: post.content,
+        user,
+        media: mediaFiles,
+        post,
+      });
+    } else if (post.platform === "linkedin") {
+      await linkedinController.postToLinkedinInternal({
         content: post.content,
         user,
         media: mediaFiles,
