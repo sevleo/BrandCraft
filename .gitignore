@@ -12,6 +12,14 @@ yarn-error.log
 /backend/node_modules/
 /backend/.env
 
+# Scheduler Service build output
+/scheduler-service/node_modules/
+/scheduler-service/.env
+
+# Video Processing build output
+/video-processing/node_modules/
+/video-processing/.env
+
 # Docker
 docker-compose.override.yml
 .docker
@@ -138,3 +146,8 @@ hidden_notes.txt
 /scheduler-service/certs
 /scheduler-service/certs/localhost.pem
 /scheduler-service/certs/localhost-key.pem
+
+# Scheduler Service
+/video-processing/certs
+/video-processing/certs/localhost.pem
+/video-processing/certs/localhost-key.pem
