@@ -128,9 +128,9 @@ router.beforeEach(async (to, _, next) => {
   }
 
   // Ensure authentication state is loaded
-  if (!authData.loaded.value) {
-    await verifyAuth();
-  }
+  // if (!authData.loaded.value) {
+  //   await verifyAuth();
+  // }
 
   // Enforce authentication
   if (to.meta.requiresAuth && !authData.signedIn.value) {

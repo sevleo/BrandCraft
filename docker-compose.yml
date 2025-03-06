@@ -45,7 +45,7 @@ services:
   scheduler:
     build: ./scheduler-service
     ports:
-      - "4000:4000"
+      - "4000:4000" # Scheduler
     volumes:
       - ./scheduler-service:/usr/src/app
       - /usr/src/app/node_modules
@@ -54,3 +54,17 @@ services:
     command: npm run dev
     depends_on:
       - backend
+
+  video-processing:
+    build: ./video-processing-service
+    ports:
+      - "4001:4001" # Separate port for the video processing service
+    volumes:
+      - ./video-processing-service:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/tmp:/tmp # Ensuring temp files are stored properly
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    command: npm run dev

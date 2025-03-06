@@ -32,7 +32,7 @@ USER node
 RUN ffmpeg -version
 
 # Expose the application port
-EXPOSE 4000
+EXPOSE 4001
 
 # Start the application
 CMD ["node", "--no-warnings", "src/app.js"]

@@ -14,10 +14,7 @@ const linkedinController = require("../controllers/linkedinController");
 const ScheduledPost = require("../models/scheduledPost");
 const ScheduledPostGroup = require("../models/scheduledPostGroup");
 const User = require("../models/user");
-const {
-  downloadFileFromS3,
-  deleteFileFromS3,
-} = require("../services/s3Service");
+const { downloadFileFromS3, deleteFileFromS3 } = require("./s3Service");
 
 const MediaFile = require("../models/mediaFile");
 

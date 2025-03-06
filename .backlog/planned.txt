@@ -1,8 +1,13 @@
 cBacklog:
 Built by Creator, for Creators
 
-
-
+File upload flow:
+- user uploads file to S3
+- receives key, we use key to create mediaFile in DB
+- mediaFile processingStatus is "pending"
+- scheduled service ignores posts with media files with processingStatus "pending"
+- video-processing service processes video and updates mediaFile processingStatus to "processed"
+- scheduled service processes posts with media files with processingStatus "processed"
 
 
 - when clicking on a new post, and editing platforms, they are overriden by the update
