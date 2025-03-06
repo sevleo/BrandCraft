@@ -2,7 +2,6 @@ import { apiSavePostGroup } from '@/api/postApi';
 import postsStore from '@/utils/postsStore';
 import editorDataStore from '@/utils/editorDataStore';
 import router from '@/router';
-import { errors } from '@/utils/editorValidations';
 
 async function createPostGroup(scheduledTime?: string) {
   // If not on editor, navigate first then reset
