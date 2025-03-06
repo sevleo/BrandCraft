@@ -1321,14 +1321,6 @@ video {
   width: max-content;
 }
 
-.w-\[500px\] {
-  width: 500px;
-}
-
-.w-\[1px\] {
-  width: 1px;
-}
-
 .min-w-\[45px\] {
   min-width: 45px;
 }

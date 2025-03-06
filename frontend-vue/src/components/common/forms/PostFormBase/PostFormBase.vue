@@ -317,7 +317,6 @@
 
   // Debounced save function
   const debouncedSave = () => {
-    console.log('wanna cry');
     // Clear any existing timeout
     editorDataStore.isUserEdit.value = true;
     if (saveTimeout) {

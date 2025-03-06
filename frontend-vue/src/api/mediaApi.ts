@@ -53,6 +53,7 @@ export async function uploadVideoToS3(
   );
 
   const { sessionId } = response.data;
+  console.log(sessionId);
   isSaving.value = false;
 
   // Step 2: Connect to SSE for processing progress

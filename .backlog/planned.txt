@@ -3,6 +3,10 @@ Built by Creator, for Creators
 
 
 
+
+
+- when clicking on a new post, and editing platforms, they are overriden by the update
+
 - add LinkedIn
 - when image/video uploads, it overrides the date/time
 
