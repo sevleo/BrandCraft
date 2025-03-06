@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { updatePassword, setPassword, verifyAuth } from '@/api/authApi';
+  import { updatePassword, setPassword } from '@/api/authApi';
   import DashboardNavigation from '@/components/layout/DashboardNavigation.vue';
   import { onMounted } from 'vue';
   import { useThemeStore } from '@/utils/themeStore';
@@ -87,7 +87,7 @@
         successMessage.value = 'Password set successfully';
         newPassword.value = '';
         confirmPassword.value = '';
-        await verifyAuth();
+        // await verifyAuth();
       } else {
         error.value = result.error;
       }

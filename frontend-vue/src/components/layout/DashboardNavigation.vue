@@ -2,7 +2,7 @@
   import { useRouter } from 'vue-router';
   import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
   import authData from '@/utils/authDataStore';
-  import { logout, verifyAuth } from '@/api/authApi';
+  import { logout } from '@/api/authApi';
   import connectionsDataStore from '@/utils/connectionsDataStore';
   // import { useThemeStore } from '@/utils/themeStore';
   import {
@@ -371,8 +371,7 @@
   }
 
   onMounted(async () => {
-    console.log('onMounted dashboard');
-    await verifyAuth();
+    // await verifyAuth();
     document.addEventListener('click', handleClickOutside);
     await Promise.all([
       postsStore.getAllPostGroups(),
