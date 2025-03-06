@@ -167,32 +167,20 @@
   };
 
   async function handleSave() {
-    try {
-      editorDataStore.isSaving.value = true;
-      const statusChangedDueToErrors = await updatePostGroup();
+    editorDataStore.isSaving.value = true;
+    if (
+      errors.value.length > 0 &&
+      editorDataStore.selectedPost.value.status !== 'draft'
+    ) {
+      editorDataStore.selectedPost.value.status = 'draft';
 
-      // If the status was changed due to validation errors, show a notification
-      if (statusChangedDueToErrors) {
-        // Make sure the button state is updated to match the new status
-        scheduleButtonState.value = 'draft';
-        toast.add({
-          closable: false,
-          severity: 'error',
-          detail: 'Errors detected, changing status to Draft',
-          life: 4000,
-        });
-      }
-    } catch (error: any) {
-      console.error('Save error:', error);
       toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: error?.response?.data?.message || 'Failed to save post',
+        severity: 'success',
+        detail: 'Setting status to Draft',
         life: 3000,
       });
-    } finally {
-      editorDataStore.isSaving.value = false;
     }
+    await updatePostGroup();
   }
 
   const handleDateChange = () => {

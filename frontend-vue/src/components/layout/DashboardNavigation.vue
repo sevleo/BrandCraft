@@ -371,6 +371,7 @@
   }
 
   onMounted(async () => {
+    console.log('onMounted dashboard');
     await verifyAuth();
     document.addEventListener('click', handleClickOutside);
     await Promise.all([

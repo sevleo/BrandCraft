@@ -67,14 +67,10 @@ async function updatePostGroup() {
 
   formData.append('sameContent', 'true');
 
-  // If there are validation errors, force the post to draft status
-  if (errors.value.length > 0) {
-    formData.append('status', 'draft');
-  } else {
-    formData.append('status', editorDataStore.selectedPost.value?.status);
-  }
+  formData.append('status', editorDataStore.selectedPost.value.status);
 
   await apiSavePostGroup(formData, postId);
+  editorDataStore.isSaving.value = false;
 
   // Refresh the post groups
   await postsStore.getAllPostGroups();
@@ -83,24 +79,6 @@ async function updatePostGroup() {
   if (editorDataStore.selectedPost.value?._id) {
     editorDataStore.updateTimestamps(editorDataStore.selectedPost.value._id);
   }
-
-  // Store the original status
-  const originalStatus = editorDataStore.selectedPost.value?.status;
-
-  // Track if status was changed due to validation errors
-  let statusChangedDueToErrors = false;
-
-  if (errors.value.length > 0) {
-    // If the post was previously scheduled, update it to draft in the UI as well
-    if (editorDataStore.selectedPost.value && originalStatus === 'scheduled') {
-      // Update the status in the UI immediately
-      editorDataStore.selectedPost.value.status = 'draft';
-      statusChangedDueToErrors = true;
-    }
-  }
-
-  // Return whether the status was changed due to validation errors
-  return statusChangedDueToErrors;
 }
 
 export { createPostGroup, updatePostGroup };

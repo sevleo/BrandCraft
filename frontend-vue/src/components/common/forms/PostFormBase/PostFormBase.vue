@@ -13,6 +13,7 @@
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
   import ValidationMessages from '@/components/editor/ValidationMessages.vue';
   import { uploadMedia } from '@/api/postApi';
+  import { errors } from '@/utils/editorValidations';
 
   const toast = useToast();
   // const videoRef = ref<HTMLVideoElement | null>(null);
@@ -297,34 +298,26 @@
   );
 
   async function handleSave() {
-    try {
-      editorDataStore.isSaving.value = true;
-      await updatePostGroup();
+    editorDataStore.isSaving.value = true;
 
-      // Refresh the current post data after saving
-      // await editorDataStore.refreshCurrentPost();
+    if (
+      errors.value.length > 0 &&
+      editorDataStore.selectedPost.value.status !== 'draft'
+    ) {
+      editorDataStore.selectedPost.value.status = 'draft';
 
-      // toast.add({
-      //   severity: 'success',
-      //   summary: 'Success',
-      //   detail: 'Post saved successfully',
-      //   life: 3000,
-      // });
-    } catch (error: any) {
-      console.error('Save error:', error);
       toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: error?.response?.data?.message || 'Failed to save post',
+        severity: 'success',
+        detail: 'Setting status to Draft',
         life: 3000,
       });
-    } finally {
-      editorDataStore.isSaving.value = false;
     }
+    await updatePostGroup();
   }
 
   // Debounced save function
   const debouncedSave = () => {
+    console.log('wanna cry');
     // Clear any existing timeout
     editorDataStore.isUserEdit.value = true;
     if (saveTimeout) {
