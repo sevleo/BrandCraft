@@ -6,10 +6,18 @@
     Trash2,
     Check,
     Loader2,
+    Video,
+    CircleAlert,
   } from 'lucide-vue-next';
+  import { useToast } from 'primevue';
+
   import { ref, watch, onMounted, onUnmounted } from 'vue';
   import editorDataStore from '@/utils/editorDataStore';
   import { deleteMedia } from '@/api/postApi';
+  import { uploadMedia } from '@/api/postApi';
+  import { uploadVideoToS3 } from '@/api/mediaApi';
+
+  const toast = useToast();
 
   const isHoveringVideo = ref(false);
   const isVideoPlaying = ref(false);
@@ -26,6 +34,8 @@
   const deletingMediaIndex = ref<number | null>(null);
   const isDeletingMedia = ref<boolean>(false);
 
+  const showUploadInfo = ref(false);
+
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -40,6 +50,178 @@
     handleSave: () => void;
     readonly?: boolean;
   }>();
+
+  const handlePhotoUpload = () => {
+    if (editorDataStore.currentMediaType.value === 'video') {
+      toast.add({
+        severity: 'error',
+        detail: 'Remove the video first.',
+        life: 3000,
+      });
+      return;
+    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.onchange = handleMediaSelect;
+    input.click();
+  };
+
+  const handleVideoUpload = () => {
+    if (editorDataStore.currentMediaType.value === 'image') {
+      toast.add({
+        severity: 'error',
+        detail: 'Remove the images first.',
+        life: 3000,
+      });
+      return;
+    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'video/*';
+    input.multiple = false;
+    input.onchange = handleMediaSelect;
+    input.click();
+  };
+
+  async function handleMediaSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const files = Array.from(input.files);
+      const isVideo = input.accept.includes('video');
+
+      // Set uploading state immediately
+      editorDataStore.isUploading.value = true;
+
+      // If it's a video, only allow one video per post
+      if (isVideo) {
+        if (editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0) {
+          toast.add({
+            severity: 'warn',
+            summary: 'Media limit exceeded',
+            detail: 'You can only add one video per post',
+            life: 3000,
+          });
+          editorDataStore.isUploading.value = false;
+          return;
+        }
+        const videoFile = files[0];
+        if (videoFile.size > 512 * 1024 * 1024) {
+          // 512MB limit
+          toast.add({
+            severity: 'error',
+            summary: 'File too large',
+            detail: 'Video file size must be less than 512MB',
+            life: 3000,
+          });
+          editorDataStore.isUploading.value = false;
+          return;
+        }
+
+        const url = URL.createObjectURL(videoFile);
+        editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
+        editorDataStore.selectedMedia.value = [videoFile];
+        editorDataStore.currentMediaType.value = 'video';
+
+        try {
+          // Start upload to S3
+          editorDataStore.uploadProgress.value = 0;
+          editorDataStore.isSaving.value = true;
+
+          await uploadVideoToS3(
+            videoFile,
+            (progress) => {
+              editorDataStore.uploadProgress.value = progress;
+            },
+            editorDataStore.isSaving
+          );
+
+          // Refresh the current post data to ensure we have the latest media files
+          await editorDataStore.refreshCurrentPost();
+
+          // Clear the selected media array
+          editorDataStore.selectedMedia.value = [];
+
+          toast.add({
+            severity: 'success',
+            summary: 'Upload complete',
+            detail: 'Video uploaded successfully',
+            life: 3000,
+          });
+        } catch (error) {
+          console.error('Failed to upload video:', error);
+          toast.add({
+            severity: 'error',
+            summary: 'Upload failed',
+            detail: 'Failed to upload video. Please try again.',
+            life: 3000,
+          });
+        } finally {
+          editorDataStore.isUploading.value = false;
+          editorDataStore.isSaving.value = false;
+        }
+        return;
+      }
+
+      // For images, keep existing logic with 4 images max
+      const totalAllowedMedia = 4;
+      const currentMediaCount =
+        editorDataStore.selectedPost.value.mediaPreviewUrls.length;
+      const remainingSlots = totalAllowedMedia - currentMediaCount;
+
+      if (remainingSlots <= 0) {
+        toast.add({
+          severity: 'warn',
+          summary: 'Maximum media limit',
+          detail: 'You can only add up to 4 media files per post',
+          life: 3000,
+        });
+        editorDataStore.isUploading.value = false;
+        return;
+      }
+
+      const newFiles = files.slice(0, remainingSlots);
+      editorDataStore.selectedMedia.value = newFiles;
+      editorDataStore.currentMediaType.value = 'image';
+
+      try {
+        editorDataStore.isSaving.value = true;
+        editorDataStore.isUploading.value = true;
+
+        // Get the post ID
+        const postId = editorDataStore.selectedPost.value._id;
+        const selectedMedia = editorDataStore.selectedMedia.value;
+
+        // Upload the media files
+        await uploadMedia(postId, selectedMedia);
+
+        // Don't update local state here - just refresh the post data
+        await editorDataStore.refreshCurrentPost();
+
+        // Clear the selected media array
+        editorDataStore.selectedMedia.value = [];
+
+        toast.add({
+          severity: 'success',
+          summary: 'Media uploaded',
+          detail: 'Media files uploaded successfully',
+          life: 3000,
+        });
+      } catch (error) {
+        console.error('Error uploading media:', error);
+        toast.add({
+          severity: 'error',
+          summary: 'Upload failed',
+          detail: 'Failed to upload media files. Please try again.',
+          life: 3000,
+        });
+      } finally {
+        editorDataStore.isUploading.value = false;
+        editorDataStore.isSaving.value = false;
+      }
+    }
+  }
 
   // Handle video load
   const handleVideoLoad = () => {
@@ -438,7 +620,139 @@
             alt="Preview"
           />
         </div>
+        <div
+          v-if="editorDataStore.selectedPost.value.mediaPreviewUrls.length < 4"
+        >
+          <div
+            class="group flex cursor-pointer flex-col items-center rounded-[10px] bg-gray-100 p-[10px] hover:bg-gray-200"
+            @click="handlePhotoUpload"
+          >
+            <p class="text-gray-600 group-hover:text-black">Add images</p>
+            <button
+              class="flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
+            >
+              <ImageIcon
+                class="h-10 w-10 stroke-gray-500 stroke-[1px] group-hover:stroke-black"
+              />
+            </button>
+          </div>
+        </div>
       </template>
+
+      <div
+        v-if="
+          !editorDataStore.selectedPost.value.mediaPreviewUrls.length &&
+          !editorDataStore.selectedMedia.value.length
+        "
+        class="flex flex-col items-center"
+      >
+        <div class="mb-[20px] flex items-center justify-center gap-[10px]">
+          <div class="text-[16px] text-gray-600">Upload media</div>
+          <CircleAlert
+            @click="showUploadInfo = true"
+            class="h-6 w-6 cursor-pointer stroke-gray-600 stroke-[1px] text-red-500 hover:stroke-black"
+          />
+          <div
+            v-if="showUploadInfo"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px]"
+          >
+            <div class="w-[500px] rounded-lg bg-[#efefef] p-6 dark:bg-gray-800">
+              <h3 class="mb-4 text-lg font-semibold">Upload Guidelines</h3>
+              <div class="space-y-3 text-gray-700 dark:text-gray-300">
+                <p><strong>We support images and videos for upload.</strong></p>
+
+                <h3 class="font-semibold">📹 Video Requirements:</h3>
+                <ul class="list-disc pl-5">
+                  <li>
+                    Supported ratios: <strong>9:16, 16:9, 1:1, 4:3</strong>
+                  </li>
+                  <li>Format: <strong>MP4</strong></li>
+                </ul>
+
+                <h3 class="font-semibold">🖼 Image Requirements:</h3>
+                <ul class="list-disc pl-5">
+                  <li>All aspect ratios accepted</li>
+                  <li>Up to <strong>4 images</strong></li>
+                  <li>Automatically optimized for platforms</li>
+                  <li>Formats: <strong>JPG, PNG</strong></li>
+                </ul>
+
+                <h3 class="font-semibold">📏 File Size Limit:</h3>
+                <ul class="list-disc pl-5">
+                  <li>Maximum upload size: <strong>100MB</strong></li>
+                  <li>
+                    Need to compress? Try this tool:
+                    <a
+                      href="https://www.freeconvert.com/video-compressor"
+                      target="_blank"
+                      class="text-blue-600 hover:underline"
+                      >Reduce file size</a
+                    >
+                  </li>
+                </ul>
+              </div>
+
+              <div class="mt-6 flex justify-end">
+                <button
+                  @click="showUploadInfo = false"
+                  class="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                >
+                  Got it
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-[50px]">
+          <div
+            class="group flex cursor-pointer flex-col items-center rounded-[10px] bg-gray-100 p-[10px] hover:bg-gray-200"
+            @click="handleVideoUpload"
+          >
+            <p class="text-gray-600 group-hover:text-black">
+              Video: 100MB, MP4
+            </p>
+            <button
+              class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
+            >
+              <Video
+                class="h-10 w-10 stroke-gray-500 stroke-[1px] group-hover:stroke-black"
+              ></Video>
+            </button>
+          </div>
+          <div
+            class="group flex cursor-pointer flex-col items-center rounded-[10px] bg-gray-100 p-[10px] hover:bg-gray-200"
+            @click="handlePhotoUpload"
+          >
+            <p class="text-gray-600 group-hover:text-black">
+              Image: up to 4 images
+            </p>
+            <button
+              class="flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
+            >
+              <ImageIcon
+                class="h-10 w-10 stroke-gray-500 stroke-[1px] group-hover:stroke-black"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="
+          props.currentMediaType === 'video' &&
+          editorDataStore.isUploading.value === false &&
+          !props.readonly
+        "
+        class="mt-[20px] flex items-center justify-between gap-4"
+      >
+        <button
+          @click="openCoverModal"
+          class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+        >
+          <ImageIcon :size="16" />
+          Set Cover Image
+        </button>
+      </div>
 
       <!-- Loading Spinner -->
       <div
@@ -500,23 +814,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div
-        v-if="
-          props.currentMediaType === 'video' &&
-          editorDataStore.isUploading.value === false &&
-          !props.readonly
-        "
-        class="mt-[20px] flex items-center justify-between gap-4"
-      >
-        <button
-          @click="openCoverModal"
-          class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-        >
-          <ImageIcon :size="16" />
-          Set Cover Image
-        </button>
       </div>
     </div>
   </div>

@@ -2,7 +2,7 @@ cBacklog:
 Built by Creator, for Creators
 
 
-
+- remove video processing and add warnings
 
 
 - when clicking on a new post, and editing platforms, they are overriden by the update

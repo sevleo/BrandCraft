@@ -2,12 +2,12 @@
   import { RouterView } from 'vue-router';
   import Toast from 'primevue/toast';
   import { onMounted } from 'vue';
-  // import { useThemeStore } from '@/utils/themeStore';
+  import { useThemeStore } from '@/utils/themeStore';
 
-  // const themeStore = useThemeStore();
+  const themeStore = useThemeStore();
 
   onMounted(() => {
-    // themeStore.initializeTheme();
+    themeStore.initializeTheme();
   });
 </script>
 

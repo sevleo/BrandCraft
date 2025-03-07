@@ -2,17 +2,15 @@
   import { ref, onMounted, nextTick, watch } from 'vue';
   import { useToast } from 'primevue';
   import editorDataStore from '@/utils/editorDataStore';
-  import { Loader2, Smile, Image as ImageIcon, Video } from 'lucide-vue-next';
+  import { Loader2, Smile } from 'lucide-vue-next';
   import { updatePostGroup } from '@/helpers/savePostGroup';
   import 'emoji-picker-element';
-  import { uploadVideoToS3 } from '@/api/mediaApi';
   import { getCreatorInfo } from '@api/tiktokApi';
   import TikTokPresets from '@/components/common/forms/PostFormBase/TikTokPresets.vue';
   import InstagramPresets from '@/components/common/forms/PostFormBase/InstagramPresets.vue';
   import PreviewComponent from '@/components/common/forms/PostFormBase/PreviewComponent.vue';
   import YouTubePresets from '@/components/common/forms/PostFormBase/YouTubePresets.vue';
   import ValidationMessages from '@/components/editor/ValidationMessages.vue';
-  import { uploadMedia } from '@/api/postApi';
   import { errors } from '@/utils/editorValidations';
 
   const toast = useToast();
@@ -25,178 +23,6 @@
   const status = ref<string>(
     editorDataStore.selectedPost.value?.status || 'draft'
   );
-
-  async function handleMediaSelect(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      const files = Array.from(input.files);
-      const isVideo = input.accept.includes('video');
-
-      // Set uploading state immediately
-      editorDataStore.isUploading.value = true;
-
-      // If it's a video, only allow one video per post
-      if (isVideo) {
-        if (editorDataStore.selectedPost.value.mediaPreviewUrls.length > 0) {
-          toast.add({
-            severity: 'warn',
-            summary: 'Media limit exceeded',
-            detail: 'You can only add one video per post',
-            life: 3000,
-          });
-          editorDataStore.isUploading.value = false;
-          return;
-        }
-        const videoFile = files[0];
-        if (videoFile.size > 512 * 1024 * 1024) {
-          // 512MB limit
-          toast.add({
-            severity: 'error',
-            summary: 'File too large',
-            detail: 'Video file size must be less than 512MB',
-            life: 3000,
-          });
-          editorDataStore.isUploading.value = false;
-          return;
-        }
-
-        const url = URL.createObjectURL(videoFile);
-        editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
-        editorDataStore.selectedMedia.value = [videoFile];
-        editorDataStore.currentMediaType.value = 'video';
-
-        try {
-          // Start upload to S3
-          editorDataStore.uploadProgress.value = 0;
-          editorDataStore.isSaving.value = true;
-
-          await uploadVideoToS3(
-            videoFile,
-            (progress) => {
-              editorDataStore.uploadProgress.value = progress;
-            },
-            editorDataStore.isSaving
-          );
-
-          // Refresh the current post data to ensure we have the latest media files
-          await editorDataStore.refreshCurrentPost();
-
-          // Clear the selected media array
-          editorDataStore.selectedMedia.value = [];
-
-          toast.add({
-            severity: 'success',
-            summary: 'Upload complete',
-            detail: 'Video uploaded successfully',
-            life: 3000,
-          });
-        } catch (error) {
-          console.error('Failed to upload video:', error);
-          toast.add({
-            severity: 'error',
-            summary: 'Upload failed',
-            detail: 'Failed to upload video. Please try again.',
-            life: 3000,
-          });
-        } finally {
-          editorDataStore.isUploading.value = false;
-          editorDataStore.isSaving.value = false;
-        }
-        return;
-      }
-
-      // For images, keep existing logic with 4 images max
-      const totalAllowedMedia = 4;
-      const currentMediaCount =
-        editorDataStore.selectedPost.value.mediaPreviewUrls.length;
-      const remainingSlots = totalAllowedMedia - currentMediaCount;
-
-      if (remainingSlots <= 0) {
-        toast.add({
-          severity: 'warn',
-          summary: 'Maximum media limit',
-          detail: 'You can only add up to 4 media files per post',
-          life: 3000,
-        });
-        editorDataStore.isUploading.value = false;
-        return;
-      }
-
-      const newFiles = files.slice(0, remainingSlots);
-      editorDataStore.selectedMedia.value = newFiles;
-      editorDataStore.currentMediaType.value = 'image';
-
-      try {
-        editorDataStore.isSaving.value = true;
-        editorDataStore.isUploading.value = true;
-
-        // Get the post ID
-        const postId = editorDataStore.selectedPost.value._id;
-        const selectedMedia = editorDataStore.selectedMedia.value;
-
-        // Upload the media files
-        await uploadMedia(postId, selectedMedia);
-
-        // Don't update local state here - just refresh the post data
-        await editorDataStore.refreshCurrentPost();
-
-        // Clear the selected media array
-        editorDataStore.selectedMedia.value = [];
-
-        toast.add({
-          severity: 'success',
-          summary: 'Media uploaded',
-          detail: 'Media files uploaded successfully',
-          life: 3000,
-        });
-      } catch (error) {
-        console.error('Error uploading media:', error);
-        toast.add({
-          severity: 'error',
-          summary: 'Upload failed',
-          detail: 'Failed to upload media files. Please try again.',
-          life: 3000,
-        });
-      } finally {
-        editorDataStore.isUploading.value = false;
-        editorDataStore.isSaving.value = false;
-      }
-    }
-  }
-
-  const handlePhotoUpload = () => {
-    if (editorDataStore.currentMediaType.value === 'video') {
-      toast.add({
-        severity: 'error',
-        detail: 'Remove the video first.',
-        life: 3000,
-      });
-      return;
-    }
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.multiple = true;
-    input.onchange = handleMediaSelect;
-    input.click();
-  };
-
-  const handleVideoUpload = () => {
-    if (editorDataStore.currentMediaType.value === 'image') {
-      toast.add({
-        severity: 'error',
-        detail: 'Remove the images first.',
-        life: 3000,
-      });
-      return;
-    }
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'video/*';
-    input.multiple = false;
-    input.onchange = handleMediaSelect;
-    input.click();
-  };
 
   const showEmojiPicker = ref(false);
   const emojiPickerRef = ref<HTMLDivElement | null>(null);
@@ -419,22 +245,7 @@
                         class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
                       />
                     </button>
-                    <button
-                      @click="handlePhotoUpload"
-                      class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
-                    >
-                      <ImageIcon
-                        class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
-                      />
-                    </button>
-                    <button
-                      @click="handleVideoUpload"
-                      class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
-                    >
-                      <Video
-                        class="h-5 w-5 stroke-gray-500 group-hover:stroke-black"
-                      ></Video>
-                    </button>
+
                     <!-- <button
                       class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
                     >
@@ -498,11 +309,6 @@
                   class="preview-container overflow-hidden rounded-[10px] bg-[white] dark:bg-[#313131]"
                 >
                   <PreviewComponent
-                    v-if="
-                      editorDataStore.selectedPost.value.mediaPreviewUrls
-                        .length > 0 ||
-                      editorDataStore.selectedMedia.value.length > 0
-                    "
                     :media-preview-urls="
                       editorDataStore.selectedPost.value.mediaPreviewUrls
                     "

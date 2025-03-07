@@ -10,7 +10,7 @@ primary_region = 'sin'
   dockerfile = './Dockerfile'
 
   [build.args]
-    VITE_BACKEND_URL_ARG = 'https://brandcraft-backend.fly.dev'
+    VITE_BACKEND_URL_ARG = 'https://brandcraft-latest.onrender.com'
     VITE_FRONTEND_NUXT_URL = 'https://brandcraft.art'
     VITE_NODE_ENV = 'production'
 

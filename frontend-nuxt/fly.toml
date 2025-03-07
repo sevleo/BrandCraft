@@ -10,7 +10,7 @@ primary_region = 'sin'
   dockerfile = './Dockerfile'
 
   [build.args]
-    NUXT_PUBLIC_BACKEND_URL = 'https://brandcraft-backend.fly.dev'
+    NUXT_PUBLIC_BACKEND_URL = 'https://brandcraft-latest.onrender.com'
     NUXT_PUBLIC_FRONTEND_URL = 'https://app.brandcraft.art'
     NUXT_PUBLIC_FRONTEND_DASHBOARD_URL = 'https://app.brandcraft.art/dashboard'
     

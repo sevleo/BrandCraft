@@ -11,7 +11,8 @@ export const useThemeStore = defineStore('theme', {
     initializeTheme() {
       const savedTheme = localStorage.getItem(THEME_KEY);
       if (savedTheme === 'light' || savedTheme === 'dark') {
-        this.currentTheme = savedTheme;
+        // this.currentTheme = savedTheme;
+        this.currentTheme = 'light';
       } else {
         // const prefersDark = window.matchMedia(
         //   '(prefers-color-scheme: dark)'
