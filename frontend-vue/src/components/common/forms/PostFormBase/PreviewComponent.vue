@@ -172,7 +172,6 @@
 
           toast.add({
             severity: 'success',
-            summary: 'Upload complete',
             detail: 'Video uploaded successfully',
             life: 3000,
           });
@@ -736,7 +735,7 @@
             @click="handleVideoUpload"
           >
             <p class="text-gray-600 group-hover:text-black">
-              Video: 100MB, MP4
+              Video: 100MB, MP4/MOV
             </p>
             <button
               class="group flex items-center rounded-full px-1 py-1 text-sm text-gray-700"
