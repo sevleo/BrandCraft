@@ -352,7 +352,7 @@ Sat Feb 28 DAY 103
 
 
 
-Sun Feb 29 DAY 104
+Sun Feb 28 DAY 104
 - add Posted View for PostBaseForm
 - add Posted view (read only)
 - update dashboard navigation styles
@@ -360,3 +360,18 @@ Sun Feb 29 DAY 104
 
 Mon Mar 1 DAY 105
 - DEPLOY
+
+Tue Mar 2 DAY 106
+
+Wed Mar 3 DAY 107
+- add LinkedIn
+
+Thur Mar 4 DAY 108
+
+Fri Mar 5 DAY 109
+
+Sat Mar 8 DAY 110
+- disable processing
+- test uploading videos
+- fix error messages
+- save video metadata on media record in DB

@@ -461,7 +461,7 @@
 
   onMounted(() => {
     // Start checking video availability
-    retryInterval.value = setInterval(checkVideoAvailability, 1000);
+    // retryInterval.value = setInterval(checkVideoAvailability, 1000);
   });
 
   // Watch for changes in media type to restart video checks
@@ -647,6 +647,7 @@
           />
         </div>
         <div
+          class="mt-[10px]"
           v-if="editorDataStore.selectedPost.value.mediaPreviewUrls.length < 4"
         >
           <div
