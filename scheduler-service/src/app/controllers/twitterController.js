@@ -18,9 +18,10 @@ async function uploadImage(userClient, file) {
 
 // Helper function to upload video
 async function uploadVideo(userClient, file) {
+  console.log(file);
   const mediaData = fs.readFileSync(file.path);
   return userClient.v1.uploadMedia(mediaData, {
-    mimeType: file.mimetype,
+    mimeType: file.mimetype || "video/mp4", // Ensure the MIME type is set
   });
 }
 

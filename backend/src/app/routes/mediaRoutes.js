@@ -48,7 +48,7 @@ const postMediaUpload = multer({
   },
 });
 
-// New routes for post media management
+// Save image(s)
 router.post(
   "/post/:postGroupId/upload",
   authenticateWithRefresh,
@@ -56,12 +56,14 @@ router.post(
   mediaController.uploadMedia
 );
 
+// Delete image/video
 router.delete(
   "/post/media/:mediaId",
   authenticateWithRefresh,
   mediaController.deleteMedia
 );
 
+// Not using
 router.post(
   "/generate-upload-url",
   authenticateWithRefresh,
@@ -132,7 +134,7 @@ router.get("/processing-progress/:id", (req, res) => {
   });
 });
 
-// Process and upload MOV video
+// Save video
 router.post(
   "/process-video",
   authenticateWithRefresh,
