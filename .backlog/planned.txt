@@ -1,8 +1,10 @@
 Backlog:
 
+- update Nuxt to show new articles
+- implement websockets instead of SSE
+  (check if we can use PR)
 
 - add 3 sec minimum video duration
-
 
 
 - when clicking on a new post, and editing platforms, they are overriden by the update
@@ -12,10 +14,11 @@ Backlog:
 - MARKET
 - DEMO
 
-
+- add warning when selecting twitter platform
 - add validation for tiktok to select viewer
+- add warning if video format is wrong
 
-- implement websockets instead of SSE
+
 
 
 - once post is "Pending" (picked up by scheduler), make it impossible to update it on the front end
