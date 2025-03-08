@@ -230,15 +230,15 @@ If your software can interact with users remotely through a computer network, yo
 
 You should also get your employer (if you work as a programmer) or school, if any, to sign a “copyright disclaimer” for the program, if necessary. For more information on this, and how to apply and follow the GNU AGPL, see <http://www.gnu.org/licenses/>.
 
-### Additional Terms: Attribution Requirement
+Additional Terms: Attribution Requirement
 
-(As permitted under Section 7 of AGPL v3, the following additional terms apply:)
+As permitted under Section 7 of AGPL v3, the following additional terms apply:
 
 If you modify and distribute this software or provide it as a service, you must:
 
-- **Retain this copyright notice** in all copies of the source code.
-- **Provide visible credit** in the UI, documentation, or an "About" section, stating:
+- Retain this copyright notice in all copies of the source code.
+- Provide visible credit in the UI, documentation, or an "About" section, stating:
   > "This software is based on BrandCraft by Sev Leo: https://github.com/sevleo/BrandCraft"
-- **Link to the original repository** in any publicly available deployment.
+- Link to the original repository (https://github.com/sevleo/BrandCraft) in any publicly available deployment.
 
 These additional terms ensure proper attribution without restricting any rights granted under AGPL v3.
