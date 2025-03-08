@@ -147,11 +147,15 @@ const checkMediaStatus = async (containerId, user, post, connection) => {
       throw new Error("MEDIA_PROCESSING");
 
     case "ERROR":
-      throw new Error(
-        response.data.error?.error_user_msg ||
-          response.data.error?.message ||
-          "Unknown Instagram API error"
-      );
+      console.log(response);
+      const errorMessage = response.data.error_message;
+
+      switch (errorMessage) {
+        case "INVALID_ASPEC_RATIO":
+          throw "Invalid aspect ratio";
+        default:
+          throw new Error(errorMessage || "Unknown Instagram API error");
+      }
 
     default:
       throw new Error("Status: " + status);

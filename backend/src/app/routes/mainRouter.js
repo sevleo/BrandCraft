@@ -51,7 +51,7 @@ router.use("/performance-test", async (req, res) => {
     res.json({
       message: "Performance test complete",
       queryTime: queryTime,
-      user: user._id,
+      user: user?._id || user,
     });
 
     console.log(

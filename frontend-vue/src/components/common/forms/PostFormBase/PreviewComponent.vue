@@ -51,29 +51,29 @@
     readonly?: boolean;
   }>();
 
-  function extractVideoMetadata(file: File) {
-    return new Promise((resolve, reject) => {
-      const video = document.createElement('video');
+  // function extractVideoMetadata(file: File) {
+  //   return new Promise((resolve, reject) => {
+  //     const video = document.createElement('video');
 
-      video.preload = 'metadata';
-      video.onloadedmetadata = () => {
-        resolve({
-          format: file.type, // Example: "video/mp4"
-          duration: video.duration, // Video duration in seconds
-          width: video.videoWidth,
-          height: video.videoHeight,
-          aspectRatio: video.videoWidth / video.videoHeight,
-        });
-        URL.revokeObjectURL(video.src);
-      };
+  //     video.preload = 'metadata';
+  //     video.onloadedmetadata = () => {
+  //       resolve({
+  //         format: file.type, // Example: "video/mp4"
+  //         duration: video.duration, // Video duration in seconds
+  //         width: video.videoWidth,
+  //         height: video.videoHeight,
+  //         aspectRatio: video.videoWidth / video.videoHeight,
+  //       });
+  //       URL.revokeObjectURL(video.src);
+  //     };
 
-      video.onerror = () => {
-        reject(new Error('Failed to load video metadata.'));
-      };
+  //     video.onerror = () => {
+  //       reject(new Error('Failed to load video metadata.'));
+  //     };
 
-      video.src = URL.createObjectURL(file);
-    });
-  }
+  //     video.src = URL.createObjectURL(file);
+  //   });
+  // }
 
   const handlePhotoUpload = () => {
     if (editorDataStore.currentMediaType.value === 'video') {
@@ -149,8 +149,8 @@
           editorDataStore.selectedMedia.value = [videoFile];
           editorDataStore.currentMediaType.value = 'video';
 
-          const metadata = await extractVideoMetadata(videoFile);
-          console.log('Video Metadata:', metadata);
+          // const metadata = await extractVideoMetadata(videoFile);
+          // console.log('Video Metadata:', metadata);
 
           // Start upload to S3
           editorDataStore.uploadProgress.value = 0;

@@ -92,7 +92,7 @@ exports.postTikTokVideoInternal = async ({
         errorMessage = errorData || "TikTok API error";
       }
 
-      throw new Error(errorMessage);
+      throw errorMessage;
     }
   }
 
@@ -137,30 +137,33 @@ const checkMediaStatus = async (publish_id, accessToken, post) => {
       throw new Error("MEDIA_PROCESSING");
 
     case "FAILED":
-      post.status = "failed";
-      await post.save();
       const failReason = statusResponse.data.data.fail_reason;
 
       // Format fail reason more nicely
       let formattedFailReason = failReason;
 
-      if (typeof failReason === "object") {
-        // Check for specific error codes and provide more user-friendly messages
-        if (
-          failReason.code ===
-          "unaudited_client_can_only_post_to_private_accounts"
-        ) {
+      switch (failReason) {
+        case "frame_rate_check_failed":
+          formattedFailReason = "Video has low frame rate. Minimum is 23 FPS.";
+          break;
+        case "file_format_check_failed":
           formattedFailReason =
-            "Your TikTok app is unaudited. Posts can only be made to private accounts.";
-        } else {
-          // For other error types, include code and message in a readable format
-          formattedFailReason = failReason.code
-            ? `${failReason.code}: ${failReason.message || ""}`
-            : JSON.stringify(failReason);
-        }
+            "Video format is not supported. Please upload a video in .mp4 format.";
+          break;
+        case "duration_check_failed":
+          formattedFailReason = "Video duration is too long.";
+          break;
+        case "video_pull_failed":
+        case "photo_pull_failed":
+          formattedFailReason =
+            "Internal TikTok error: failed to pull video or photo. Retry recommended.";
+          break;
+        default:
+          formattedFailReason = failReason;
+          break;
       }
 
-      throw new Error(formattedFailReason);
+      throw formattedFailReason;
 
     default:
       throw new Error("Status: " + status);

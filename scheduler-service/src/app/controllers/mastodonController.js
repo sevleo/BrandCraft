@@ -164,6 +164,22 @@ const checkMediaStatus = async (mediaId, accessToken, post) => {
     }
   );
 
+  await post.populate("postGroupId");
+
+  const currentTime = new Date();
+  const scheduledTime = new Date(post.postGroupId.scheduledTime);
+
+  // Check if more than 5 minutes (300,000 ms) have passed
+  if (currentTime - scheduledTime > 300000) {
+    console.log("Media processing took too long. Marking as failed.");
+
+    post.status = "failed";
+    post.errorMessage = "Could not finish uploading video";
+    await post.save();
+
+    throw "Media processing took too long, marking as failed.";
+  }
+
   if (response.data.url) {
     console.log("finished");
     return true;

@@ -16,11 +16,19 @@ const mediaFileSchema = new mongoose.Schema(
     urlPure: { type: String },
     uploadUrl: { type: String },
     fileName: { type: String },
-    mimeType: { type: String },
-    size: { type: Number },
-    type: { type: String, enum: ["image", "video"] },
     filePath: { type: String }, // Local file path (new field)
-
+    type: { type: String, enum: ["image", "video"] },
+    metadata: {
+      size: { type: Number },
+      mimeType: { type: String },
+      width: { type: Number, default: 0 },
+      height: { type: Number, default: 0 },
+      aspectRatio: { type: String, default: "unknown" },
+      frameRate: { type: Number, default: 0 },
+      codecName: { type: String, default: "unknown" },
+      bitRate: { type: Number, default: 0 },
+      duration: { type: Number, default: 0 },
+    },
     addedAt: { type: Date, default: Date.now },
   },
   {

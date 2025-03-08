@@ -157,10 +157,15 @@ class SchedulerService {
       console.error(`Error processing post ${post._id}: ${error}`);
       console.log(error);
 
+      const errorMessage =
+        typeof error === "object" && error.message
+          ? error.message
+          : String(error);
+
       // Don't mark as failed if it's just media processing
-      if (error.message !== "MEDIA_PROCESSING") {
+      if (errorMessage !== "MEDIA_PROCESSING") {
         post.status = "failed";
-        post.errorMessage = error;
+        post.errorMessage = errorMessage; // ✅ Always a clean string
         await post.save();
       }
     }

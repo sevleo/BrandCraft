@@ -13,6 +13,7 @@ function validateAccessToken(req) {
 
 // Webhook controller function
 const webhook = async (req, res) => {
+  console.log("Received Outrank Webhook");
   try {
     // Validate access token
     if (!validateAccessToken(req)) {

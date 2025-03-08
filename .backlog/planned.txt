@@ -20,9 +20,12 @@ Backlog:
 - DEMO
 
 
+- add validation for tiktok to select viewer
+
 - implement websockets instead of SSE
 
 
+- once post is "Pending" (picked up by scheduler), make it impossible to update it on the front end
 
 - add title
 - add notes

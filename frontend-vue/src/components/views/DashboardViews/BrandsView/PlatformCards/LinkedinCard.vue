@@ -8,7 +8,6 @@
   const connect = async () => {
     connectionsDataStore.isConnectingLinkedin.value = true;
     const { authUrl } = await connectLinkedin();
-    console.log(authUrl);
     window.location.href = authUrl;
   };
 
