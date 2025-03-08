@@ -692,7 +692,7 @@
                   <li>
                     Supported ratios: <strong>9:16, 16:9, 1:1, 4:3</strong>
                   </li>
-                  <li>Format: <strong>MP4</strong></li>
+                  <li>Format: <strong>MP4, MOV</strong></li>
                 </ul>
 
                 <h3 class="font-semibold">🖼 Image Requirements:</h3>
