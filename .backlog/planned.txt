@@ -1,8 +1,14 @@
-cBacklog:
-Built by Creator, for Creators
+Backlog:
 
 
 - remove video processing and add warnings
+- disable processing
+- dont allow to upload .mov
+- test uploading videos
+- if uploading is ok, update frontend (add warnings for .mov, and if possible, let's also add a warning about video quality/frames/ratio)
+- add 3 sec minimum video duration
+- potentially save video metadata on media record in DB
+- 
 
 
 - when clicking on a new post, and editing platforms, they are overriden by the update

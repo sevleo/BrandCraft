@@ -14,6 +14,7 @@ const instagramRoutes = require("./instagramRoutes");
 const youtubeRoutes = require("./youtubeRoutes");
 const mastodonRoutes = require("./mastodonRoutes");
 const linkedinRoutes = require("./linkedinRoutes");
+const outrankRoutes = require("./outrankRoutes");
 
 const adminRoutes = require("./adminRoutes");
 const connectedAccountsRoutes = require("./connectedAccountsRoutes");
@@ -34,6 +35,8 @@ router.use("/auth/youtube", youtubeRoutes);
 router.use("/auth/mastodon", mastodonRoutes);
 router.use("/auth/linkedin", linkedinRoutes);
 router.use("/admin", adminRoutes);
+
+router.use("/outrank", outrankRoutes);
 
 router.use("/performance-test", async (req, res) => {
   try {

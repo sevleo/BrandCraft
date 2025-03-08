@@ -51,6 +51,30 @@
     readonly?: boolean;
   }>();
 
+  function extractVideoMetadata(file: File) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        resolve({
+          format: file.type, // Example: "video/mp4"
+          duration: video.duration, // Video duration in seconds
+          width: video.videoWidth,
+          height: video.videoHeight,
+          aspectRatio: video.videoWidth / video.videoHeight,
+        });
+        URL.revokeObjectURL(video.src);
+      };
+
+      video.onerror = () => {
+        reject(new Error('Failed to load video metadata.'));
+      };
+
+      video.src = URL.createObjectURL(file);
+    });
+  }
+
   const handlePhotoUpload = () => {
     if (editorDataStore.currentMediaType.value === 'video') {
       toast.add({
@@ -107,24 +131,27 @@
           return;
         }
         const videoFile = files[0];
-        if (videoFile.size > 512 * 1024 * 1024) {
-          // 512MB limit
+        if (videoFile.size > 100 * 1024 * 1024) {
+          // 100MB limit
           toast.add({
             severity: 'error',
             summary: 'File too large',
-            detail: 'Video file size must be less than 512MB',
+            detail: 'Video file size must be less than 100MB',
             life: 3000,
           });
           editorDataStore.isUploading.value = false;
           return;
         }
 
-        const url = URL.createObjectURL(videoFile);
-        editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
-        editorDataStore.selectedMedia.value = [videoFile];
-        editorDataStore.currentMediaType.value = 'video';
-
         try {
+          const url = URL.createObjectURL(videoFile);
+          editorDataStore.selectedPost.value.mediaPreviewUrls = [url];
+          editorDataStore.selectedMedia.value = [videoFile];
+          editorDataStore.currentMediaType.value = 'video';
+
+          const metadata = await extractVideoMetadata(videoFile);
+          console.log('Video Metadata:', metadata);
+
           // Start upload to S3
           editorDataStore.uploadProgress.value = 0;
           editorDataStore.isSaving.value = true;
