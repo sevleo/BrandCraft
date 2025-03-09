@@ -6,6 +6,15 @@ Backlog:
 
 - add 3 sec minimum video duration
 
+- make a 2-months future post limit
+
+I'm not fond of the instagram / Facebook set up. I would like to see being able to do Facebook alone and more than just reels. Regular posts on both FB and Instagram would be ideal.
+
+Bluesky works ok. I noticed that putting a url in the scheduled post doesn't show the preview when posted to bsky. Not sure if that's something you have control over.
+
+YouTube only allows for video title and visibility. It would mean i'd still have to go on yt and update the details of the video.
+
+- add thumbnail and description for youtube
 
 - when clicking on a new post, and editing platforms, they are overriden by the update
 

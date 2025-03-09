@@ -222,10 +222,10 @@ onMounted(async () => {
     <main class="main w-full">
       <!-- Hero Section -->
       <section
-        class="hero-section relative bg-gradient-to-b from-[] to-[] min-h-[100vh] flex justify-center items-center"
+        class="hero-section relative flex justify-center items-center bg-gradient-to-b from-[] to-[] min-h-[100vh]"
       >
         <HomeNavigation />
-        <div class="container mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 sm:mt-[100px]">
           <div class="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <!-- Left Column: Text Content -->
             <div class="flex flex-col justify-center">
