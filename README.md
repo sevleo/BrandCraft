@@ -52,6 +52,41 @@ cp .env.example .env
 ```
 - Open .env and configure the necessary values (database URL, API keys, AWS credentials, etc.).
 
+4. Run the application using Docker (Recommended)
+- Ensure Docker is running, then execute:
+
+```
+docker-compose up --build
+```
+- This will start all required services, including the database and backend.
+
+
+5. Run locally (Without Docker)
+- Start MongoDB (if not using Docker).
+- Run the backend:
+```
+cd backend
+npm run dev
+```
+- In a new terminal, start the frontend:
+```
+cd frontend-vue
+npm run dev
+```
+- The application should be available at http://localhost:5173
+
+## Deployment
+For production deployment, ensure you configure:
+
+Database URL (MongoDB Atlas or self-hosted)
+S3 bucket for media storage
+Environment variables (.env.production)
+For cloud deployment, consider:
+
+Vercel for frontend
+AWS EC2/DigitalOcean for backend
+MongoDB Atlas for database
+
 
 
 
