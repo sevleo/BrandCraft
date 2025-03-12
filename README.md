@@ -78,14 +78,16 @@ npm run dev
 ## Deployment
 For production deployment, ensure you configure:
 
-Database URL (MongoDB Atlas or self-hosted)
-S3 bucket for media storage
-Environment variables (.env.production)
+- Database URL (MongoDB Atlas or self-hosted)
+- S3 bucket for media storage
+- Environment variables (.env.production)
+
 For cloud deployment, consider:
 
-Vercel for frontend
-AWS EC2/DigitalOcean for backend
-MongoDB Atlas for database
+- Fly.io for frontend
+- Render.com for backend
+- MongoDB Atlas for database
+- S3 for media storage
 
 
 
