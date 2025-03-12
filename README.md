@@ -45,6 +45,15 @@ cd brandcraft
 npm install
 ```
 
+3. Set up environment variables
+   Copy the example environment file:
+```
+cp .env.example .env
+```
+  Open .env and configure the necessary values (database URL, API keys, AWS credentials, etc.).
+
+
+
 
 ## Contributing
 
