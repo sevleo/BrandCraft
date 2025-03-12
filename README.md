@@ -59,22 +59,12 @@ cp .env.example .env
 docker-compose up --build
 ```
 - This will start all required services, including the database and backend.
+- The .app application should be available at http://localhost:5173
+- The Nuxt landing page should be available at http://localhost:3001
+- The Backend should be available at http://localhost:3000
+- The Scheduler Service should be available at http://localhost:4000
 
-
-5. Run locally (Without Docker)
-- Start MongoDB (if not using Docker).
-- Run the backend:
-```
-cd backend
-npm run dev
-```
-- In a new terminal, start the frontend:
-```
-cd frontend-vue
-npm run dev
-```
-- The application should be available at http://localhost:5173
-
+  
 ## Deployment
 For production deployment, ensure you configure:
 
