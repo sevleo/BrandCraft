@@ -39,7 +39,12 @@ git clone https://github.com/yourusername/brandcraft.git
 cd brandcraft
 ```
 
-2. To be added later...
+2. Install dependencies
+
+```
+npm install
+```
+
 
 ## Contributing
 
