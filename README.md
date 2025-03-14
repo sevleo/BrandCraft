@@ -100,7 +100,7 @@ For more details, see the **[`LICENSE`](./LICENSE)** file in this repository.
 
 ## Support
 
-Need help? Email us at sev@brandcraft.com or [request a feature here](https://insigh.to/b/brandcraftart).
+Need help? Email us at sev@brandcraft.art or [request a feature here](https://insigh.to/b/brandcraftart).
 
 ---
 
