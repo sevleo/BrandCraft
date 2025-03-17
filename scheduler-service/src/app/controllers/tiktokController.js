@@ -1,6 +1,4 @@
-const fs = require("fs");
 const axios = require("axios");
-const FormData = require("form-data");
 const platformConnection = require("../models/platformConnection");
 
 // Internal method for posting videos to TikTok (used by scheduler)
@@ -41,9 +39,9 @@ exports.postTikTokVideoInternal = async ({
           post_info: {
             title: content,
             privacy_level: tiktokSettings.viewerSetting,
-            disable_duet: tiktokSettings.allowDuet,
-            disable_comment: tiktokSettings.allowComments,
-            disable_stitch: tiktokSettings.allowStitch,
+            disable_duet: !tiktokSettings.allowDuet,
+            disable_comment: !tiktokSettings.allowComments,
+            disable_stitch: !tiktokSettings.allowStitch,
             video_cover_timestamp_ms: Math.round(
               post.postGroupId.videoTimestamp * 1000
             ),
